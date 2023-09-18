@@ -1,7 +1,6 @@
 # KimicuYandexGames
 ## How to add this package in your project:
 In Unity open `Package Manager` > Click `+` > select `Add package from git URL...` and write:
-<br>``` https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask ```
 <br>``` https://github.com/forcepusher/com.agava.yandexmetrica.git ```
 <br>``` https://github.com/forcepusher/com.agava.webutility.git ```
 <br>``` https://github.com/forcepusher/com.agava.yandexgames.git ```
