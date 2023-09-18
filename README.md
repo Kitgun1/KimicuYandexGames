@@ -4,6 +4,7 @@ In Unity open `Package Manager` > Click `+` > select `Add package from git URL..
 <br>``` https://github.com/forcepusher/com.agava.yandexmetrica.git ```
 <br>``` https://github.com/forcepusher/com.agava.webutility.git ```
 <br>``` https://github.com/forcepusher/com.agava.yandexgames.git ```
+<br>``` https://github.com/Kitgun1/KimicuYandexGames.git ```
 <br> Then add [KimicuUtility](https://github.com/Kitgun1/KimicuUtility)
 
 Also use TextMeshPro in your project.
