@@ -3,13 +3,15 @@
 using Agava.YandexGames;
 #endif
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 namespace KiYandexSDK
 {
     public sealed class YandexSDKInitialize : MonoBehaviour
     {
-        [SerializeField] private float _initializeDelay = 0.2f; 
+        [SerializeField] private float _initializeDelay = 0.2f;
+        [SerializeField] private UnityEvent OnInitialize;
 
         private IEnumerator Start()
         {
@@ -27,14 +29,9 @@ namespace KiYandexSDK
         }
 
 
-        private static void InitializeSuccess()
+        private void InitializeSuccess()
         {
-            LoadNextScene();
-        }
-
-        private static void LoadNextScene()
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            OnInitialize?.Invoke();
         }
     }
 }
