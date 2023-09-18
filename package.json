@@ -1,0 +1,17 @@
+{
+  "name": "com.blackbox.kimicuyandexgames",
+  "version": "1.0.0",
+  "author": "Kimicu",
+  "displayName": "Kimicu Yandex",
+  "description": "Package for fast develop game in Yandex Games.",
+  "unity": "2019.1",
+  "dependencies": {
+  },
+  "samples": [
+    {
+      "displayName": "Yandex",
+      "description": "Usage examples Yandex Package",
+      "path": "Sample~/Yandex"
+    }
+  ]
+}
