@@ -103,6 +103,6 @@ int result3 = (string)YandexData.Load("key1", valueString);
 В этом примере сохраняются 3 разных типа под одним ключом, но из-за того что тип у defaultValue всегда разный, 
 в переменные result будут получены значения из разных ячеек.<br>
 Например в примере выше переменные result будут равны:<br>
-result1 -> 10,
-result2 -> 5f,
+result1 -> 10,<br>
+result2 -> 5f,<br>
 result3 -> "Привет"
