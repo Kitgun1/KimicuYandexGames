@@ -11,7 +11,8 @@ namespace KiYandexSDK
     public sealed class YandexSDKInitialize : MonoBehaviour
     {
         [SerializeField] private float _initializeDelay = 0.2f;
-        [SerializeField] private UnityEvent OnInitialize;
+        
+        public UnityEvent OnInitialize;
 
         private IEnumerator Start()
         {
