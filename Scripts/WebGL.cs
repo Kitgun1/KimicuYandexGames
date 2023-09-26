@@ -6,7 +6,7 @@ namespace KiYandexSDK
     public static class WebGL
     {
         private static event Action<bool> OnBackgroundChanged;
-        
+
         /// <summary>
         /// Инициализация WebGL
         /// </summary>
@@ -15,6 +15,7 @@ namespace KiYandexSDK
         {
             Agava.WebUtility.WebApplication.InBackgroundChangeEvent += InBackgroundChange;
             OnBackgroundChanged = onBackgroundChanged;
+            WebProperty.AdvertOpenedChange.AddListener(AdvertOpenedChange);
         }
 
         private static void InBackgroundChange(bool value)
@@ -23,11 +24,23 @@ namespace KiYandexSDK
             OnBackgroundChanged?.Invoke(value);
             if (!WebProperty.AdvertOpened && WebProperty.InGameView)
             {
-                AudioListener.volume = 1;
+                AudioListener.pause = false;
             }
             else
             {
-                AudioListener.volume = 0;
+                AudioListener.pause = true;
+            }
+        }
+
+        private static void AdvertOpenedChange(bool value)
+        {
+            if (!WebProperty.AdvertOpened && WebProperty.InGameView)
+            {
+                AudioListener.pause = false;
+            }
+            else
+            {
+                AudioListener.pause = true;
             }
         }
     }
