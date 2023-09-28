@@ -4,14 +4,13 @@ using Agava.YandexGames;
 #endif
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.SceneManagement;
 
 namespace KiYandexSDK
 {
     public sealed class YandexSDKInitialize : MonoBehaviour
     {
         [SerializeField] private float _initializeDelay = 0.2f;
-        
+
         public UnityEvent OnInitialize;
 
         private IEnumerator Start()
@@ -20,7 +19,7 @@ namespace KiYandexSDK
             yield return YandexGamesSdk.Initialize(); // Инициализация Agava SDK
             yield return YandexData.Initialize(); // Инициализация сохранений
             AdvertSDK.AdvertInitialize();  // Инициализация рекламы
-            WebGL.Initialize(null);  // Инициализация WebGL
+            WebGL.Initialize();  // Инициализация WebGL
             InitializeSuccess();
             yield break;
 #else

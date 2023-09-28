@@ -18,6 +18,6 @@ namespace KiYandexSDK
 
         internal static bool InGameView = true;
 
-        internal static UnityEvent<bool> AdvertOpenedChange;
+        internal static readonly UnityEvent<bool> AdvertOpenedChange = new();
     }
 }

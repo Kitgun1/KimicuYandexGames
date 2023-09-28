@@ -1,27 +1,29 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace KiYandexSDK
 {
     public static class WebGL
     {
-        private static event Action<bool> OnBackgroundChanged;
+        private static UnityEvent<bool> _onBackgroundChanged = new();
 
         /// <summary>
         /// Инициализация WebGL
         /// </summary>
         /// <param name="onBackgroundChanged"></param>
-        public static void Initialize(Action<bool> onBackgroundChanged = null)
+        public static void Initialize(UnityEvent<bool> onBackgroundChanged = null)
         {
             Agava.WebUtility.WebApplication.InBackgroundChangeEvent += InBackgroundChange;
-            OnBackgroundChanged = onBackgroundChanged;
+            if (onBackgroundChanged != null) _onBackgroundChanged = onBackgroundChanged;
             WebProperty.AdvertOpenedChange.AddListener(AdvertOpenedChange);
         }
 
         private static void InBackgroundChange(bool value)
         {
             WebProperty.InGameView = !value;
-            OnBackgroundChanged?.Invoke(value);
+            _onBackgroundChanged?.Invoke(value);
             if (!WebProperty.AdvertOpened && WebProperty.InGameView)
             {
                 AudioListener.pause = false;
