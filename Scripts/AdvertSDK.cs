@@ -87,7 +87,12 @@ namespace KiYandexSDK
         public static void InterstitialAd(Action onOpen = null, Action<bool> onClose = null,
             Action<string> onError = null, Action onOffline = null)
         {
-            if (_advertAvailable == false) return;
+            if (_advertAvailable == false)
+            {
+                onError?.Invoke("Advert not available!");
+                return;
+            }
+
             if (_advertOff)
             {
                 onOpen?.Invoke();

@@ -7,6 +7,7 @@ using Agava.YandexGames;
 #endif
 using KiUtility;
 using Newtonsoft.Json.Linq;
+using UnityEngine;
 using PlayerPrefs = UnityEngine.PlayerPrefs;
 
 namespace KiYandexSDK
@@ -28,7 +29,7 @@ namespace KiYandexSDK
         {
             if (_initialized)
             {
-                throw new Exception("YandexData initialization has already been performed.");
+                Debug.LogWarning("YandexData initialization has already been performed.");
             }
 #if UNITY_WEBGL && !UNITY_EDITOR
             PlayerAccount.GetCloudSaveData((data) =>
