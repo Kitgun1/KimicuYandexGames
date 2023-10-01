@@ -5,6 +5,7 @@
   "displayName": "Kimicu Yandex",
   "description": "Package for fast develop game in Yandex Games.",
   "unity": "2019.1",
+  "changelogUrl": "https://github.com/Kitgun1/KimicuYandexGames/blob/main/CHANGELOG.md",
   "dependencies": {
   },
   "samples": [
