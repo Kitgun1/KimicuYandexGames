@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Agava.YandexGames;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace KiYandexSDK
 {
@@ -85,7 +87,21 @@ namespace KiYandexSDK
                 _purchasedProducts ??= new List<PurchasedProduct>();
                 _purchasedProducts.Add(response.purchaseData);
             };
+#if !UNITY_EDITOR && UNITY_WEBGL
             Agava.YandexGames.Billing.PurchaseProduct(id, OnSuccessPurchaseProduct, onError, developerPayload);
+#else
+            OnSuccessPurchaseProduct?.Invoke(new PurchaseProductResponse
+            {
+                purchaseData = new PurchasedProduct
+                {
+                    developerPayload = "",
+                    purchaseToken = id,
+                    productID =  id,
+                    purchaseTime = Time.time.ToString(CultureInfo.InvariantCulture)
+                },
+                signature = id
+            });
+#endif
         }
 
         /// <summary> Activation of the purchase process, as well as its confirmation in the "ConsumeProduct". </summary>
@@ -115,8 +131,22 @@ namespace KiYandexSDK
             OnSuccessConsumeProduct = () => { onSuccessConsume?.Invoke(); };
             OnErrorConsumeProduct = onErrorConsume;
 
+#if !UNITY_EDITOR && UNITY_WEBGL
             Agava.YandexGames.Billing.PurchaseProduct(id, OnSuccessPurchaseProduct, OnErrorPurchaseProduct,
                 developerPayload);
+#else
+            OnSuccessPurchaseProduct?.Invoke(new PurchaseProductResponse
+            {
+                purchaseData = new PurchasedProduct
+                {
+                    developerPayload = "",
+                    purchaseToken = id,
+                    productID =  id,
+                    purchaseTime = Time.time.ToString(CultureInfo.InvariantCulture)
+                },
+                signature = id
+            });
+#endif
         }
 
         /// <summary> Confirmation of purchase. </summary>
@@ -136,7 +166,11 @@ namespace KiYandexSDK
                 onSuccess?.Invoke();
             };
             OnErrorConsumeProduct = onError;
+#if !UNITY_EDITOR && UNITY_WEBGL
             Agava.YandexGames.Billing.ConsumeProduct(purchaseToken, OnSuccessConsumeProduct, OnErrorConsumeProduct);
+#else
+            OnSuccessConsumeProduct?.Invoke();
+#endif
         }
     }
 }
