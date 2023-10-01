@@ -14,6 +14,7 @@
   + [Звук](#звук)
   + [Облачные сохранения](#облачные-сохранения)
     + [Тонкости использования](#тонкости-использования-yandexdata)
+  + [Покупки](#покупки)
 
 ---------------------------------------------------------------------------
 
@@ -42,7 +43,7 @@
 
 ### Реклама
 
-```cs
+```csharp
 using KiYandexSDK;
 // Для показа рекламы InterstitialAd: 
 // Если реклама будет вызвана и при этом она будет отключена, рекламу не покажут + будет вызван onOpen и onClose
@@ -63,7 +64,7 @@ AdvertSDK.AdvertOff()
 Сохранение и загрузка произойдет автоматически. <br>
 По умолчанию id для отключения рекламы - "ADVERT_OFF" <br>
 Если нужно изменить id, то можно использовать поле AdvertOffKey
-```cs
+```csharp
 AdvertSDK.AdvertOffKey = "ключ";
 ```
 
@@ -73,13 +74,13 @@ AdvertSDK.AdvertOffKey = "ключ";
 
 ### Облачные сохранения
 Для сохранения есть всего 2 метода:
-```cs
+```csharp
 void YandexData.Save(string key, JToken value, Action onSuccess = null, Action<string> onError = null)
 JToken YandexData.Load(string key, JToken defaultValue)
 // JToken это почти любой тип: int, float, bool, string и тд.
 ```
 Например, для сохранения/получения нужно писать:
-```cs
+```csharp
 // Bool:
 YandexData.Save("example_key", true); // Сохранить
 bool myBool = (bool)YandexData.Load("example_key", false/true); // Получить
@@ -91,7 +92,7 @@ bool myBool = (bool)YandexData.Load("example_key", 0f); // Получить
 
 #### Тонкости использования YandexData
 Следите за типом, который указываете в аргумент:
-```cs
+```csharp
 int valueInt = 10;
 float valueFloat = 5f;
 string valueString = "Привет";
@@ -106,3 +107,28 @@ int result3 = (string)YandexData.Load("key1", valueString);
 result1 -> 10,<br>
 result2 -> 5f,<br>
 result3 -> "Привет"
+
+### Покупки
+Для работы с покупками используйте статический класс Billing в пространсве имен `KiYandexSDK`.<br>
+Список того что можно использовать:
+```csharp
+// Список всех товаров.
+IEnumerable<CatalogProduct> Billing.CatalogProduct; 
+
+// Список купленных и не обработанных товаров в методе "ConsumeProduct".
+IEnumerable<PurchasedProduct> PurchasedProducts; 
+
+// Инициализирует покупки 
+//(получение всех товаров и покупок, которые не обработаны в "ConsumeProduct")
+// По умолчанию вызывается в "YandexSDKInitialize"
+Billing.Initialize();
+
+// Вызывает покупку.
+Billing.PurchaseProduct(id, onSuccess, onError, developerPayload);
+
+// Вызывает покупку, а также вызывает метод Billing.ConsumeProduct для подтверждения.
+Billing.PurchaseProduct(id, onSuccessPurchase, onSuccessConsume, onErrorPurchase, onErrorConsume, developerPayload);
+
+// Подтверждает покупку и убирает продукт из списка "PurchasedProducts".
+Billing.ConsumeProduct();
+```

@@ -1,37 +1,32 @@
 ﻿using System.Collections;
+using UnityEngine;
+using UnityEngine.Events;
 #if UNITY_WEBGL && !UNITY_EDITOR
 using Agava.YandexGames;
 #endif
-using UnityEngine;
-using UnityEngine.Events;
 
 namespace KiYandexSDK
 {
     public sealed class YandexSDKInitialize : MonoBehaviour
     {
-        [SerializeField] private float _initializeDelay = 0.2f;
+        [Tooltip("Initialize invoke in Editor."), SerializeField]
+        private float _initializeDelay = 0.2f;
 
-        public UnityEvent OnInitialize;
+        public UnityEvent OnInitialize = new();
 
         private IEnumerator Start()
         {
 #if !UNITY_EDITOR && UNITY_WEBGL
             yield return YandexGamesSdk.Initialize(); // Инициализация Agava SDK
             yield return YandexData.Initialize(); // Инициализация сохранений
+            yield return Billing.Initialize(); // Инициализация покупок
             AdvertSDK.AdvertInitialize();  // Инициализация рекламы
             WebGL.Initialize();  // Инициализация WebGL
-            InitializeSuccess();
-            yield break;
+            OnInitialize?.Invoke();
 #else
             yield return new WaitForSecondsRealtime(_initializeDelay);
-#endif
-            InitializeSuccess();
-        }
-
-
-        private void InitializeSuccess()
-        {
             OnInitialize?.Invoke();
+#endif
         }
     }
 }

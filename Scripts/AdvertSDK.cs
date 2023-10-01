@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine;
-using KiUtility;
+using KimicuUtility;
 
 #if UNITY_WEBGL && !UNITY_EDITOR
 using System.Collections;

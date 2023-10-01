@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 using UnityEngine;
 using Agava.YandexGames;
 #endif
-using KiUtility;
+using KimicuUtility;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 using PlayerPrefs = UnityEngine.PlayerPrefs;
