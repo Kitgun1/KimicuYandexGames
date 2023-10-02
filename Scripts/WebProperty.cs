@@ -15,9 +15,22 @@ namespace KiYandexSDK
                 AdvertOpenedChange?.Invoke(value);
             }
         }
+        
+        private static bool _purchaseWindowOpened = false;
+
+        internal static bool PurchaseWindowOpened
+        {
+            get => _purchaseWindowOpened;
+            set
+            {
+                _purchaseWindowOpened = value;
+                PurchaseWindowOpenedChange?.Invoke(value);
+            }
+        }
 
         internal static bool InGameView = true;
 
         internal static readonly UnityEvent<bool> AdvertOpenedChange = new();
+        internal static readonly UnityEvent<bool> PurchaseWindowOpenedChange = new();
     }
 }

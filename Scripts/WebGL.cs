@@ -9,32 +9,35 @@ namespace KiYandexSDK
     {
         private static UnityEvent<bool> _onBackgroundChanged = new();
 
-        /// <summary> Initialize WebGL </summary>
-        /// <param name="onBackgroundChanged"> After Background Change </param>
-        public static void Initialize(UnityEvent<bool> onBackgroundChanged = null)
+        /// <summary> Initialize WebGL. </summary>
+        public static void Initialize()
         {
             Agava.WebUtility.WebApplication.InBackgroundChangeEvent += InBackgroundChange;
-            if (onBackgroundChanged != null) _onBackgroundChanged = onBackgroundChanged;
             WebProperty.AdvertOpenedChange.AddListener(AdvertOpenedChange);
+            WebProperty.PurchaseWindowOpenedChange.AddListener(PurchaseWindowOpenedChange);
         }
 
         private static void InBackgroundChange(bool value)
         {
             WebProperty.InGameView = !value;
             _onBackgroundChanged?.Invoke(value);
-            if (!WebProperty.AdvertOpened && WebProperty.InGameView)
-            {
-                AudioListener.pause = false;
-            }
-            else
-            {
-                AudioListener.pause = true;
-            }
+            
+            AudioManage();
         }
 
         private static void AdvertOpenedChange(bool value)
         {
-            if (!WebProperty.AdvertOpened && WebProperty.InGameView)
+            AudioManage();
+        }
+
+        private static void PurchaseWindowOpenedChange(bool value)
+        {
+            AudioManage();
+        }
+
+        private static void AudioManage()
+        {
+            if (!WebProperty.AdvertOpened && WebProperty.InGameView && !WebProperty.PurchaseWindowOpened)
             {
                 AudioListener.pause = false;
             }

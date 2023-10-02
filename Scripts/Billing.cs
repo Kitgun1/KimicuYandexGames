@@ -81,14 +81,21 @@ namespace KiYandexSDK
         public static void PurchaseProduct(string id, Action<PurchaseProductResponse> onSuccess,
             Action<string> onError = null, string developerPayload = default)
         {
+            WebProperty.PurchaseWindowOpened = true;
             OnSuccessPurchaseProduct = response =>
             {
                 onSuccess?.Invoke(response);
                 _purchasedProducts ??= new List<PurchasedProduct>();
                 _purchasedProducts.Add(response.purchaseData);
+                WebProperty.PurchaseWindowOpened = false;
+            };
+            OnErrorPurchaseProduct = error =>
+            {
+                WebProperty.PurchaseWindowOpened = false;
+                onError?.Invoke(error);
             };
 #if !UNITY_EDITOR && UNITY_WEBGL
-            Agava.YandexGames.Billing.PurchaseProduct(id, OnSuccessPurchaseProduct, onError, developerPayload);
+            Agava.YandexGames.Billing.PurchaseProduct(id, OnSuccessPurchaseProduct, OnErrorPurchaseProduct, developerPayload);
 #else
             OnSuccessPurchaseProduct?.Invoke(new PurchaseProductResponse
             {
@@ -119,14 +126,21 @@ namespace KiYandexSDK
             Action onSuccessConsume = null, Action<string> onErrorPurchase = null, Action<string> onErrorConsume = null,
             string developerPayload = default)
         {
+            WebProperty.PurchaseWindowOpened = true;
             OnSuccessPurchaseProduct = response =>
             {
                 onSuccessPurchase?.Invoke(response);
+                WebProperty.PurchaseWindowOpened = false;
                 _purchasedProducts ??= new List<PurchasedProduct>();
                 _purchasedProducts.Add(response.purchaseData);
                 ConsumeProduct(response.purchaseData.purchaseToken, onSuccessConsume, onErrorConsume);
             };
-            OnErrorPurchaseProduct = onErrorPurchase;
+
+            OnErrorPurchaseProduct = error =>
+            {
+                WebProperty.PurchaseWindowOpened = false;
+                onErrorPurchase?.Invoke(error);
+            };
 
             OnSuccessConsumeProduct = () => { onSuccessConsume?.Invoke(); };
             OnErrorConsumeProduct = onErrorConsume;
