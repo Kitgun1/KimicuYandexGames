@@ -39,15 +39,6 @@ namespace KiYandexSDK
         public static void RewardAd(Action onOpen = null, Action onRewarded = null, Action onClose = null,
             Action<string> onError = null)
         {
-            if (_advertOff)
-            {
-                onOpen?.Invoke();
-                onRewarded?.Invoke();
-                onClose?.Invoke();
-                WebProperty.AdvertOpened = false;
-                return;
-            }
-
 #if UNITY_WEBGL && !UNITY_EDITOR
             VideoAd.Show(()=>
             {
