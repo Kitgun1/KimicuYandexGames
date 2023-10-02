@@ -17,11 +17,11 @@ namespace KiYandexSDK
         private IEnumerator Start()
         {
 #if !UNITY_EDITOR && UNITY_WEBGL
-            yield return YandexGamesSdk.Initialize(); // Инициализация Agava SDK
-            yield return YandexData.Initialize(); // Инициализация сохранений
-            yield return Billing.Initialize(); // Инициализация покупок
-            AdvertSDK.AdvertInitialize();  // Инициализация рекламы
-            WebGL.Initialize();  // Инициализация WebGL
+            yield return YandexGamesSdk.Initialize(); // Initialize Agava SDK.
+            yield return YandexData.Initialize(); // Initialize data.
+            yield return Billing.Initialize(); // Initialize purchases.
+            AdvertSDK.AdvertInitialize();  // Initialize advert.
+            WebGL.Initialize();  // Initialize WebGL.
             OnInitialize?.Invoke();
 #else
             yield return new WaitForSecondsRealtime(_initializeDelay);

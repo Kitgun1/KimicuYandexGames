@@ -20,11 +20,7 @@ namespace KiYandexSDK
         private const string Postfix = "";
         private const string Separator = "_";
 
-        /// <summary>
-        /// Инициализация YandexData класса
-        /// </summary>
-        /// <returns>Возвращает, когда инициализация прошла успешно</returns>
-        /// <exception cref="Exception">Метод нельзя вызывать > 1 раза</exception>
+        /// <summary> Initialize Yandex Data </summary>
         public static IEnumerator Initialize()
         {
             if (_initialized)
@@ -48,46 +44,54 @@ namespace KiYandexSDK
             }
         }
 
-        /// <summary>
-        /// Сохраняет данные в облако яндекс.
-        /// </summary>
-        /// <param name="key">Ключ для значения</param>
-        /// <param name="value">Значение</param>
-        /// <param name="onSuccess">Успех сохранения</param>
-        /// <param name="onError">Ошибка при сохранении</param>
-        public static void Save(string key, JToken value, Action onSuccess = null, Action<string> onError = null)
+        /// <summary> Save data by key and value type </summary>
+        /// <param name="saveInCloud"> Whether to save to the cloud.. </param>
+        /// <param name="onSuccess"> After successful save data in cloud. </param>
+        /// <param name="onError"> After unsuccessful data saving in the cloud. </param>
+        /// <remarks> If "saveInCloud" is set to false, then the "onSuccess" event will not be triggered. </remarks>
+        public static void Save(string key, JToken value, bool saveInCloud = true, Action onSuccess = null,
+            Action<string> onError = null)
         {
-            if (!_initialized) throw new Exception($"{nameof(YandexData)} not initialized");
+            if (!Application.isEditor && !_initialized)
+                throw new Exception($"{nameof(YandexData)} not initialized!");
             var dictionary = _json.ToDictionary();
             string searchKey = $"{key}{Separator}{value.Type.ToString()[..2]}{Separator}{Postfix}";
-            if (dictionary.TryGetValue(searchKey, out JToken _))
-            {
-                dictionary[searchKey] = value;
-            }
-            else
-            {
-                dictionary.Add(searchKey, value);
-            }
+            if (dictionary.TryGetValue(searchKey, out JToken _)) dictionary[searchKey] = value;
+            else dictionary.Add(searchKey, value);
 
             _json = dictionary.ToJson();
+#if UNITY_WEBGL && !UNITY_EDITOR
+            if(saveInCloud) PlayerAccount.SetCloudSaveData(_json, onSuccess, onError);
+            else onSuccess?.Invoke();
+#else
+            if (saveInCloud) PlayerPrefs.SetString("json", _json);
+#endif
+        }
+
+        /// <summary> Returns a value by key "key" and by type "defaultValue". </summary>
+        /// <param name="key"> The value by which the search will take place. </param>
+        /// <param name="defaultValue">
+        /// <para> The standard value, if the right one is not found. </para>
+        /// The type by which the search will take place.
+        /// </param>
+        public static JToken Load(string key, JToken defaultValue)
+        {
+            var data = _json.ToDictionary();
+            string searchKey = $"{key}{Separator}{defaultValue.Type.ToString()[..2]}{Separator}{Postfix}";
+            return data.TryGetValue(searchKey, out JToken value) ? value : defaultValue;
+        }
+
+        /// <summary> Save current data in cloud. </summary>
+        /// <param name="onSuccess"> After successful save data in cloud. </param>
+        /// <param name="onError"> After unsuccessful data saving in the cloud. </param>
+        public static void SaveToClaud(Action onSuccess = null,Action<string> onError = null)
+        {
 #if UNITY_WEBGL && !UNITY_EDITOR
             PlayerAccount.SetCloudSaveData(_json, onSuccess, onError);
 #else
             PlayerPrefs.SetString("json", _json);
             onSuccess?.Invoke();
 #endif
-        }
-
-        /// <summary>
-        /// Возвращает значение по ключу [key] и по типу [defaultValue]
-        /// </summary>
-        /// <param name="key">Значение по которому будет происходить поиск</param>
-        /// <param name="defaultValue">Стандартное значение, если не найдет</param>
-        public static JToken Load(string key, JToken defaultValue)
-        {
-            var data = _json.ToDictionary();
-            string searchKey = $"{key}{Separator}{defaultValue.Type.ToString()[..2]}{Separator}{Postfix}";
-            return data.TryGetValue(searchKey, out JToken value) ? value : defaultValue;
         }
     }
 }

@@ -13,17 +13,17 @@ namespace KiYandexSDK
     {
         private static bool _advertOff;
         private static bool _advertAvailable = true;
+        
+        private static readonly KiCoroutine Routine = new();
 
-        private const float DelayAd = 30.1f;
+        /// <summary> Delay between ad calls. </summary>
+        public static float DelayAd = 30.1f;
 
         /// <summary> The key by which the shutdown of advertising is saved. </summary>
         public static string AdvertOffKey = "ADVERT_OFF";
 
         /// <summary> Initialize advert for yandex games. </summary>
-        public static void AdvertInitialize()
-        {
-            _advertOff = (bool)YandexData.Load(AdvertOffKey, false);
-        }
+        public static void AdvertInitialize() => _advertOff = (bool)YandexData.Load(AdvertOffKey, false);
 
         /// <summary> Remove all advert (Except StickyAd) in game. </summary>
         public static void AdvertOff()
@@ -41,6 +41,7 @@ namespace KiYandexSDK
         {
             if (_advertOff)
             {
+                onOpen?.Invoke();
                 onRewarded?.Invoke();
                 onClose?.Invoke();
                 WebProperty.AdvertOpened = false;
@@ -65,7 +66,9 @@ namespace KiYandexSDK
                 WebProperty.AdvertOpened = false;
             });
 #else
+            onOpen?.Invoke();
             onRewarded?.Invoke();
+            onClose?.Invoke();
             WebProperty.AdvertOpened = false;
 #endif
         }
@@ -125,9 +128,7 @@ namespace KiYandexSDK
             }
 
             _advertAvailable = false;
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            KiUniTask.Delay(DelayAd, () => _advertAvailable = true);
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            Routine.StartRoutine(KiCoroutine.Delay(DelayAd, () => _advertAvailable = true), true);
         }
     }
 }

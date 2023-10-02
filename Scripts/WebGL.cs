@@ -9,10 +9,8 @@ namespace KiYandexSDK
     {
         private static UnityEvent<bool> _onBackgroundChanged = new();
 
-        /// <summary>
-        /// Инициализация WebGL
-        /// </summary>
-        /// <param name="onBackgroundChanged"></param>
+        /// <summary> Initialize WebGL </summary>
+        /// <param name="onBackgroundChanged"> After Background Change </param>
         public static void Initialize(UnityEvent<bool> onBackgroundChanged = null)
         {
             Agava.WebUtility.WebApplication.InBackgroundChangeEvent += InBackgroundChange;

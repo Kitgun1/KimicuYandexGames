@@ -96,7 +96,7 @@ namespace KiYandexSDK
                 {
                     developerPayload = "",
                     purchaseToken = id,
-                    productID =  id,
+                    productID = id,
                     purchaseTime = Time.time.ToString(CultureInfo.InvariantCulture)
                 },
                 signature = id
@@ -115,8 +115,8 @@ namespace KiYandexSDK
         /// (will be transmitted in the signature parameter).
         /// </param>
         /// <remarks> Upon confirmation of purchase, the item will be removed from the list of "Purchased items". </remarks>
-        public static void PurchaseProduct(string id, Action<PurchaseProductResponse> onSuccessPurchase,
-            Action onSuccessConsume, Action<string> onErrorPurchase = null, Action<string> onErrorConsume = null,
+        public static void PurchaseProduct(string id, Action<PurchaseProductResponse> onSuccessPurchase = null,
+            Action onSuccessConsume = null, Action<string> onErrorPurchase = null, Action<string> onErrorConsume = null,
             string developerPayload = default)
         {
             OnSuccessPurchaseProduct = response =>
@@ -141,7 +141,7 @@ namespace KiYandexSDK
                 {
                     developerPayload = "",
                     purchaseToken = id,
-                    productID =  id,
+                    productID = id,
                     purchaseTime = Time.time.ToString(CultureInfo.InvariantCulture)
                 },
                 signature = id
