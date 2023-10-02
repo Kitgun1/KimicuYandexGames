@@ -45,6 +45,7 @@
 
 ```csharp
 using KiYandexSDK;
+
 // Для показа рекламы InterstitialAd: 
 // Если реклама будет вызвана и при этом она будет отключена, рекламу не покажут + будет вызван onOpen и onClose
 AdvertSDK.InterstitialAd(Action onOpen = null, Action<bool> onClose = null, Action<string> onError = null, Action onOffline = null);
@@ -56,8 +57,8 @@ AdvertSDK.RewardAd(Action onOpen = null, Action onRewarded = null, Action onClos
 // Для включения или отключения баннера:
 AdvertSDK.StickyAdActive(bool value)
 
-// Для отключения рекламы в игре:
-AdvertSDK.AdvertOff()
+// Для отключения определенной рекламы в игре (по умолчанию InterstitialAd):
+AdvertSDK.AdvertOff(advertType = AdvertType.InterstitialAd)
 
 ```
 Не нужно сохранять отключение рекламы после вызова `AdvertSDK.AdvertOff()`. <br>
@@ -65,7 +66,11 @@ AdvertSDK.AdvertOff()
 По умолчанию id для отключения рекламы - "ADVERT_OFF" <br>
 Если нужно изменить id, то можно использовать поле AdvertOffKey
 ```csharp
-AdvertSDK.AdvertOffKey = "ключ";
+using KiYandexSDK;
+
+AdvertSDK.InterAdvertOffKey = "ключ"; // "INTER_ADVERT_OFF";
+AdvertSDK.RewardAdvertOffKey = "ключ"; // "REWARD_ADVERT_OFF";
+AdvertSDK.StickyAdvertOffKey = "ключ"; // "STICKY_ADVERT_OFF";
 ```
 
 ### Звук
@@ -75,12 +80,16 @@ AdvertSDK.AdvertOffKey = "ключ";
 ### Облачные сохранения
 Для сохранения есть всего 2 метода:
 ```csharp
+using KiYandexSDK;
+
 void YandexData.Save(string key, JToken value, Action onSuccess = null, Action<string> onError = null)
 JToken YandexData.Load(string key, JToken defaultValue)
 // JToken это почти любой тип: int, float, bool, string и тд.
 ```
 Например, для сохранения/получения нужно писать:
 ```csharp
+using KiYandexSDK;
+
 // Bool:
 YandexData.Save("example_key", true); // Сохранить
 bool myBool = (bool)YandexData.Load("example_key", false/true); // Получить
@@ -93,6 +102,8 @@ bool myBool = (bool)YandexData.Load("example_key", 0f); // Получить
 #### Тонкости использования YandexData
 Следите за типом, который указываете в аргумент:
 ```csharp
+using KiYandexSDK;
+
 int valueInt = 10;
 float valueFloat = 5f;
 string valueString = "Привет";
@@ -112,6 +123,8 @@ result3 -> "Привет"
 Для работы с покупками используйте статический класс Billing в пространсве имен `KiYandexSDK`.<br>
 Список того что можно использовать:
 ```csharp
+using KiYandexSDK;
+
 // Список всех товаров.
 IEnumerable<CatalogProduct> Billing.CatalogProduct; 
 

@@ -5,10 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.13] - 02.10.2023
+### Added
+- Now you can disable the ads of your choice.
+
 ## [1.0.12] - 02.10.2023
 ### Change
-- now "advert off" affects only InterstitialAd.
-
+- Now "advert off" affects only InterstitialAd.
 
 ## [1.0.10] - 02.10.2023
 ### Added
@@ -25,12 +28,10 @@ onOpen, onRewarded and onClose.
 - Now, when "Rewarded" is called in the Editor, the following events will be triggered: <br>
   onOpen, onRewarded, and onClose.
 
-
 ## [1.0.9] - 01.10.2023
 ### Added
 
 - Added a stub for the Editor in Billing.
-
 
 ## [1.0.8] - 01.10.2023
 ### Added
