@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.14] - 03.10.2023
+### Change
+- Separated overloading of PurchaseProduct methods. <br>
+Now the method that was responsible for the purchase and consume is called PurchaseProductAndConsume.
+
 ## [1.0.13] - 02.10.2023
 ### Added
 - Now you can disable the ads of your choice.

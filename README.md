@@ -140,7 +140,7 @@ Billing.Initialize();
 Billing.PurchaseProduct(id, onSuccess, onError, developerPayload);
 
 // Вызывает покупку, а также вызывает метод Billing.ConsumeProduct для подтверждения.
-Billing.PurchaseProduct(id, onSuccessPurchase, onSuccessConsume, onErrorPurchase, onErrorConsume, developerPayload);
+Billing.PurchaseProductAndConsume(id, onSuccessPurchase, onSuccessConsume, onErrorPurchase, onErrorConsume, developerPayload);
 
 // Подтверждает покупку и убирает продукт из списка "PurchasedProducts".
 Billing.ConsumeProduct();

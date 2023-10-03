@@ -78,7 +78,7 @@ namespace KiYandexSDK
         /// Optional parameter. Additional information about the purchase that you want to transmit to your server
         /// (will be transmitted in the signature parameter).
         /// </param>
-        public static void PurchaseProduct(string id, Action<PurchaseProductResponse> onSuccess,
+        public static void PurchaseProduct(string id, Action<PurchaseProductResponse> onSuccess = null,
             Action<string> onError = null, string developerPayload = default)
         {
             WebProperty.PurchaseWindowOpened = true;
@@ -122,7 +122,8 @@ namespace KiYandexSDK
         /// (will be transmitted in the signature parameter).
         /// </param>
         /// <remarks> Upon confirmation of purchase, the item will be removed from the list of "Purchased items". </remarks>
-        public static void PurchaseProduct(string id, Action<PurchaseProductResponse> onSuccessPurchase = null,
+        public static void PurchaseProductAndConsume(string id,
+            Action<PurchaseProductResponse> onSuccessPurchase = null,
             Action onSuccessConsume = null, Action<string> onErrorPurchase = null, Action<string> onErrorConsume = null,
             string developerPayload = default)
         {
