@@ -6,10 +6,10 @@ namespace KiYandexSDK
     {
         private static bool _advertOpened = false;
 
-        internal static bool AdvertOpened
+        public static bool AdvertOpened
         {
             get => _advertOpened;
-            set
+            internal set
             {
                 _advertOpened = value;
                 AdvertOpenedChange?.Invoke(value);
@@ -18,17 +18,17 @@ namespace KiYandexSDK
         
         private static bool _purchaseWindowOpened = false;
 
-        internal static bool PurchaseWindowOpened
+        public static bool PurchaseWindowOpened
         {
             get => _purchaseWindowOpened;
-            set
+            internal set
             {
                 _purchaseWindowOpened = value;
                 PurchaseWindowOpenedChange?.Invoke(value);
             }
         }
 
-        internal static bool InGameView = true;
+        public static bool InGameView { get; internal set; } = true;
 
         internal static readonly UnityEvent<bool> AdvertOpenedChange = new();
         internal static readonly UnityEvent<bool> PurchaseWindowOpenedChange = new();

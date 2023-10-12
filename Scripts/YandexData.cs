@@ -34,14 +34,9 @@ namespace KiYandexSDK
                 _initialized = true;
             }, Debug.LogWarning);
 #else
-            _json = PlayerPrefs.GetString("json", "{}");
-            _initialized = true;
+            InitializePlayerPrefs();
 #endif
-            while (true)
-            {
-                if (_initialized) yield break;
-                yield return null;
-            }
+            yield return new WaitUntil(() => _initialized);
         }
 
         /// <summary> Save data by key and value type </summary>
@@ -53,7 +48,14 @@ namespace KiYandexSDK
             Action<string> onError = null)
         {
             if (!Application.isEditor && !_initialized)
+            {
                 throw new Exception($"{nameof(YandexData)} not initialized!");
+            }
+            else
+            {
+                InitializePlayerPrefs();
+            }
+
             var dictionary = _json.ToDictionary();
             string searchKey = $"{key}{Separator}{value.Type.ToString()[..2]}{Separator}{Postfix}";
             if (dictionary.TryGetValue(searchKey, out JToken _)) dictionary[searchKey] = value;
@@ -84,7 +86,7 @@ namespace KiYandexSDK
         /// <summary> Save current data in cloud. </summary>
         /// <param name="onSuccess"> After successful save data in cloud. </param>
         /// <param name="onError"> After unsuccessful data saving in the cloud. </param>
-        public static void SaveToClaud(Action onSuccess = null,Action<string> onError = null)
+        public static void SaveToClaud(Action onSuccess = null, Action<string> onError = null)
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
             PlayerAccount.SetCloudSaveData(_json, onSuccess, onError);
@@ -92,6 +94,12 @@ namespace KiYandexSDK
             PlayerPrefs.SetString("json", _json);
             onSuccess?.Invoke();
 #endif
+        }
+
+        private static void InitializePlayerPrefs()
+        {
+            _json = PlayerPrefs.GetString("json", "{}");
+            _initialized = true;
         }
     }
 }

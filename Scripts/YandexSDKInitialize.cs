@@ -9,7 +9,7 @@ namespace KiYandexSDK
 {
     public sealed class YandexSDKInitialize : MonoBehaviour
     {
-        [Tooltip("Initialize invoke in Editor."), SerializeField]
+        [Tooltip("OnInitialize invoke in Editor."), SerializeField]
         private float _initializeDelay = 0.2f;
 
         public UnityEvent OnInitialize = new();
@@ -21,7 +21,7 @@ namespace KiYandexSDK
             yield return YandexData.Initialize(); // Initialize data.
             yield return Billing.Initialize(); // Initialize purchases.
             AdvertSDK.AdvertInitialize();  // Initialize advert.
-            WebGL.Initialize();  // Initialize WebGL.
+            WebGL.InitializeListener();  // Initialize WebGL.
             OnInitialize?.Invoke();
 #else
             yield return new WaitForSecondsRealtime(_initializeDelay);
