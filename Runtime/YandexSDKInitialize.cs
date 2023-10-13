@@ -5,7 +5,7 @@ using UnityEngine.Events;
 using Agava.YandexGames;
 #endif
 
-namespace KiYandexSDK
+namespace Kimicu.YandexGames
 {
     public sealed class YandexSDKInitialize : MonoBehaviour
     {
@@ -20,7 +20,7 @@ namespace KiYandexSDK
             yield return YandexGamesSdk.Initialize(); // Initialize Agava SDK.
             yield return YandexData.Initialize(); // Initialize data.
             yield return Billing.Initialize(); // Initialize purchases.
-            AdvertSDK.AdvertInitialize();  // Initialize advert.
+            Advert.AdvertInitialize();  // Initialize advert.
             WebGL.InitializeListener();  // Initialize WebGL.
             OnInitialize?.Invoke();
 #else

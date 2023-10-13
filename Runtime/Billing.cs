@@ -5,9 +5,8 @@ using System.Globalization;
 using System.Linq;
 using Agava.YandexGames;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
-namespace KiYandexSDK
+namespace Kimicu.YandexGames
 {
     public static class Billing
     {
@@ -46,8 +45,16 @@ namespace KiYandexSDK
             Agava.YandexGames.Billing.GetProductCatalog(OnGetProductCatalogSuccess, OnErrorCallback);
             Agava.YandexGames.Billing.GetPurchasedProducts(OnGetPurchasedProductsSuccess, OnErrorCallback);
 #else
-            OnGetProductCatalogSuccess(null);
-            OnGetPurchasedProductsSuccess(null);
+            OnGetProductCatalogSuccess(new GetProductCatalogResponse
+            {
+                products = KimicuYandexSettings.Instance.CatalogProductInEditor
+            });
+            OnGetPurchasedProductsSuccess(new GetPurchasedProductsResponse()
+            {
+                signature =
+                    "hQ8adIRJWD29Nep+0P36Z6edI5uzj6F3tddz6Dqgclk=.eyJhbGdvcml0aG0iOiJITUFDLVNIQTI1NiIsImlzc3VlZEF0IjoxNTcxMjMzMzcxLCJyZXF1ZXN0UGF5bG9hZCI6InF3ZSIsImRhdGEiOnsidG9rZW4iOiJkODVhZTBiMS05MTY2LTRmYmItYmIzOC02ZDJhNGNhNDQxNmQiLCJzdGF0dXMiOiJ3YWl0aW5nIiwiZXJyb3JDb2RlIjoiIiwiZXJyb3JEZXNjcmlwdGlvbiI6IiIsInVybCI6Imh0dHBzOi8veWFuZGV4LnJ1L2dhbWVzL3Nkay9wYXltZW50cy90cnVzdC1mYWtlLmh0bWwiLCJwcm9kdWN0Ijp7ImlkIjoibm9hZHMiLCJ0aXRsZSI6ItCR0LXQtyDRgNC10LrQu9Cw0LzRiyIsImRlc2NyaXB0aW9uIjoi0J7RgtC60LvRjtGH0LjRgtGMINGA0LXQutC70LDQvNGDINCyINC40LPRgNC1IiwicHJpY2UiOnsiY29kZSI6IlJVUiIsInZhbHVlIjoiNDkifSwiaW1hZ2VQcmVmaXgiOiJodHRwczovL2F2YXRhcnMubWRzLnlhbmRleC5uZXQvZ2V0LWdhbWVzLzE4OTI5OTUvMmEwMDAwMDE2ZDFjMTcxN2JkN2EwMTQ5Y2NhZGM4NjA3OGExLyJ9fX0=",
+                purchasedProducts = KimicuYandexSettings.Instance.PurchasedProductInEditor
+            });
 #endif
             yield return new WaitUntil(() => (_catalogInitialized && _purchasedProductsInitialized) || _errored);
         }
@@ -71,15 +78,17 @@ namespace KiYandexSDK
         }
 
         /// <summary> Activation of the purchase process. </summary>
-        /// <param name="id"> The product ID that is set in the developer console. </param>
+        /// <param name="productID"> The product ID that is set in the developer console. </param>
         /// <param name="onSuccess"> Successful purchase of the product. </param>
         /// <param name="onError"> Error when buying a product. </param>
         /// <param name="developerPayload">
         /// Optional parameter. Additional information about the purchase that you want to transmit to your server
         /// (will be transmitted in the signature parameter).
         /// </param>
-        public static void PurchaseProduct(string id, Action<PurchaseProductResponse> onSuccess = null,
-            Action<string> onError = null, string developerPayload = default)
+        public static void PurchaseProduct(string productID,
+            Action<PurchaseProductResponse> onSuccess = null,
+            Action<string> onError = null,
+            string developerPayload = default)
         {
             WebProperty.PurchaseWindowOpened = true;
             OnSuccessPurchaseProduct = response =>
@@ -102,17 +111,17 @@ namespace KiYandexSDK
                 purchaseData = new PurchasedProduct
                 {
                     developerPayload = "",
-                    purchaseToken = id,
-                    productID = id,
+                    purchaseToken = productID,
+                    productID = productID,
                     purchaseTime = Time.time.ToString(CultureInfo.InvariantCulture)
                 },
-                signature = id
+                signature = productID
             });
 #endif
         }
 
         /// <summary> Activation of the purchase process, as well as its confirmation in the "ConsumeProduct". </summary>
-        /// <param name="id"> The product ID that is set in the developer console. </param>
+        /// <param name="productID"> The product ID that is set in the developer console. </param>
         /// <param name="onSuccessPurchase"> Successful purchase of the product. </param>
         /// <param name="onSuccessConsume"> Successful confirmation of purchase. </param>
         /// <param name="onErrorPurchase"> Error when confirming the product. </param>
@@ -122,9 +131,11 @@ namespace KiYandexSDK
         /// (will be transmitted in the signature parameter).
         /// </param>
         /// <remarks> Upon confirmation of purchase, the item will be removed from the list of "Purchased items". </remarks>
-        public static void PurchaseProductAndConsume(string id,
+        public static void PurchaseProductAndConsume(string productID,
             Action<PurchaseProductResponse> onSuccessPurchase = null,
-            Action onSuccessConsume = null, Action<string> onErrorPurchase = null, Action<string> onErrorConsume = null,
+            Action onSuccessConsume = null,
+            Action<string> onErrorPurchase = null,
+            Action<string> onErrorConsume = null,
             string developerPayload = default)
         {
             WebProperty.PurchaseWindowOpened = true;
@@ -155,11 +166,11 @@ namespace KiYandexSDK
                 purchaseData = new PurchasedProduct
                 {
                     developerPayload = "",
-                    purchaseToken = id,
-                    productID = id,
+                    purchaseToken = productID,
+                    productID = productID,
                     purchaseTime = Time.time.ToString(CultureInfo.InvariantCulture)
                 },
-                signature = id
+                signature = productID
             });
 #endif
         }

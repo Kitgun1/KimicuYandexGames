@@ -6,19 +6,20 @@ using UnityEngine;
 using Agava.YandexGames;
 #endif
 using KimicuUtility;
+using Kimicu.YandexGames;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 using PlayerPrefs = UnityEngine.PlayerPrefs;
 
-namespace KiYandexSDK
+namespace Kimicu.YandexGames
 {
     public static class YandexData
     {
         private static string _json = "{}";
         private static bool _initialized = false;
 
-        private const string Postfix = "";
-        private const string Separator = "_";
+        private static string _postfix;
+        private static string _separator;
 
         /// <summary> Initialize Yandex Data </summary>
         public static IEnumerator Initialize()
@@ -27,6 +28,9 @@ namespace KiYandexSDK
             {
                 Debug.LogWarning("YandexData initialization has already been performed.");
             }
+
+            _postfix = KimicuYandexSettings.Instance.Postfix;
+            _separator = KimicuYandexSettings.Instance.Separator;
 #if UNITY_WEBGL && !UNITY_EDITOR
             PlayerAccount.GetCloudSaveData((data) =>
             {
@@ -57,7 +61,7 @@ namespace KiYandexSDK
             }
 
             var dictionary = _json.ToDictionary();
-            string searchKey = $"{key}{Separator}{value.Type.ToString()[..2]}{Separator}{Postfix}";
+            string searchKey = $"{key}{_separator}{value.Type.ToString()[..2]}{_separator}{_postfix}";
             if (dictionary.TryGetValue(searchKey, out JToken _)) dictionary[searchKey] = value;
             else dictionary.Add(searchKey, value);
 
@@ -67,6 +71,7 @@ namespace KiYandexSDK
             else onSuccess?.Invoke();
 #else
             if (saveInCloud) PlayerPrefs.SetString("json", _json);
+            onSuccess?.Invoke();
 #endif
         }
 
@@ -79,7 +84,7 @@ namespace KiYandexSDK
         public static JToken Load(string key, JToken defaultValue)
         {
             var data = _json.ToDictionary();
-            string searchKey = $"{key}{Separator}{defaultValue.Type.ToString()[..2]}{Separator}{Postfix}";
+            string searchKey = $"{key}{_separator}{defaultValue.Type.ToString()[..2]}{_separator}{_postfix}";
             return data.TryGetValue(searchKey, out JToken value) ? value : defaultValue;
         }
 

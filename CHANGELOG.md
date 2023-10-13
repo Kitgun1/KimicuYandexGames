@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 13.10.2023
+### Added
+- Добавлены настройки для `YandexGames` в `ProjectSettings`.
+- В Editor теперь есть стандартные покупки, которые можно настроить в `ProjectSettings` > `Kimicu` > `Yandex Settings`.
+
+### Change
+- Пространство имен `KiYandexSDK` изменено на `Kimicu.YandexGames`.
+- Все скрипты были перемещены в `Runtime`.
+- Изменено имя `AdvertSDK` на `Advert`.
+- Переработан `README.md`.
+
+### Remove
+- Убран доступ к некоторым полям в `Advert`.
+
+
 ## [1.0.15] - 12.10.2023
 ### Added
 - Added FAQ section to README.md.
@@ -42,6 +57,7 @@ Now the method that was responsible for the purchase and consume is called Purch
 onOpen, onRewarded and onClose.
 - Now, when "Rewarded" is called in the Editor, the following events will be triggered: <br>
   onOpen, onRewarded, and onClose.
+
 
 ## [1.0.9] - 01.10.2023
 ### Added

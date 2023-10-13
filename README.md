@@ -1,201 +1,206 @@
-# KimicuYandexGames
+# Kimicu Yandex
 
-+ [Описание пакета](#описание-проекта)
-+ [Связь](#связь)
-+ [Поддержать проект](#поддержать-проект)
-+ [Как добавить в проект](#как-добавить-в-проект)
-+ [Как начать](#как-начать)
-+ [Примеры](#примеры)
-  + [Реклама](#реклама)
-  + [Звук](#звук)
-  + [Облачные сохранения](#облачные-сохранения)
-    + [Тонкости использования](#тонкости-использования-yandexdata)
-  + [Покупки](#покупки)
-+ [FAQ](#faq)
+## Для чего нужен Kimicu Yandex
 
----------------------------------------------------------------------------
-
-## Описание проекта:
-Этот пакет был разработан специально для быстрого внедрения YandexSDK в проект.
-
----------------------------------------------------------------------------
-
-## Связь:
-Если остались вопросы, пиишите в тг -> `@KimicuK`
-или пишите [тут](https://github.com/Kitgun1/KimicuYandexGames/discussions)
-
----------------------------------------------------------------------------
-
-## Поддержать проект:
-Вы можете отправить донат -> 
-```
-https://www.donationalerts.com/r/kimicu
-```
+Пакет был разработан специально для облегчения работы с
+[**SDK от Agava**](https://github.com/forcepusher/com.agava.yandexgames). <br>
 <details>
+<summary>Список функций:</summary>
 
-<summary> QR Code </summary>
-
-![image](ResourcesGit~/donation_qrcode.png)
+1) Упрощённая работа с рекламой.
+2) Упрощённая работа с состояниями игры (во вкладке, в рекламе, в покупке).
+3) Упрощённая работа с покупками.
+4) Упрощённая работа с облачными сохранениями.
 
 </details>
 
----------------------------------------------------------------------------
+## Как можно поддержать проект
 
-## Как добавить в проект:
-Жмем на `+` и выбрать `Add package from git URL...` и вставить эти дополнительные ссылки:
-<br>``` https://github.com/forcepusher/com.agava.yandexmetrica.git ```
-<br>``` https://github.com/forcepusher/com.agava.webutility.git ```
-<br>``` https://github.com/forcepusher/com.agava.yandexgames.git ```
-<br>``` https://github.com/Kitgun1/KimicuYandexGames.git ```
-<br> Далее добавим [KimicuUtility](https://github.com/Kitgun1/KimicuUtility)
+Вы можете отправить донатик по **[ссылке](https://www.donationalerts.com/r/kimicu)**.
 
-Также не забудьте использовать TextMeshPro в вашем проекте.
+## Обратная связь
 
-## Как начать:
-Создайте новую загрузочную сцену > создайте пустой объект > добавьте компонент `YandexSDKInitialize`
-и добавьте слушателя в `OnInitialize` вызов метода с переходом на сцену с игрой или уровнем.<br>
+Вы можете написать в телеграм по нику **@KimicuK** или **[тут](https://github.com/Kitgun1/KimicuYandexGames/discussions)
+**
 
-## Примеры
-Откройте `Package Manager` > Выберите `KimicuYandexGames` в разделе `Packages: In Project` >
-Выберите вкладку `Samples` и нажмите `Import` > открыть импортированные сцены.
+## Как добавить в проект
 
-### Реклама
+Открыть `Package Manager` > `+` > `Add package from git URL...` <br>
+Вставить по очереди все ссылки:
+<br>``` https://github.com/forcepusher/com.agava.yandexmetrica.git ``` - метрика (не обязательно)
+<br>``` https://github.com/forcepusher/com.agava.webutility.git ``` - web утилита (обязательно)
+<br>``` https://github.com/forcepusher/com.agava.yandexgames.git ``` - sdk для yandex games (обязательно)
+<br>``` https://github.com/Kitgun1/KimicuYandexGames.git ``` - [облегчает работу с sdk](#для-чего-нужен-kimicu-yandex) (
+обязательно)
+<br> Следуя инструкциям, добавляем - **[KimicuUtility](https://github.com/Kitgun1/KimicuUtility)** (обязательно)
 
-```csharp
-using KiYandexSDK;
+## Гайд по использованию
 
-// Для показа рекламы InterstitialAd: 
-// Если реклама будет вызвана и при этом она будет отключена, рекламу не покажут + будет вызван onOpen и onClose
-AdvertSDK.InterstitialAd(Action onOpen = null, Action<bool> onClose = null, Action<string> onError = null, Action onOffline = null);
+### Что нужно для начала
 
-// Для показа рекламы с наградой: 
-// Если реклама будет вызвана и при этом она будет отключена, рекламу не покажут + будет вызван onRewarded и onClose
-AdvertSDK.RewardAd(Action onOpen = null, Action onRewarded = null, Action onClose = null, Action<string> onError = null)
+Для начала нужно сделать инициализацию `SDK` и всех компонентов `Kimicu Yandex`. <br>
+Создаем новую или переходим уже существующую `boot` сцену.
+> **Она должна быть с 0 индексом в `BuildSettings`!**
 
-// Для включения или отключения баннера:
-AdvertSDK.StickyAdActive(bool value)
+Далее нужно создать `empty object` и добавить компонент `YandexSDKInitialize`.
+В параметрах есть 2 поля:
 
-// Для отключения определенной рекламы в игре (по умолчанию InterstitialAd):
-AdvertSDK.AdvertOff(advertType = AdvertType.InterstitialAd)
+* `Initialize Delay` - Время, через которое будет вызван `UnityEvent` `OnInitialize`. **Только в Editor!**
+* `OnInitialize` - `UnityEvent`, который вызовет `Invoke` после инициализации SDK и компонентов `Kimicu Yandex`
 
-```
-Не нужно сохранять отключение рекламы после вызова `AdvertSDK.AdvertOff()`. <br>
-Сохранение и загрузка произойдет автоматически. <br>
-По умолчанию id для отключения рекламы - "ADVERT_OFF" <br>
-Если нужно изменить id, то можно использовать поле AdvertOffKey
-```csharp
-using KiYandexSDK;
+Добавляем слушателя в `OnInitialize`, который будет что-нибудь делать после инициализации `SDK`, например:
 
-AdvertSDK.InterAdvertOffKey = "ключ"; // "INTER_ADVERT_OFF";
-AdvertSDK.RewardAdvertOffKey = "ключ"; // "REWARD_ADVERT_OFF";
-AdvertSDK.StickyAdvertOffKey = "ключ"; // "STICKY_ADVERT_OFF";
-```
+1) Добавляем консумирование (об этом чуть позже)
+2) Переходим на сцену с игрой
 
-### Звук
-Для отключения звука при показе рекламы или при открытии покупки больше ничего делать не надо, т.к. уже все сделано. 
-Просто в окне `Project Settings` > `Player` > `Resolution and Presentation` включите галочку `Run In Background`
+### Добавление рекламы
+
+Для работы с внутриигровыми покупками используйте статический класс: `AdvertSDK` из пространства
+имен `Kimicu.YandexGames`. <br>
+
+Есть несколько типов рекламы на yandex games:
+
+1) [Полноэкранные блоки](https://yandex.ru/dev/games/doc/ru/console/adv-monetization#polnoekrannye-bloki) -
+   Блоки с рекламой, которые полностью закрывают фон приложения и показываются в определенные моменты
+   (например, при переходе на следующий уровень игры).
+2) [Rewarded-блоки (блоки с вознаграждением)](https://yandex.ru/dev/games/doc/ru/console/adv-monetization#rewarded-bloki-bloki-s-voznagrazhdeniem) -
+   Блоки с рекламой, которые пользователь может просматривать по своему желанию и получать за просмотр награду
+   или внутриигровую валюту.
+3) [Sticky-баннеры](https://yandex.ru/dev/games/doc/ru/console/adv-monetization#sticky-banner) -
+   рекламный баннер, который отображается в игре постоянно во время играния.
+
+Для вызова рекламы используйте статический класс: `AdvertSDK`. <br>
+
+1) Полноэкранные блоки -
+   `InterstitialAd(Action onOpen, Action<bool> onClose, Action<string> onError, Action onOffline);`
+    * `onOpen` - При открытии рекламы.
+    * `onClose` - При закрытии рекламы. **Не используйте параметр, т.к. он криво работает на `Android`**
+    * `onError` - При какой-либо ошибке. Возвращает строку с ошибкой.
+    * `onOffline` - При потере соединении.
+
+2) Rewarded-блоки (блоки с вознаграждением) -
+   `RewardAd(Action onOpen, Action onRewarded, Action onClose, Action<string> onError);`
+    * `onOpen` - При открытии рекламы.
+    * `onRewarded` - После окончания таймера.
+    * `onClose` - После закрытия рекламы.
+    * `onError` - При какой-либо ошибке. Возвращает строку с ошибкой.
+
+3) Sticky-баннеры - `AdvertSDK.StickyAdActive(bool value);`
+    * `value` - Выключить(`false`) или Включить(`true`) баннер.
+
+Также `AdvertSDK` имеет дополнительный функционал:
+
+* `AdvertSDK.AdvertOff(AdvertType);` - при выключенной рекламе, она не будет показана, но `callback`-и будут
+  вызваны.<br>
+  `AdvertType` - тип рекламы, которая будет отключена. `[InterstitialAd, RewardAd, StickyAd]`
+* `AdvertSDK.DelayAd` - задержка между вызовами рекламы. Перезарядка между вызовом рекламы `AdvertSDK.InterstitialAd();`
+* `InterAdvertOffKey` - ключ, по которому будет сохраняться отключение `AdvertSDK.InterstitialAd();` рекламы.
+* `RewardAdvertOffKey` - ключ, по которому будет сохраняться отключение `AdvertSDK.RewardAd();` рекламы.
+* `StickyAdvertOffKey` - ключ, по которому будет сохраняться отключение `AdvertSDK.StickyAdActive();` рекламы.
+
+### Добавление покупок и метод консумирования
+
+Для работы с внутриигровыми покупками используйте статический класс: `Billing` из пространства
+имен `Kimicu.YandexGames`. <br>
+
+1) `IEnumerable<CatalogProduct> CatalogProduct` - список всех товаров.
+    * `CatalogProduct` (CatalogProduct) - Информация о продукте
+        * `description` (string) - Описание. Пример: `Отключение рекламы в игре...`
+        * `id` (string) - Айди продукта. Пример: `remove_ads`
+        * `imageURL` (string) - Ссылка на изображение продукта. Пример: `url`
+        * `price` (string) - Цена. Пример: `19 YAN`
+        * `priceCurrencyCode` (string) - Код валюты. Пример: `YAN`
+        * `priceValue` (string) - Значение цены. Пример: `19`
+        * `title` (string) - Название продукта. Пример: `Отключить рекламу`
+
+2) `IEnumerable<PurchasedProduct> PurchasedProducts` - список необработанных покупок методом `ConsumeProduct()`.
+    * `PurchasedProduct` (PurchasedProduct) - Информация о купленном продукте
+        * `developerPayload` (string) - Дополнительные данные о покупке. Пример: `Отключение рекламы в игре...`
+        * `productID` (string) - Айди продукта. Пример: `remove_ads`
+        * `purchaseTime` (string) - Ссылка на изображение продукта. Пример: `url`
+        * `purchaseToken` (string) - Цена. Пример: `19 YAN`
+          <br><br>
+
+3) `void PurchaseProduct(productID, onSuccess, onError, developerPayload)` - Произвести покупку у игрока.
+    * `productID` (string) - Айди продукта. Пример: `remove_ads`
+    * `onSuccess` (Action<PurchaseProductResponse>) - Успешная покупка продукта. Возвращает `PurchaseProductResponse`:
+        * `purchaseData` (string) - Дата покупки. Пример: `13.10.2023`.
+        * `signature` (string) - данные о покупке и подпись для проверки подлинности игрока. Пример: "
+          hQ8adIRJWD29Nep+0P36Z6edI5uzj6F3tddz6Dqgclk..."
+    * `onError` (Action<string>) - Ошибка при покупке товара.
+    * `developerPayload` (string) - дополнительные данные о покупке.
+      <br><br>
+
+4) `void PurchaseProductAndConsume(productID, onSuccessPurchase, onSuccessConsume, onErrorPurchase, onErrorConsume, developerPayload)` -
+   Произвести покупку у игрока, а также ее подтвердить методом `ConsumeProduct`.
+    * `productID` (string) - Айди продукта. Пример: `remove_ads`
+    * `onSuccessPurchase` (Action<PurchaseProductResponse>) - Успешная покупка продукта.
+      Возвращает `PurchaseProductResponse`:
+        * `purchaseData` (string) - Дата покупки. Пример: `13.10.2023`.
+        * `signature` (string) - данные о покупке и подпись для проверки подлинности игрока. Пример: "
+          hQ8adIRJWD29Nep+0P36Z6edI5uzj6F3tddz6Dqgclk..."
+    * `onSuccessConsume` (Action) - Успешное подтверждение покупки.
+    * `onErrorPurchase` (Action<string>) - Ошибка при покупке товара.
+    * `onErrorConsume` (Action<string>) - Ошибка при подтверждении товара.
+    * `developerPayload` (string) - дополнительные данные о покупке.
+      <br><br>
+
+5) `void ConsumeProduct(purchaseToken, onSuccess, onError)` -
+   Произвести подтверждение покупки `ConsumeProduct`.
+    * `purchaseToken` (string) - Токен для использования покупки.
+    * `onSuccess` (Action) - Успешное подтверждение покупки.
+    * `onError` (Action<string>) - Ошибка при покупке товара.
+
+#### Реализация метода консумирование
+
+Метод консумирования исправляет баг, связанный с покупками, когда игрок покупает продукт и не дожидаясь возвращения
+в игру происходит обновление страницы и награда не будет начислена. Это значит, что покупка заберёт у игрока яны,
+а событие onSuccess не будет вызван.<br>
+Для исправления требуется:
+
+1) Добавить метод `ConsumeProduct()` в событии `onSuccess` метода `PurchaseProduct()`.
+2) Добавить в `Boot сцену` после инициализации `YandexSDKInitialize` метод, в котором нужно будет пройтись по списку
+   `IEnumerable<PurchasedProduct> PurchasedProducts` и в зависимости от `productID` выдать награду игроку и вызвать
+   метод `ConsumeProduct(purchaseToken)`.
+
+### Состояния страницы
+
+Для работы с состояниями страницы используйте статические классы:
+
+1) `WebGL` из пространства имен `Kimicu.YandexGames` - подписаться или описаться на состояние игры.
+2) `WebProperty` - Получить доступ к текущем состояниям:
+    * `AdvertOpened` - Открыта ли реклама
+    * `PurchaseWindowOpened` - Открыто ли окно с покупками
+    * `InGameView` - Вкладка находиться в фокусе
 
 ### Облачные сохранения
-Для сохранения есть всего 2 метода:
-```csharp
-using KiYandexSDK;
 
-void YandexData.Save(string key, JToken value, Action onSuccess = null, Action<string> onError = null)
-JToken YandexData.Load(string key, JToken defaultValue)
-// JToken это почти любой тип: int, float, bool, string и тд.
-```
-Например, для сохранения/получения нужно писать:
-```csharp
-using KiYandexSDK;
+Для работы с внутриигровыми покупками используйте статический класс: `YandexData` из пространства
+имен `Kimicu.YandexGames`. <br>
 
-// Bool:
-YandexData.Save("example_key", true); // Сохранить
-bool myBool = (bool)YandexData.Load("example_key", false/true); // Получить
+1) `Save(key, value, saveInCloud, onSuccess, onError)` - Сохранения данных в облако.
+    * `key` (string) - Ключ, по которому будет произведено сохранение. Например: `"Coins"`
+    * `value` (JToken) - Тип значение, по которому будет произведено сохранение, а также что будет сохранено.
+      Например: `100`, `"10 монет"`, `new[] {50, 100}`, `101.5f` и тд.
+    * `saveInCloud` (bool) - Будет ли отправлено сохранения в облако или будет храниться в кэше игры.
+    * `onSuccess` (Action) - Успешное сохранение в облако или в кэш.
+    * `onError` (Action<string>) - Неудачное сохранение в облако.
+    * Пример использования метода:
+   ```cs
+   YandexData.Save("Coins", 100); // В ячейку "Coins.Int" будет записано значение 100
+   YandexData.Save("Money", 123.4f); // В ячейку "Money.Float" будет записано значение 123.4f
+   ```
 
-// Float:
-YandexData.Save("example_key", 1f); // Сохранить
-bool myBool = (bool)YandexData.Load("example_key", 0f); // Получить
-```
+2) `Load(key, defaultValue)` - Получение данных из облака.
+    * `key` (string) - Ключ, по которому будет произведен поиск. Например: `"Coins"`
+    * `defaultValue` (JToken) - Тип значение, по которому будет произведено поиск, а также значение по умолчанию.
+      Например: `100`, `"10 монет"`, `new[] {50, 100}`, `101.5f` и тд.
+    * Пример использования метода:
+   ```cs
+   int coins = (int)YandexData.Load("Coins", 100); // Из ячейки "Coins.Int" будет получено значение если оно есть, иначе 100
+   float money = (float)YandexData.Load("Money", 123.4f); // Из ячейки "Money.Float" будет получено значение если оно есть, иначе 123.4f
+   ```
 
-#### Тонкости использования YandexData
-Следите за типом, который указываете в аргумент:
-```csharp
-using KiYandexSDK;
-
-int valueInt = 10;
-float valueFloat = 5f;
-string valueString = "Привет";
-
-int result1 = (int)YandexData.Load("key1", valueInt); 
-int result2 = (float)YandexData.Load("key1", valueFloat);
-int result3 = (string)YandexData.Load("key1", valueString);
-```
-В этом примере сохраняются 3 разных типа под одним ключом, но из-за того что тип у defaultValue всегда разный, 
-в переменные result будут получены значения из разных ячеек.<br>
-Например в примере выше переменные result будут равны:<br>
-result1 -> 10,<br>
-result2 -> 5f,<br>
-result3 -> "Привет"
-
-### Покупки
-Для работы с покупками используйте статический класс Billing в пространсве имен `KiYandexSDK`.<br>
-Список того что можно использовать:
-```csharp
-using KiYandexSDK;
-
-// Список всех товаров.
-IEnumerable<CatalogProduct> Billing.CatalogProduct; 
-
-// Список купленных и не обработанных товаров в методе "ConsumeProduct".
-IEnumerable<PurchasedProduct> Billing.PurchasedProducts; 
-
-// Инициализирует покупки 
-//(получение всех товаров и покупок, которые не обработаны в "ConsumeProduct")
-// По умолчанию вызывается в "YandexSDKInitialize"
-Billing.Initialize();
-
-// Вызывает покупку.
-Billing.PurchaseProduct(id, onSuccess, onError, developerPayload);
-
-// Вызывает покупку, а также вызывает метод Billing.ConsumeProduct для подтверждения.
-Billing.PurchaseProductAndConsume(id, onSuccessPurchase, onSuccessConsume, onErrorPurchase, onErrorConsume, developerPayload);
-
-// Подтверждает покупку и убирает продукт из списка "PurchasedProducts".
-Billing.ConsumeProduct();
-```
-
-## FAQ
-1) Как внедрить в свой проект?
-> 1) Создайте или перейдите на загрузочную сцену и поставьте в настройках BuildSettings
-> созданную сцену с индексом 0. Эта сцена будет единой точкой входа в игру. <br><br>
-> 2) Создайте пустой объект и накиньте на него уже готовый скрипт YandexSDKInitialize, 
-> который инициализирует все компоненты SDK за вас. <br><br>
-> 3) На скрипте есть событие OnInitialize, которое будет вызвано после инициализации. 
-> Вам нужно будет подписать туда свой метод, который будет закидывать на сцену с игрой.
-
-2) Как показать рекламу в игре?
-> Для начала определитесь с видом рекламы: <br>
-> 1) InterstitialAd - реклама, которую можно пропустить.<br>
-> Для вызова используйте метод - `AdvertSDK.InterstitialAd();` <br><br>
-> 2) RewardAd - реклама, которую нельзя пропустить, обычно используют для получения
-> какой-нибудь награды. <br>
-> Для вызова используйте метод - `AdvertSDK.RewardAd();`.
-> Не забудьте что-то сделать при просмотре, указав что-то в параметр `onClose`!<br><br>
-> 3) StickyAd - Реклама, которая отображается сбоку или снизу экрана. <br>
-> Обычно она включена в самом начале игры, но вы можете управлять баннером из кода,
-> вызывая метод - `AdvertSDK.StickyAdActive(bool);`
-
-3) Как сделать консумацию? 
-> Консумация - это когда игрок после покупки товара не нажимает на **Хорошо!**, а
-> обновляет страницу или выходит из игры и из-за этого в коде не успевает вызваться
-> событие onSuccess из метода `Billing.PurchaseProduct();`.<br>
-> **Модерация ругается на то что деньги сняли, а игроку ничего не выдали.** <br><br>
-> Теперь как это решать: <br>
-> Сначала нужно где-то в самом начале игры после инициализации SDK,
-> например при срабатывании события `OnInitialize` в скрипте `YandexSDKInitialize`,
-> пройтись по списку `Billing.PurchasedProducts<PurchasedProduct>`и выдать награду 
-> в зависимости от `productID`. После выдачи также нужно вызвать метод 
-> `Billing.ConsumeProduct(purchaseToken)`. <br>
-> `purchaseToken` - берем из PurchasedProduct.<br>
-> Метод `Billing.ConsumeProduct(purchaseToken)` нужно вызвать всегда после 
-> `Billing.PurchaseProduct();`.
+3) `SaveToClaud(onSuccess, onError)` - Сохранить несохранённые дынные в облако.
+    * `onSuccess` (Action) - Успешное сохраннее в облако.
+    * `onError` (Action<string>) - Неуспешное сохраннее в облако.

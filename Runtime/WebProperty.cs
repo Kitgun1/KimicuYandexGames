@@ -1,6 +1,6 @@
 ﻿using UnityEngine.Events;
 
-namespace KiYandexSDK
+namespace Kimicu.YandexGames
 {
     internal static class WebProperty
     {

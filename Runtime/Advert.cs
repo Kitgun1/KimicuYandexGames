@@ -1,15 +1,16 @@
 ﻿using System;
 using UnityEngine;
 using KimicuUtility;
+using Kimicu.YandexGames;
 
 #if UNITY_WEBGL && !UNITY_EDITOR
 using System.Collections;
 using Agava.YandexGames;
 #endif
 
-namespace KiYandexSDK
+namespace Kimicu.YandexGames
 {
-    public static class AdvertSDK
+    public static class Advert
     {
         private static bool _interAdvertOff;
         private static bool _rewardAdvertOff;
@@ -18,44 +19,41 @@ namespace KiYandexSDK
 
         private static readonly KiCoroutine Routine = new();
 
-        /// <summary> Delay between ad calls. </summary>
-        public static float DelayAd = 30.1f;
+        private static float _delayAd;
+        private static string _interAdvertOffKey;
+        private static string _rewardAdvertOffKey;
+        private static string _stickyAdvertOffKey;
 
-        /// <summary> The key by which the shutdown of inter advertising is saved. </summary>
-        public static string InterAdvertOffKey = "INTER_ADVERT_OFF";
-
-        /// <summary> The key by which the shutdown of reward advertising is saved. </summary>
-        public static string RewardAdvertOffKey = "REWARD_ADVERT_OFF";
-
-        /// <summary> The key by which the shutdown of sticky advertising is saved. </summary>
-        public static string StickyAdvertOffKey = "STICKY_ADVERT_OFF";
-
-        /// <summary> Initialize advert for yandex games. </summary>
         public static void AdvertInitialize()
         {
-            _interAdvertOff = (bool)YandexData.Load(InterAdvertOffKey, false);
-            _rewardAdvertOff = (bool)YandexData.Load(RewardAdvertOffKey, false);
-            _stickyAdvertOff = (bool)YandexData.Load(StickyAdvertOffKey, false);
+            _delayAd = KimicuYandexSettings.Instance.DelayAdvert;
+            _interAdvertOffKey = KimicuYandexSettings.Instance.InterAdvertOffKey;
+            _rewardAdvertOffKey = KimicuYandexSettings.Instance.RewardAdvertOffKey;
+            _stickyAdvertOffKey = KimicuYandexSettings.Instance.StickyAdvertOffKey;
+
+            _interAdvertOff = (bool)YandexData.Load(_interAdvertOffKey, false);
+            _rewardAdvertOff = (bool)YandexData.Load(_rewardAdvertOffKey, false);
+            _stickyAdvertOff = (bool)YandexData.Load(_stickyAdvertOffKey, false);
 
             if (_stickyAdvertOff) StickyAdActive(false);
         }
 
-        /// <summary> Remove InterstitialAd advert in game. </summary>
+        /// <summary> Remove advert in game. </summary>
         public static void AdvertOff(AdvertType advertType = AdvertType.InterstitialAd)
         {
             switch (advertType)
             {
                 case AdvertType.InterstitialAd:
                     _interAdvertOff = true;
-                    YandexData.Save(InterAdvertOffKey, _interAdvertOff);
+                    YandexData.Save(_interAdvertOffKey, _interAdvertOff);
                     break;
                 case AdvertType.RewardAd:
                     _rewardAdvertOff = true;
-                    YandexData.Save(RewardAdvertOffKey, _rewardAdvertOff);
+                    YandexData.Save(_rewardAdvertOffKey, _rewardAdvertOff);
                     break;
                 case AdvertType.StickyAd:
                     _stickyAdvertOff = true;
-                    YandexData.Save(StickyAdvertOffKey, _stickyAdvertOff);
+                    YandexData.Save(_stickyAdvertOffKey, _stickyAdvertOff);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(advertType), advertType, null);
@@ -160,7 +158,7 @@ namespace KiYandexSDK
             Debug.Log($"InterstitialAd Show");
 #endif
             _advertAvailable = false;
-            Routine.StartRoutine(KiCoroutine.Delay(DelayAd, () => _advertAvailable = true), true);
+            Routine.StartRoutine(KiCoroutine.Delay(_delayAd, () => _advertAvailable = true), true);
         }
     }
 }

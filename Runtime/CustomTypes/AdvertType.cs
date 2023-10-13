@@ -1,4 +1,4 @@
-﻿namespace KiYandexSDK
+﻿namespace Kimicu.YandexGames
 {
     public enum AdvertType
     {

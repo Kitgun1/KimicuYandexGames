@@ -1,9 +1,10 @@
 ﻿using System;
+using Kimicu.YandexGames;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace KiYandexSDK
+namespace Kimicu.YandexGames
 {
     public static class WebGL
     {
@@ -13,12 +14,12 @@ namespace KiYandexSDK
         private static bool _audioChange = false;
 
         /// <summary> Initialize Listener WebGL. </summary>
-        public static void InitializeListener(bool audioChange = true)
+        public static void InitializeListener()
         {
+            _audioChange = KimicuYandexSettings.Instance.SoundChange;
             Agava.WebUtility.WebApplication.InBackgroundChangeEvent += InBackgroundChange;
             WebProperty.AdvertOpenedChange.AddListener(AdvertOpenedChange);
             WebProperty.PurchaseWindowOpenedChange.AddListener(PurchaseWindowOpenedChange);
-            _audioChange = audioChange;
         }
 
         private static void InBackgroundChange(bool value)
@@ -59,13 +60,13 @@ namespace KiYandexSDK
         {
             OnChangeGameState.AddListener(onChangeGameState);
         }
-        
+
         /// <summary> Remove a listener to game state changes. </summary>
         public static void RemoveListener(UnityAction<bool> onChangeGameState = null)
         {
             OnChangeGameState.RemoveListener(onChangeGameState);
         }
-        
+
         /// <summary> Remove all a listener to game state changes. </summary>
         public static void RemoveAllListener()
         {
