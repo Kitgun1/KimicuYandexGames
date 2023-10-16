@@ -18,15 +18,13 @@ namespace Kimicu.YandexGames
         {
 #if !UNITY_EDITOR && UNITY_WEBGL
             yield return YandexGamesSdk.Initialize(); // Initialize Agava SDK.
+            WebGL.InitializeListener(); // Initialize WebGL.
+#else  
             yield return YandexData.Initialize(); // Initialize data.
             yield return Billing.Initialize(); // Initialize purchases.
             Advert.AdvertInitialize();  // Initialize advert.
-            WebGL.InitializeListener();  // Initialize WebGL.
-            OnInitialize?.Invoke();
-#else
-            yield return new WaitForSecondsRealtime(m_InitializeDelay);
-            OnInitialize?.Invoke();
 #endif
+            OnInitialize?.Invoke();
         }
     }
 }

@@ -44,12 +44,12 @@ namespace Kimicu.YandexGames
         {
             if (!WebProperty.AdvertOpened && WebProperty.InGameView && !WebProperty.PurchaseWindowOpened)
             {
-                if (!_audioChange) AudioListener.pause = false;
+                if (_audioChange) AudioListener.pause = false;
                 OnChangeGameState?.Invoke(true);
             }
             else
             {
-                if (!_audioChange) AudioListener.pause = true;
+                if (_audioChange) AudioListener.pause = true;
                 OnChangeGameState?.Invoke(false);
             }
         }
