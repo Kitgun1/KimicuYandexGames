@@ -12,17 +12,17 @@ namespace Kimicu.YandexGames
 {
     public static class Advert
     {
-        private static bool _interAdvertOff;
-        private static bool _rewardAdvertOff;
-        private static bool _stickyAdvertOff;
-        private static bool _advertAvailable = true;
-
-        private static readonly KiCoroutine Routine = new();
-
         private static float _delayAd;
         private static string _interAdvertOffKey;
         private static string _rewardAdvertOffKey;
         private static string _stickyAdvertOffKey;
+
+        private static readonly KiCoroutine Routine = new();
+
+        public static bool InterAdvertOff { get; private set; }
+        public static bool RewardAdvertOff { get; private set; }
+        public static bool StickyAdvertOff { get; private set; }
+        public static bool AdvertAvailable { get; private set; } = true;
 
         public static void AdvertInitialize()
         {
@@ -31,11 +31,11 @@ namespace Kimicu.YandexGames
             _rewardAdvertOffKey = KimicuYandexSettings.Instance.RewardAdvertOffKey;
             _stickyAdvertOffKey = KimicuYandexSettings.Instance.StickyAdvertOffKey;
 
-            _interAdvertOff = (bool)YandexData.Load(_interAdvertOffKey, false);
-            _rewardAdvertOff = (bool)YandexData.Load(_rewardAdvertOffKey, false);
-            _stickyAdvertOff = (bool)YandexData.Load(_stickyAdvertOffKey, false);
+            InterAdvertOff = (bool)YandexData.Load(_interAdvertOffKey, false);
+            RewardAdvertOff = (bool)YandexData.Load(_rewardAdvertOffKey, false);
+            StickyAdvertOff = (bool)YandexData.Load(_stickyAdvertOffKey, false);
 
-            if (_stickyAdvertOff) StickyAdActive(false);
+            if (StickyAdvertOff) StickyAdActive(false);
         }
 
         /// <summary> Remove advert in game. </summary>
@@ -44,16 +44,16 @@ namespace Kimicu.YandexGames
             switch (advertType)
             {
                 case AdvertType.InterstitialAd:
-                    _interAdvertOff = true;
-                    YandexData.Save(_interAdvertOffKey, _interAdvertOff);
+                    InterAdvertOff = true;
+                    YandexData.Save(_interAdvertOffKey, InterAdvertOff);
                     break;
                 case AdvertType.RewardAd:
-                    _rewardAdvertOff = true;
-                    YandexData.Save(_rewardAdvertOffKey, _rewardAdvertOff);
+                    RewardAdvertOff = true;
+                    YandexData.Save(_rewardAdvertOffKey, RewardAdvertOff);
                     break;
                 case AdvertType.StickyAd:
-                    _stickyAdvertOff = true;
-                    YandexData.Save(_stickyAdvertOffKey, _stickyAdvertOff);
+                    StickyAdvertOff = true;
+                    YandexData.Save(_stickyAdvertOffKey, StickyAdvertOff);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(advertType), advertType, null);
@@ -68,7 +68,7 @@ namespace Kimicu.YandexGames
         public static void RewardAd(Action onOpen = null, Action onRewarded = null, Action onClose = null,
             Action<string> onError = null)
         {
-            if (_rewardAdvertOff)
+            if (RewardAdvertOff)
             {
                 onOpen?.Invoke();
                 onRewarded?.Invoke();
@@ -123,14 +123,14 @@ namespace Kimicu.YandexGames
         public static void InterstitialAd(Action onOpen = null, Action<bool> onClose = null,
             Action<string> onError = null, Action onOffline = null)
         {
-            if (_interAdvertOff)
+            if (InterAdvertOff)
             {
                 onOpen?.Invoke();
                 onClose?.Invoke(true);
                 return;
             }
 
-            if (_advertAvailable == false)
+            if (AdvertAvailable == false)
             {
                 onError?.Invoke("Advert not available!");
                 return;
@@ -157,8 +157,8 @@ namespace Kimicu.YandexGames
             onClose?.Invoke(true);
             Debug.Log($"InterstitialAd Show");
 #endif
-            _advertAvailable = false;
-            Routine.StartRoutine(KiCoroutine.Delay(_delayAd, () => _advertAvailable = true), true);
+            AdvertAvailable = false;
+            Routine.StartRoutine(KiCoroutine.Delay(_delayAd, () => AdvertAvailable = true), true);
         }
     }
 }

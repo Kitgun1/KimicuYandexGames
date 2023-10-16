@@ -10,7 +10,7 @@ namespace Kimicu.YandexGames
     public sealed class YandexSDKInitialize : MonoBehaviour
     {
         [Tooltip("OnInitialize invoke in Editor."), SerializeField]
-        private float _initializeDelay = 0.2f;
+        private float m_InitializeDelay = 0.2f;
 
         public UnityEvent OnInitialize = new();
 
@@ -24,7 +24,7 @@ namespace Kimicu.YandexGames
             WebGL.InitializeListener();  // Initialize WebGL.
             OnInitialize?.Invoke();
 #else
-            yield return new WaitForSecondsRealtime(_initializeDelay);
+            yield return new WaitForSecondsRealtime(m_InitializeDelay);
             OnInitialize?.Invoke();
 #endif
         }

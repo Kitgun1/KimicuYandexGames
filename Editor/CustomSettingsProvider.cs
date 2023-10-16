@@ -1,8 +1,10 @@
-﻿using UnityEditor;
+﻿#if UNITY_EDITOR
+using UnityEditor;
 using UnityEngine;
-
+#endif
 namespace Kimicu.YandexGames.Editor
 {
+#if UNITY_EDITOR
     public class CustomSettingsProvider : SettingsProvider
     {
         private SerializedObject m_SettingsObject;
@@ -47,4 +49,5 @@ namespace Kimicu.YandexGames.Editor
             return provider;
         }
     }
+#endif
 }

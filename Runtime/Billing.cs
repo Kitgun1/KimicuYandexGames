@@ -10,6 +10,8 @@ namespace Kimicu.YandexGames
 {
     public static class Billing
     {
+        #region Fields
+
         private static List<CatalogProduct> _catalogProduct;
         private static List<PurchasedProduct> _purchasedProducts;
 
@@ -17,11 +19,13 @@ namespace Kimicu.YandexGames
         private static bool _purchasedProductsInitialized;
         private static bool _errored;
 
-        private static Action<PurchaseProductResponse> OnSuccessPurchaseProduct;
-        private static Action<string> OnErrorPurchaseProduct;
+        private static Action<PurchaseProductResponse> _onSuccessPurchaseProduct;
+        private static Action<string> _onErrorPurchaseProduct;
 
-        private static Action OnSuccessConsumeProduct;
-        private static Action<string> OnErrorConsumeProduct;
+        private static Action _onSuccessConsumeProduct;
+        private static Action<string> _onErrorConsumeProduct;
+
+        #endregion
 
         /// <summary> Catalog of all products in yandex console. </summary>
         public static IEnumerable<CatalogProduct> CatalogProduct
@@ -45,29 +49,58 @@ namespace Kimicu.YandexGames
             Agava.YandexGames.Billing.GetProductCatalog(OnGetProductCatalogSuccess, OnErrorCallback);
             Agava.YandexGames.Billing.GetPurchasedProducts(OnGetPurchasedProductsSuccess, OnErrorCallback);
 #else
+            InitializeEditorCatalog();
+            InitializeEditorPurchasedProduct();
+#endif
+            yield return new WaitUntil(() => (_catalogInitialized && _purchasedProductsInitialized) || _errored);
+        }
+
+        #region Editor
+
+        private static void InitializeEditorCatalog()
+        {
             OnGetProductCatalogSuccess(new GetProductCatalogResponse
             {
                 products = KimicuYandexSettings.Instance.CatalogProductInEditor
             });
+        }
+
+        private static void InitializeEditorPurchasedProduct()
+        {
             OnGetPurchasedProductsSuccess(new GetPurchasedProductsResponse()
             {
                 signature =
                     "hQ8adIRJWD29Nep+0P36Z6edI5uzj6F3tddz6Dqgclk=.eyJhbGdvcml0aG0iOiJITUFDLVNIQTI1NiIsImlzc3VlZEF0IjoxNTcxMjMzMzcxLCJyZXF1ZXN0UGF5bG9hZCI6InF3ZSIsImRhdGEiOnsidG9rZW4iOiJkODVhZTBiMS05MTY2LTRmYmItYmIzOC02ZDJhNGNhNDQxNmQiLCJzdGF0dXMiOiJ3YWl0aW5nIiwiZXJyb3JDb2RlIjoiIiwiZXJyb3JEZXNjcmlwdGlvbiI6IiIsInVybCI6Imh0dHBzOi8veWFuZGV4LnJ1L2dhbWVzL3Nkay9wYXltZW50cy90cnVzdC1mYWtlLmh0bWwiLCJwcm9kdWN0Ijp7ImlkIjoibm9hZHMiLCJ0aXRsZSI6ItCR0LXQtyDRgNC10LrQu9Cw0LzRiyIsImRlc2NyaXB0aW9uIjoi0J7RgtC60LvRjtGH0LjRgtGMINGA0LXQutC70LDQvNGDINCyINC40LPRgNC1IiwicHJpY2UiOnsiY29kZSI6IlJVUiIsInZhbHVlIjoiNDkifSwiaW1hZ2VQcmVmaXgiOiJodHRwczovL2F2YXRhcnMubWRzLnlhbmRleC5uZXQvZ2V0LWdhbWVzLzE4OTI5OTUvMmEwMDAwMDE2ZDFjMTcxN2JkN2EwMTQ5Y2NhZGM4NjA3OGExLyJ9fX0=",
                 purchasedProducts = KimicuYandexSettings.Instance.PurchasedProductInEditor
             });
-#endif
-            yield return new WaitUntil(() => (_catalogInitialized && _purchasedProductsInitialized) || _errored);
         }
+
+        private static PurchaseProductResponse GetNewPurchaseProductResponse(string productId) => new()
+        {
+            signature =
+                "hQ8adIRJWD29Nep+0P36Z6edI5uzj6F3tddz6Dqgclk=.eyJhbGdvcml0aG0iOiJITUFDLVNIQTI1NiIsImlzc3VlZEF0IjoxNTcxMjMzMzcxLCJyZXF1ZXN0UGF5bG9hZCI6InF3ZSIsImRhdGEiOnsidG9rZW4iOiJkODVhZTBiMS05MTY2LTRmYmItYmIzOC02ZDJhNGNhNDQxNmQiLCJzdGF0dXMiOiJ3YWl0aW5nIiwiZXJyb3JDb2RlIjoiIiwiZXJyb3JEZXNjcmlwdGlvbiI6IiIsInVybCI6Imh0dHBzOi8veWFuZGV4LnJ1L2dhbWVzL3Nkay9wYXltZW50cy90cnVzdC1mYWtlLmh0bWwiLCJwcm9kdWN0Ijp7ImlkIjoibm9hZHMiLCJ0aXRsZSI6ItCR0LXQtyDRgNC10LrQu9Cw0LzRiyIsImRlc2NyaXB0aW9uIjoi0J7RgtC60LvRjtGH0LjRgtGMINGA0LXQutC70LDQvNGDINCyINC40LPRgNC1IiwicHJpY2UiOnsiY29kZSI6IlJVUiIsInZhbHVlIjoiNDkifSwiaW1hZ2VQcmVmaXgiOiJodHRwczovL2F2YXRhcnMubWRzLnlhbmRleC5uZXQvZ2V0LWdhbWVzLzE4OTI5OTUvMmEwMDAwMDE2ZDFjMTcxN2JkN2EwMTQ5Y2NhZGM4NjA3OGExLyJ9fX0=",
+            purchaseData = new PurchasedProduct
+            {
+                developerPayload = "IN EDITOR",
+                purchaseTime = DateTime.Now.ToString(CultureInfo.InvariantCulture),
+                productID = productId,
+                purchaseToken = Guid.NewGuid().ToString()
+            }
+        };
+
+        #endregion
+
+        #region Callbacks
 
         private static void OnGetProductCatalogSuccess(GetProductCatalogResponse response)
         {
-            if (response != null) CatalogProduct = response.products;
+            CatalogProduct = response?.products;
             _catalogInitialized = true;
         }
 
         private static void OnGetPurchasedProductsSuccess(GetPurchasedProductsResponse response)
         {
-            if (response != null) PurchasedProducts = response.purchasedProducts;
+            PurchasedProducts = response?.purchasedProducts;
             _purchasedProductsInitialized = true;
         }
 
@@ -76,6 +109,8 @@ namespace Kimicu.YandexGames
             Debug.LogWarning(error);
             _errored = true;
         }
+
+        #endregion
 
         /// <summary> Activation of the purchase process. </summary>
         /// <param name="productID"> The product ID that is set in the developer console. </param>
@@ -91,32 +126,22 @@ namespace Kimicu.YandexGames
             string developerPayload = default)
         {
             WebProperty.PurchaseWindowOpened = true;
-            OnSuccessPurchaseProduct = response =>
+            _onSuccessPurchaseProduct = response =>
             {
                 onSuccess?.Invoke(response);
                 _purchasedProducts ??= new List<PurchasedProduct>();
                 _purchasedProducts.Add(response.purchaseData);
                 WebProperty.PurchaseWindowOpened = false;
             };
-            OnErrorPurchaseProduct = error =>
+            _onErrorPurchaseProduct = error =>
             {
                 WebProperty.PurchaseWindowOpened = false;
                 onError?.Invoke(error);
             };
 #if !UNITY_EDITOR && UNITY_WEBGL
-            Agava.YandexGames.Billing.PurchaseProduct(id, OnSuccessPurchaseProduct, OnErrorPurchaseProduct, developerPayload);
+            Agava.YandexGames.Billing.PurchaseProduct(productID, _onSuccessPurchaseProduct, _onErrorPurchaseProduct, developerPayload);
 #else
-            OnSuccessPurchaseProduct?.Invoke(new PurchaseProductResponse
-            {
-                purchaseData = new PurchasedProduct
-                {
-                    developerPayload = "",
-                    purchaseToken = productID,
-                    productID = productID,
-                    purchaseTime = Time.time.ToString(CultureInfo.InvariantCulture)
-                },
-                signature = productID
-            });
+            _onSuccessPurchaseProduct?.Invoke(GetNewPurchaseProductResponse(productID));
 #endif
         }
 
@@ -139,7 +164,7 @@ namespace Kimicu.YandexGames
             string developerPayload = default)
         {
             WebProperty.PurchaseWindowOpened = true;
-            OnSuccessPurchaseProduct = response =>
+            _onSuccessPurchaseProduct = response =>
             {
                 onSuccessPurchase?.Invoke(response);
                 WebProperty.PurchaseWindowOpened = false;
@@ -148,30 +173,20 @@ namespace Kimicu.YandexGames
                 ConsumeProduct(response.purchaseData.purchaseToken, onSuccessConsume, onErrorConsume);
             };
 
-            OnErrorPurchaseProduct = error =>
+            _onErrorPurchaseProduct = error =>
             {
                 WebProperty.PurchaseWindowOpened = false;
                 onErrorPurchase?.Invoke(error);
             };
 
-            OnSuccessConsumeProduct = () => { onSuccessConsume?.Invoke(); };
-            OnErrorConsumeProduct = onErrorConsume;
+            _onSuccessConsumeProduct = () => { onSuccessConsume?.Invoke(); };
+            _onErrorConsumeProduct = onErrorConsume;
 
 #if !UNITY_EDITOR && UNITY_WEBGL
-            Agava.YandexGames.Billing.PurchaseProduct(id, OnSuccessPurchaseProduct, OnErrorPurchaseProduct,
+            Agava.YandexGames.Billing.PurchaseProduct(productID, _onSuccessPurchaseProduct, _onErrorPurchaseProduct,
                 developerPayload);
 #else
-            OnSuccessPurchaseProduct?.Invoke(new PurchaseProductResponse
-            {
-                purchaseData = new PurchasedProduct
-                {
-                    developerPayload = "",
-                    purchaseToken = productID,
-                    productID = productID,
-                    purchaseTime = Time.time.ToString(CultureInfo.InvariantCulture)
-                },
-                signature = productID
-            });
+            _onSuccessPurchaseProduct?.Invoke(GetNewPurchaseProductResponse(productID));
 #endif
         }
 
@@ -182,20 +197,18 @@ namespace Kimicu.YandexGames
         /// <remarks> Upon confirmation of purchase, the item will be removed from the list of "Purchased items". </remarks>
         public static void ConsumeProduct(string purchaseToken, Action onSuccess = null, Action<string> onError = null)
         {
-            OnSuccessConsumeProduct = () =>
+            _onSuccessConsumeProduct = () =>
             {
                 _purchasedProducts ??= new List<PurchasedProduct>();
-                var purchasedProducts = _purchasedProducts
-                    .Where(product => product.purchaseToken == purchaseToken)
-                    .ToList();
-                _purchasedProducts = purchasedProducts;
+                _purchasedProducts.Remove(_purchasedProducts
+                    .First(product => product.purchaseToken == purchaseToken));
                 onSuccess?.Invoke();
             };
-            OnErrorConsumeProduct = onError;
+            _onErrorConsumeProduct = onError;
 #if !UNITY_EDITOR && UNITY_WEBGL
             Agava.YandexGames.Billing.ConsumeProduct(purchaseToken, OnSuccessConsumeProduct, OnErrorConsumeProduct);
 #else
-            OnSuccessConsumeProduct?.Invoke();
+            _onSuccessConsumeProduct?.Invoke();
 #endif
         }
     }

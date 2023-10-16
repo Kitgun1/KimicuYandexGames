@@ -12,4 +12,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57f603fcc14e49ce81757e5300b9f912, type: 3}
   m_Name: KimicuYandexSettings
   m_EditorClassIdentifier: 
-  mySetting: 36
+  Postfix: 
+  Separator: _
+  SoundChange: 1
+  CatalogProductInEditor:
+  - description: test
+    id: test1
+    imageURI: https://static.donationalerts.ru/uploads/qr/3414545/qr_bfc32bd513ca60d7023358650860e2d7.png
+    price: 1 YAN
+    priceCurrencyCode: YAN
+    priceValue: 1
+    title: test tittle
+  - description: test 2
+    id: test2
+    imageURI: https://static.donationalerts.ru/uploads/qr/3414545/qr_bfc32bd513ca60d7023358650860e2d7.png
+    price: 2 YAN
+    priceCurrencyCode: YAN
+    priceValue: 2
+    title: test tittle 2
+  - description: test 3
+    id: test3
+    imageURI: https://static.donationalerts.ru/uploads/qr/3414545/qr_bfc32bd513ca60d7023358650860e2d7.png
+    price: 3 YAN
+    priceCurrencyCode: YAN
+    priceValue: 3
+    title: test tittle 3
+  PurchasedProductInEditor:
+  - developerPayload: TEST DEVELOPER PAYLOAD
+    productID: test1
+    purchaseTime: 13.10.2023
+    purchaseToken: d85ae0b1-9166-4fbb-bb38-6d2a4ca4416d
+  - developerPayload: TEST DEVELOPER PAYLOAD
+    productID: test3
+    purchaseTime: 10.06.2022
+    purchaseToken: d85ae0b1-9166-4fbb-bb38-6d2a4ca4416d
+  DelayAdvert: 30.1
+  InterAdvertOffKey: INTER_ADVERT_OFF
+  RewardAdvertOffKey: REWARD_ADVERT_OFF
+  StickyAdvertOffKey: STICKY_ADVERT_OFF
