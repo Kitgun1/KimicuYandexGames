@@ -206,7 +206,7 @@ namespace Kimicu.YandexGames
             };
             _onErrorConsumeProduct = onError;
 #if !UNITY_EDITOR && UNITY_WEBGL
-            Agava.YandexGames.Billing.ConsumeProduct(purchaseToken, OnSuccessConsumeProduct, OnErrorConsumeProduct);
+            Agava.YandexGames.Billing.ConsumeProduct(purchaseToken, _onSuccessConsumeProduct, _onErrorConsumeProduct);
 #else
             _onSuccessConsumeProduct?.Invoke();
 #endif

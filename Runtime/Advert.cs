@@ -1,7 +1,6 @@
 ﻿using System;
 using UnityEngine;
 using KimicuUtility;
-using Kimicu.YandexGames;
 
 #if UNITY_WEBGL && !UNITY_EDITOR
 using System.Collections;
@@ -103,7 +102,7 @@ namespace Kimicu.YandexGames
         public static void StickyAdActive(bool value)
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
-            if (_stickyAdvertOff)
+            if (StickyAdvertOff)
             {
                 StickyAd.Hide();
             }
