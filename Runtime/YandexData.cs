@@ -6,7 +6,6 @@ using UnityEngine;
 using Agava.YandexGames;
 #endif
 using KimicuUtility;
-using Kimicu.YandexGames;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 using PlayerPrefs = UnityEngine.PlayerPrefs;
@@ -44,7 +43,7 @@ namespace Kimicu.YandexGames
         }
 
         /// <summary> Save data by key and value type </summary>
-        /// <param name="saveInCloud"> Whether to save to the cloud.. </param>
+        /// <param name="saveInCloud"> Whether to save to the cloud. </param>
         /// <param name="onSuccess"> After successful save data in cloud. </param>
         /// <param name="onError"> After unsuccessful data saving in the cloud. </param>
         /// <remarks> If "saveInCloud" is set to false, then the "onSuccess" event will not be triggered. </remarks>
@@ -55,10 +54,10 @@ namespace Kimicu.YandexGames
             {
                 throw new Exception($"{nameof(YandexData)} not initialized!");
             }
-            else
-            {
-                InitializePlayerPrefs();
-            }
+
+#if UNITY_EDITOR && !UNITY_WEBGL
+            if (!_initialized) InitializePlayerPrefs();
+#endif
 
             var dictionary = _json.ToDictionary();
             string searchKey = $"{key}{_separator}{value.Type.ToString()[..2]}{_separator}{_postfix}";
