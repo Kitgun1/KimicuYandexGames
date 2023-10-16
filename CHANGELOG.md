@@ -5,14 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.3] - 13.10.2023
+### Fixed
+- Исправлен баг отображения настроек.
+
+
 ## [1.1.2] - 13.10.2023
 ### Fixed
-- fixed bugs Advert and Billing.
+- исправлены ошибки `Advert` и `Billing`.
 
 
 ## [1.1.1] - 13.10.2023
 ### Fixed
-- fixed bugs in purchases in Editor.
+- исправлены ошибки в покупках в `Editor`.
 
 
 ## [1.1.0] - 13.10.2023

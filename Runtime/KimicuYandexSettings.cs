@@ -23,8 +23,8 @@ namespace Kimicu.YandexGames
 
         #region Purchase
 
-        [field: SerializeField, Header("Purchase")]
-        public CatalogProduct[] CatalogProductInEditor { get; private set; } =
+        [SerializeField, Header("Purchase")]
+        public CatalogProduct[] CatalogProductInEditor  =
         {
             new()
             {
@@ -58,8 +58,8 @@ namespace Kimicu.YandexGames
             }
         };
 
-        [field: SerializeField]
-        public PurchasedProduct[] PurchasedProductInEditor { get; private set; } =
+        [SerializeField]
+        public PurchasedProduct[] PurchasedProductInEditor  =
         {
             new()
             {
