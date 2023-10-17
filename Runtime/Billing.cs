@@ -100,7 +100,7 @@ namespace Kimicu.YandexGames
 
         private static void OnGetPurchasedProductsSuccess(GetPurchasedProductsResponse response)
         {
-            PurchasedProducts = response?.purchasedProducts;
+            PurchasedProducts = response.purchasedProducts;
             _purchasedProductsInitialized = true;
         }
 
@@ -120,10 +120,8 @@ namespace Kimicu.YandexGames
         /// Optional parameter. Additional information about the purchase that you want to transmit to your server
         /// (will be transmitted in the signature parameter).
         /// </param>
-        public static void PurchaseProduct(string productID,
-            Action<PurchaseProductResponse> onSuccess = null,
-            Action<string> onError = null,
-            string developerPayload = default)
+        public static void PurchaseProduct(string productID, Action<PurchaseProductResponse> onSuccess = null,
+            Action<string> onError = null, string developerPayload = default)
         {
             WebProperty.PurchaseWindowOpened = true;
             _onSuccessPurchaseProduct = response =>
@@ -157,10 +155,8 @@ namespace Kimicu.YandexGames
         /// </param>
         /// <remarks> Upon confirmation of purchase, the item will be removed from the list of "Purchased items". </remarks>
         public static void PurchaseProductAndConsume(string productID,
-            Action<PurchaseProductResponse> onSuccessPurchase = null,
-            Action onSuccessConsume = null,
-            Action<string> onErrorPurchase = null,
-            Action<string> onErrorConsume = null,
+            Action<PurchaseProductResponse> onSuccessPurchase = null, Action onSuccessConsume = null,
+            Action<string> onErrorPurchase = null, Action<string> onErrorConsume = null,
             string developerPayload = default)
         {
             WebProperty.PurchaseWindowOpened = true;

@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Agava.YandexGames;
 using UnityEngine;
 using UnityEngine.Events;
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -18,11 +19,11 @@ namespace Kimicu.YandexGames
         {
 #if !UNITY_EDITOR && UNITY_WEBGL
             yield return YandexGamesSdk.Initialize(); // Initialize Agava SDK.
+#endif
             WebGL.InitializeListener(); // Initialize WebGL.
-#endif  
             yield return YandexData.Initialize(); // Initialize data.
             yield return Billing.Initialize(); // Initialize purchases.
-            Advert.AdvertInitialize();  // Initialize advert.
+            Advert.AdvertInitialize(); // Initialize advert.
             OnInitialize?.Invoke();
         }
     }

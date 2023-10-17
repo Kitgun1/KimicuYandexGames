@@ -3,28 +3,25 @@ using UnityEngine;
 
 namespace Kimicu.YandexGames
 {
-    [CreateAssetMenu(fileName = "KimicuYandexSettings", menuName = "Kimicu/KimicuYandexSettings", order = 0)]
+    //[CreateAssetMenu(fileName = "KimicuYandexSettings", menuName = "Kimicu/KimicuYandexSettings", order = 0)]
     public class KimicuYandexSettings : ScriptableObject
     {
         #region YandexCloudSave
 
-        [Header("Yandex Cloud Save"), SerializeField]
-        public string Postfix = "";
-
+        [SerializeField] public string Postfix = "";
         [SerializeField] public string Separator = "_";
 
         #endregion
 
         #region WebGL
 
-        [SerializeField, Header("WebGL")] public bool SoundChange = true;
+        [SerializeField] public bool SoundChange = true;
 
         #endregion
 
         #region Purchase
 
-        [SerializeField, Header("Purchase")]
-        public CatalogProduct[] CatalogProductInEditor  =
+        [SerializeField] public CatalogProduct[] CatalogProductInEditor =
         {
             new()
             {
@@ -58,8 +55,7 @@ namespace Kimicu.YandexGames
             }
         };
 
-        [SerializeField]
-        public PurchasedProduct[] PurchasedProductInEditor  =
+        [SerializeField] public PurchasedProduct[] PurchasedProductInEditor =
         {
             new()
             {
@@ -81,10 +77,8 @@ namespace Kimicu.YandexGames
 
         #region Advert
 
-        [SerializeField, Header("Advert"), Min(5f)]
-        public float DelayAdvert = 30.1f;
-
-        [SerializeField, Header("Advert")] public string InterAdvertOffKey = "INTER_ADVERT_OFF";
+        [SerializeField, Min(5f)] public float DelayAdvert = 30.1f;
+        [SerializeField] public string InterAdvertOffKey = "INTER_ADVERT_OFF";
         [SerializeField] public string RewardAdvertOffKey = "REWARD_ADVERT_OFF";
         [SerializeField] public string StickyAdvertOffKey = "STICKY_ADVERT_OFF";
 

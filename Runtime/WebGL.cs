@@ -1,8 +1,5 @@
-﻿using System;
-using Kimicu.YandexGames;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
 namespace Kimicu.YandexGames
 {
@@ -17,19 +14,22 @@ namespace Kimicu.YandexGames
         public static void InitializeListener()
         {
             _audioChange = KimicuYandexSettings.Instance.SoundChange;
+#if !UNITY_EDITOR && UNITY_WEBGL
             Agava.WebUtility.WebApplication.InBackgroundChangeEvent += InBackgroundChange;
+#endif
             WebProperty.AdvertOpenedChange.AddListener(AdvertOpenedChange);
             WebProperty.PurchaseWindowOpenedChange.AddListener(PurchaseWindowOpenedChange);
         }
 
+#if !UNITY_EDITOR && UNITY_WEBGL
         private static void InBackgroundChange(bool value)
         {
-            WebProperty.InGameView = value;
-            OnBackgroundChanged?.Invoke(value);
+            WebProperty.InGameView = !value;
+            OnBackgroundChanged?.Invoke(!value);
 
             GameStateCheck();
         }
-
+#endif
         private static void AdvertOpenedChange(bool value)
         {
             GameStateCheck();
