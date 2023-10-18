@@ -55,7 +55,7 @@
 
 ### Добавление рекламы
 
-Для работы с внутриигровыми покупками используйте статический класс: `AdvertSDK` из пространства
+Для работы с внутриигровыми покупками используйте статический класс: `Advert` из пространства
 имен `Kimicu.YandexGames`. <br>
 
 Есть несколько типов рекламы на yandex games:
@@ -69,7 +69,7 @@
 3) [Sticky-баннеры](https://yandex.ru/dev/games/doc/ru/console/adv-monetization#sticky-banner) -
    рекламный баннер, который отображается в игре постоянно во время играния.
 
-Для вызова рекламы используйте статический класс: `AdvertSDK`. <br>
+Для вызова рекламы используйте статический класс: `Advert`. <br>
 
 1) Полноэкранные блоки -
    `InterstitialAd(Action onOpen, Action<bool> onClose, Action<string> onError, Action onOffline);`
@@ -85,18 +85,18 @@
     * `onClose` - После закрытия рекламы.
     * `onError` - При какой-либо ошибке. Возвращает строку с ошибкой.
 
-3) Sticky-баннеры - `AdvertSDK.StickyAdActive(bool value);`
+3) Sticky-баннеры - `Advert.StickyAdActive(bool value);`
     * `value` - Выключить(`false`) или Включить(`true`) баннер.
 
-Также `AdvertSDK` имеет дополнительный функционал:
+Также `Advert` имеет дополнительный функционал:
 
-* `AdvertSDK.AdvertOff(AdvertType);` - при выключенной рекламе, она не будет показана, но `callback`-и будут
+* `Advert.AdvertOff(AdvertType);` - при выключенной рекламе, она не будет показана, но `callback`-и будут
   вызваны.<br>
   `AdvertType` - тип рекламы, которая будет отключена. `[InterstitialAd, RewardAd, StickyAd]`
-* `AdvertSDK.DelayAd` - задержка между вызовами рекламы. Перезарядка между вызовом рекламы `AdvertSDK.InterstitialAd();`
-* `InterAdvertOffKey` - ключ, по которому будет сохраняться отключение `AdvertSDK.InterstitialAd();` рекламы.
-* `RewardAdvertOffKey` - ключ, по которому будет сохраняться отключение `AdvertSDK.RewardAd();` рекламы.
-* `StickyAdvertOffKey` - ключ, по которому будет сохраняться отключение `AdvertSDK.StickyAdActive();` рекламы.
+* `Advert.DelayAd` - задержка между вызовами рекламы. Перезарядка между вызовом рекламы `Advert.InterstitialAd();`
+* `InterAdvertOffKey` - ключ, по которому будет сохраняться отключение `Advert.InterstitialAd();` рекламы.
+* `RewardAdvertOffKey` - ключ, по которому будет сохраняться отключение `Advert.RewardAd();` рекламы.
+* `StickyAdvertOffKey` - ключ, по которому будет сохраняться отключение `Advert.StickyAdActive();` рекламы.
 
 ### Добавление покупок и метод консумирования
 
