@@ -126,10 +126,10 @@ namespace Kimicu.YandexGames
             WebProperty.PurchaseWindowOpened = true;
             _onSuccessPurchaseProduct = response =>
             {
-                onSuccess?.Invoke(response);
                 _purchasedProducts ??= new List<PurchasedProduct>();
                 _purchasedProducts.Add(response.purchaseData);
                 WebProperty.PurchaseWindowOpened = false;
+                onSuccess?.Invoke(response);
             };
             _onErrorPurchaseProduct = error =>
             {
@@ -162,10 +162,10 @@ namespace Kimicu.YandexGames
             WebProperty.PurchaseWindowOpened = true;
             _onSuccessPurchaseProduct = response =>
             {
-                onSuccessPurchase?.Invoke(response);
                 WebProperty.PurchaseWindowOpened = false;
                 _purchasedProducts ??= new List<PurchasedProduct>();
                 _purchasedProducts.Add(response.purchaseData);
+                onSuccessPurchase?.Invoke(response);
                 ConsumeProduct(response.purchaseData.purchaseToken, onSuccessConsume, onErrorConsume);
             };
 
