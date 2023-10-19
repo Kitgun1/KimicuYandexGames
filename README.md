@@ -204,3 +204,67 @@
 3) `SaveToClaud(onSuccess, onError)` - Сохранить несохранённые дынные в облако.
     * `onSuccess` (Action) - Успешное сохраннее в облако.
     * `onError` (Action<string>) - Неуспешное сохраннее в облако.
+
+### Leaderboard
+
+Для работы с `Leaderboard-ами` используйте статический класс: `Leaderboard` из пространства
+имен `Kimicu.YandexGames`. <br>
+
+1) LeaderboardDescriptionResponse `LeaderboardInfo`:
+    * `appID` - Идентификатор приложения.
+    * `@default` - Если `true`, то лидерборд является основным.
+    * `description`:
+        * `invert_sort_order` - Направление сортировки:
+          `false` — места отсортированы по убыванию;
+          `true` — места отсортированы по возрастанию.
+        * `score_format` - Форматированный `score`
+        * `type` - Тип результата лидерборда. Доступные параметры: `numeric` (число), `time` (секунды).
+    * `name` - Имя лидерборда.
+    * `title` - Локализованные названия. Возможные параметры массива: `ru`, `en`, `be`, `uk`, `kk`, `uz`, `tr`.
+
+2) IEnumerable<LeaderboardEntryResponse> `LeaderboardEntries`:
+    * `score` - Значение результата. Не может быть отрицательным. Если тип лидерборда — `time`, то значения необходимо
+      передавать в миллисекундах.
+    * `extraData` - Описание пользователя. Необязательный параметр.
+    * `rank` - Место пользователя в рейтинге. Если отсутствует, либо запрос на топ без включения игрока, то равен 0.
+    * `player`:
+        * `uniqueID` - Уникальный id пользователя.
+        * `lang` - Язык пользователя.
+        * `publicName` - Публичное имя игрока.
+        * `profilePicture` - URL портрета пользователя.
+        * `scopePermissions`:
+            * `avatar` - URL портрета пользователя.
+            * `public_name` - Публичное имя игрока.
+    * `formattedScore` - Отформатированный `score`
+
+3) IEnumerable<LeaderboardGetEntriesResponse.Range> `LeaderboardRanges`:
+   * `start` - Место в рейтинге. Счет ведется с нуля, поэтому 1-е место считается нулевым элементом.
+   * `size` - Количество запрошенных записей. Если данных не хватает, то может не соответствовать ответу.
+
+4) LeaderboardAccountData `User` -
+  * `UserName` - Имя пользователя. `(ReadOnly)`
+  * `UserID` - Уникальный id пользователя. `(ReadOnly)`
+  * `Language` - Язык пользователя. `(ReadOnly)`
+  * `Picture` - Sprite портрета пользователя.
+  * `PictureURL` - URL портрета пользователя. `(ReadOnly)`
+  * `Rank` - Место пользователя в рейтинге. `(ReadOnly)`
+  * `Score` - Текущий счет пользователя. `(ReadOnly)`
+  * `UserDescription` - Описание пользователя. `(ReadOnly)`
+  * `FormattedScore` - Форматированный счет пользователя. `(ReadOnly)`
+
+5) `UpdateLeaderboard()` - Обновить данные `Leaderboard`. `UpdateLeaderboard` вызывается автоматический
+   каждые `DelayUpdateLeaderboardInfo` секунд.
+    * `DelayUpdateLeaderboardInfo` (int) - Длительность задержки между вызовом `UpdateLeaderboard`.
+
+6) void `SetScore(score, onSuccessCallback, onErrorCallback, extraData)` - Установить значение `score` для игрока
+   в `Leaderboard`.
+    * `score` (int) - Значение результата.
+    * `onSuccessCallback` (Action) - Успешная установка score.
+    * `onErrorCallback` (Action<string>) - Ошибка при установки score.
+    * `extraData` (string) - Описание пользователя.
+    *
+7) IEnumerator `SetScore(score, onErrorCallback, extraData)` - Установить значение `score` для игрока
+   в `Leaderboard`.
+    * `score` (int) - Значение результата.
+    * `onErrorCallback` (Action<string>) - Ошибка при установки score.
+    * `extraData` (string) - Описание пользователя.

@@ -1,11 +1,9 @@
 ﻿#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
-#endif
 
 namespace Kimicu.YandexGames.Editor
 {
-#if UNITY_EDITOR
     public class CustomSettingsProvider : SettingsProvider
     {
         private SerializedObject m_SettingsObject;
@@ -13,6 +11,7 @@ namespace Kimicu.YandexGames.Editor
         private bool m_IsActiveWebGL = true;
         private bool m_IsActivePurchases = true;
         private bool m_IsActiveAdvert = true;
+        private bool m_IsActiveLeaderboard = true;
 
         public CustomSettingsProvider(string path, SettingsScope scope = SettingsScope.Project)
             : base(path, scope)
@@ -34,7 +33,6 @@ namespace Kimicu.YandexGames.Editor
             }
 
             EditorGUILayout.Separator();
-
             m_IsActiveWebGL = EditorGUILayout.Foldout(m_IsActiveWebGL, "Настройки окна браузера:");
             if (m_IsActiveWebGL)
             {
@@ -66,6 +64,26 @@ namespace Kimicu.YandexGames.Editor
                 EditorGUILayout.PropertyField(m_SettingsObject.FindProperty("StickyAdvertOffKey"));
             }
 
+            EditorGUILayout.Separator();
+            m_IsActiveLeaderboard = EditorGUILayout.Foldout(m_IsActiveLeaderboard, "Настройки лидеров:");
+            if (m_IsActiveLeaderboard)
+            {
+                EditorGUILayout.PropertyField(m_SettingsObject.FindProperty("LeaderboardActive"));
+                if (m_SettingsObject.FindProperty("LeaderboardActive").boolValue)
+                {
+                    EditorGUILayout.PropertyField(m_SettingsObject.FindProperty("LeaderboardName"));
+                    EditorGUILayout.PropertyField(m_SettingsObject.FindProperty("TopPlayersCount"));
+                    EditorGUILayout.PropertyField(m_SettingsObject.FindProperty("PlayerRankInEditor"));
+                    EditorGUILayout.PropertyField(m_SettingsObject.FindProperty("DelayUpdateLeaderboardInfo"));
+                    EditorGUILayout.PropertyField(m_SettingsObject.FindProperty("CompetingPlayersCount"));
+                    EditorGUILayout.PropertyField(m_SettingsObject.FindProperty("IncludeSelf"));
+                    EditorGUILayout.PropertyField(m_SettingsObject.FindProperty("WaitInitializePicture"));
+                    EditorGUILayout.PropertyField(m_SettingsObject.FindProperty("InvertSortOrder"));
+                    EditorGUILayout.PropertyField(m_SettingsObject.FindProperty("LeaderboardValueType"));
+                    EditorGUILayout.PropertyField(m_SettingsObject.FindProperty("PictureSize"));
+                }
+            }
+
             if (GUI.changed)
             {
                 m_SettingsObject.ApplyModifiedProperties();
@@ -80,5 +98,5 @@ namespace Kimicu.YandexGames.Editor
             return provider;
         }
     }
-#endif
 }
+#endif

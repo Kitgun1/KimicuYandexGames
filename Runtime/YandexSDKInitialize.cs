@@ -22,6 +22,7 @@ namespace Kimicu.YandexGames
 #endif
             WebGL.InitializeListener(); // Initialize WebGL.
             yield return YandexData.Initialize(); // Initialize data.
+            yield return Leaderboard.Initialize(); // Initialize Leaderboard.
             yield return Billing.Initialize(); // Initialize purchases.
             Advert.AdvertInitialize(); // Initialize advert.
             OnInitialize?.Invoke();

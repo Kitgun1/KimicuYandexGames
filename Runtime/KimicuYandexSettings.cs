@@ -8,20 +8,20 @@ namespace Kimicu.YandexGames
     {
         #region YandexCloudSave
 
-        [SerializeField] public string Postfix = "";
-        [SerializeField] public string Separator = "_";
+        public string Postfix = "";
+        public string Separator = "_";
 
         #endregion
 
         #region WebGL
 
-        [SerializeField] public bool SoundChange = true;
+        public bool SoundChange = true;
 
         #endregion
 
         #region Purchase
 
-        [SerializeField] public CatalogProduct[] CatalogProductInEditor =
+        public CatalogProduct[] CatalogProductInEditor =
         {
             new()
             {
@@ -55,7 +55,7 @@ namespace Kimicu.YandexGames
             }
         };
 
-        [SerializeField] public PurchasedProduct[] PurchasedProductInEditor =
+        public PurchasedProduct[] PurchasedProductInEditor =
         {
             new()
             {
@@ -77,10 +77,26 @@ namespace Kimicu.YandexGames
 
         #region Advert
 
-        [SerializeField, Min(5f)] public float DelayAdvert = 30.1f;
-        [SerializeField] public string InterAdvertOffKey = "INTER_ADVERT_OFF";
-        [SerializeField] public string RewardAdvertOffKey = "REWARD_ADVERT_OFF";
-        [SerializeField] public string StickyAdvertOffKey = "STICKY_ADVERT_OFF";
+        [Min(5f)] public float DelayAdvert = 30.1f;
+        public string InterAdvertOffKey = "INTER_ADVERT_OFF";
+        public string RewardAdvertOffKey = "REWARD_ADVERT_OFF";
+        public string StickyAdvertOffKey = "STICKY_ADVERT_OFF";
+
+        #endregion
+
+        #region Leaderboard
+
+        public bool LeaderboardActive = false;
+        public string LeaderboardName = "write name!";
+        public int TopPlayersCount = 5;
+        public int PlayerRankInEditor = 1;
+        public int DelayUpdateLeaderboardInfo = 300;
+        public int CompetingPlayersCount = 5;
+        public bool IncludeSelf = true;
+        public bool WaitInitializePicture = true;
+        public bool InvertSortOrder = false;
+        public LeaderboardType LeaderboardValueType = LeaderboardType.numeric;
+        public ProfilePictureSize PictureSize = ProfilePictureSize.medium;
 
         #endregion
 
@@ -94,5 +110,11 @@ namespace Kimicu.YandexGames
                 return _instance;
             }
         }
+    }
+
+    public enum LeaderboardType
+    {
+        numeric,
+        time
     }
 }
