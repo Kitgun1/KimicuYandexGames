@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 #if UNITY_WEBGL && !UNITY_EDITOR
 using JetBrains.Annotations;
 using UnityEngine;
@@ -20,6 +22,8 @@ namespace Kimicu.YandexGames
         private static string _postfix;
         private static string _separator;
 
+        private static bool _debugEnabled = KimicuYandexSettings.Instance.YandexDataDebugActive;
+
         /// <summary> Initialize Yandex Data </summary>
         public static IEnumerator Initialize()
         {
@@ -30,16 +34,21 @@ namespace Kimicu.YandexGames
 
             _postfix = KimicuYandexSettings.Instance.Postfix;
             _separator = KimicuYandexSettings.Instance.Separator;
-#if UNITY_WEBGL && !UNITY_EDITOR
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            if(_debugEnabled) Debug.Log($"Initialize cloud in WebGL.");
+
             PlayerAccount.GetCloudSaveData((data) =>
             {
+                if(_debugEnabled) Debug.Log($"Get cloud save data: {data}");
                 _json = data;
                 _initialized = true;
             }, Debug.LogWarning);
-#else
+            #else
+            if (_debugEnabled) Debug.Log($"Initialize player prefs in Unity Editor.");
             InitializePlayerPrefs();
-#endif
+            #endif
             yield return new WaitUntil(() => _initialized);
+            if (_debugEnabled) Debug.Log($"Initialize success.");
         }
 
         /// <summary> Save data by key and value type </summary>
@@ -55,23 +64,33 @@ namespace Kimicu.YandexGames
                 throw new Exception($"{nameof(YandexData)} not initialized!");
             }
 
-#if UNITY_EDITOR && !UNITY_WEBGL
-            if (!_initialized) InitializePlayerPrefs();
-#endif
+            #if UNITY_EDITOR && !UNITY_WEBGL
+            if (!_initialized)
+            {
+                if (_debugEnabled) Debug.Log($"Yandex Data is not initialized. Initialization player prefs..");
+                InitializePlayerPrefs();
+            }
+            #endif
 
+            if (_debugEnabled) Debug.Log($"Json convert to dictionary. Json: {_json}");
             var dictionary = _json.ToDictionary();
             string searchKey = $"{key}{_separator}{value.Type.ToString()[..2]}{_separator}{_postfix}";
-            if (dictionary.TryGetValue(searchKey, out JToken _)) dictionary[searchKey] = value;
+            if (_debugEnabled) Debug.Log($"Searching key. Key: {searchKey}");
+            if (dictionary.TryGetValue(searchKey, out JToken searchingValue)) dictionary[searchKey] = value;
             else dictionary.Add(searchKey, value);
-
+            
+            if (_debugEnabled) Debug.Log($"Key found. Value: {searchingValue}");
+            if (_debugEnabled) DebugLogDictionary(dictionary);
+            
             _json = dictionary.ToJson();
-#if UNITY_WEBGL && !UNITY_EDITOR
+            if (_debugEnabled) Debug.Log($"Json: {_json}");
+            #if UNITY_WEBGL && !UNITY_EDITOR
             if(saveInCloud) PlayerAccount.SetCloudSaveData(_json, onSuccess, onError);
             else onSuccess?.Invoke();
-#else
+            #else
             if (saveInCloud) PlayerPrefs.SetString("json", _json);
             onSuccess?.Invoke();
-#endif
+            #endif
         }
 
         /// <summary> Returns a value by key "key" and by type "defaultValue". </summary>
@@ -82,6 +101,7 @@ namespace Kimicu.YandexGames
         /// </param>
         public static JToken Load(string key, JToken defaultValue)
         {
+            if (_debugEnabled) Debug.Log($"Load Value by key. Key: {key}\n\nJson {_json}");
             var data = _json.ToDictionary();
             string searchKey = $"{key}{_separator}{defaultValue.Type.ToString()[..2]}{_separator}{_postfix}";
             return data.TryGetValue(searchKey, out JToken value) ? value : defaultValue;
@@ -92,18 +112,34 @@ namespace Kimicu.YandexGames
         /// <param name="onError"> After unsuccessful data saving in the cloud. </param>
         public static void SaveToClaud(Action onSuccess = null, Action<string> onError = null)
         {
-#if UNITY_WEBGL && !UNITY_EDITOR
+            if (_debugEnabled) Debug.Log($"Save to cloud..\n\n Json: {_json}");
+            #if UNITY_WEBGL && !UNITY_EDITOR
             PlayerAccount.SetCloudSaveData(_json, onSuccess, onError);
-#else
+            #else
             PlayerPrefs.SetString("json", _json);
             onSuccess?.Invoke();
-#endif
+            #endif
         }
 
         private static void InitializePlayerPrefs()
         {
             _json = PlayerPrefs.GetString("json", "{}");
             _initialized = true;
+        }
+
+        private static void DebugLogDictionary(Dictionary<string, JToken> dictionary)
+        {
+            var dictionaryArray = dictionary.ToArray();
+            string dictionaryString = "Dictionary:\n{";
+            for (int i = 0; i < dictionary.Count; i++)
+            {
+                dictionaryString += $"    {dictionaryArray[i].Key}:{dictionaryArray[i].Value}";
+                if (dictionary.Count != i + 1) dictionaryString += ",\n";
+                else dictionaryString += "\n";
+            }
+
+            dictionaryString += "\n}";
+            Debug.Log($"{dictionaryString}");
         }
     }
 }

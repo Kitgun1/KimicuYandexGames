@@ -50,3 +50,14 @@ MonoBehaviour:
   InterAdvertOffKey: INTER_ADVERT_OFF
   RewardAdvertOffKey: REWARD_ADVERT_OFF
   StickyAdvertOffKey: STICKY_ADVERT_OFF
+  LeaderboardActive: 1
+  LeaderboardName: write name!
+  TopPlayersCount: 5
+  PlayerRankInEditor: 1
+  DelayUpdateLeaderboardInfo: 300
+  CompetingPlayersCount: 5
+  IncludeSelf: 1
+  WaitInitializePicture: 1
+  InvertSortOrder: 0
+  LeaderboardValueType: 0
+  PictureSize: 1

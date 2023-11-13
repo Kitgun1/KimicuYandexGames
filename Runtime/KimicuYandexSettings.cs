@@ -100,6 +100,12 @@ namespace Kimicu.YandexGames
 
         #endregion
 
+        #region Debuging
+
+        public bool YandexDataDebugActive = false;
+
+        #endregion
+
         private static KimicuYandexSettings _instance;
 
         public static KimicuYandexSettings Instance
