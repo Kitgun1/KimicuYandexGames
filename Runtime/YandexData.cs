@@ -22,7 +22,7 @@ namespace Kimicu.YandexGames
         private static string _postfix;
         private static string _separator;
 
-        private static bool _debugEnabled = KimicuYandexSettings.Instance.YandexDataDebugActive;
+        private static bool _debugEnabled = KimicuYandexSettings.Instance.YandexDataDebugEnabled;
 
         /// <summary> Initialize Yandex Data </summary>
         public static IEnumerator Initialize()

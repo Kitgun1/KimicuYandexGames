@@ -1,11 +1,16 @@
 ﻿using Agava.YandexGames;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Kimicu.YandexGames
 {
     //[CreateAssetMenu(fileName = "KimicuYandexSettings", menuName = "Kimicu/KimicuYandexSettings", order = 0)]
     public class KimicuYandexSettings : ScriptableObject
     {
+        public int Priority = -999;
+
         #region YandexCloudSave
 
         public string Postfix = "";
@@ -102,7 +107,7 @@ namespace Kimicu.YandexGames
 
         #region Debuging
 
-        public bool YandexDataDebugActive = false;
+        public bool YandexDataDebugEnabled = false;
 
         #endregion
 
@@ -112,7 +117,38 @@ namespace Kimicu.YandexGames
         {
             get
             {
-                _instance = Resources.Load<KimicuYandexSettings>("KimicuYandexSettings");
+                KimicuYandexSettings[] settings = Resources.LoadAll<KimicuYandexSettings>("KimicuYandexSettings");
+                if (settings != null)
+                {
+                    int maxPriority = -1;
+                    KimicuYandexSettings prioritySettings = null;
+                    foreach (KimicuYandexSettings yandexSettings in settings)
+                    {
+                        if (yandexSettings.Priority <= maxPriority) continue;
+                        maxPriority = yandexSettings.Priority;
+                        prioritySettings = yandexSettings;
+                    }
+
+                    if (prioritySettings == null)
+                    {
+                        #if UNITY_EDITOR
+                        KimicuYandexSettings yandexSettings = CreateInstance<KimicuYandexSettings>();
+                        yandexSettings.Priority = 1;
+                        AssetDatabase.CreateAsset(yandexSettings, "Assets/Resources/KimicuYandexSettings.asset");
+                        #endif
+                    }
+
+                    _instance = prioritySettings;
+                }
+                else
+                {
+                    #if UNITY_EDITOR
+                    KimicuYandexSettings yandexSettings = CreateInstance<KimicuYandexSettings>();
+                    yandexSettings.Priority = 1;
+                    AssetDatabase.CreateAsset(yandexSettings, "Assets/Resources/KimicuYandexSettings.asset");
+                    #endif
+                }
+
                 return _instance;
             }
         }

@@ -1,6 +1,6 @@
-﻿#if UNITY_EDITOR
+﻿using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
-using UnityEngine;
 
 namespace Kimicu.YandexGames.Editor
 {
@@ -14,9 +14,7 @@ namespace Kimicu.YandexGames.Editor
         private bool m_IsActiveLeaderboard = true;
 
         public CustomSettingsProvider(string path, SettingsScope scope = SettingsScope.Project)
-            : base(path, scope)
-        {
-        }
+            : base(path, scope) { }
 
         public override void OnGUI(string searchContext)
         {
@@ -24,6 +22,8 @@ namespace Kimicu.YandexGames.Editor
             {
                 m_SettingsObject = new SerializedObject(KimicuYandexSettings.Instance);
             }
+            
+            EditorGUILayout.PropertyField(m_SettingsObject.FindProperty("YandexDataDebugEnabled"));
 
             m_IsActiveCloudSave = EditorGUILayout.Foldout(m_IsActiveCloudSave, "Настройки для облачного сохранения:");
             if (m_IsActiveCloudSave)
