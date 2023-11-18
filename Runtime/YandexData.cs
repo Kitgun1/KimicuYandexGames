@@ -40,7 +40,7 @@ namespace Kimicu.YandexGames
             PlayerAccount.GetCloudSaveData((data) =>
             {
                 if(_debugEnabled) Debug.Log($"Get cloud save data: {data}");
-                _json = data;
+                Json = data;
                 _initialized = true;
             }, Debug.LogWarning);
             #else
@@ -85,7 +85,7 @@ namespace Kimicu.YandexGames
             Json = dictionary.ToJson();
             if (DebugEnabled) Debug.Log($"Json: {Json}");
             #if UNITY_WEBGL && !UNITY_EDITOR
-            if(saveInCloud) PlayerAccount.SetCloudSaveData(_json, onSuccess, onError);
+            if(saveInCloud) PlayerAccount.SetCloudSaveData(Json, onSuccess, onError);
             else onSuccess?.Invoke();
             #else
             if (saveInCloud) PlayerPrefs.SetString("json", Json);
@@ -129,7 +129,7 @@ namespace Kimicu.YandexGames
         {
             if (DebugEnabled) Debug.Log($"Save to cloud..\n\n Json: {Json}");
             #if UNITY_WEBGL && !UNITY_EDITOR
-            PlayerAccount.SetCloudSaveData(_json, onSuccess, onError);
+            PlayerAccount.SetCloudSaveData(Json, onSuccess, onError);
             #else
             PlayerPrefs.SetString("json", Json);
             onSuccess?.Invoke();
