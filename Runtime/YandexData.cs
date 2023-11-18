@@ -35,11 +35,11 @@ namespace Kimicu.YandexGames
             _postfix = KimicuYandexSettings.Instance.Postfix;
             _separator = KimicuYandexSettings.Instance.Separator;
             #if UNITY_WEBGL && !UNITY_EDITOR
-            if(_debugEnabled) Debug.Log($"Initialize cloud in WebGL.");
+            if(DebugEnabled) Debug.Log($"Initialize cloud in WebGL.");
 
             PlayerAccount.GetCloudSaveData((data) =>
             {
-                if(_debugEnabled) Debug.Log($"Get cloud save data: {data}");
+                if(DebugEnabled) Debug.Log($"Get cloud save data: {data}");
                 Json = data;
                 _initialized = true;
             }, Debug.LogWarning);
