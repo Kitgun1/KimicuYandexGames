@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using KimicuUtility;
 
@@ -17,14 +18,18 @@ namespace Kimicu.YandexGames
         private static string _stickyAdvertOffKey;
 
         private static readonly KiCoroutine Routine = new();
+        private static IEnumerator _enumerator = null;
 
         public static bool InterAdvertOff { get; private set; }
         public static bool RewardAdvertOff { get; private set; }
         public static bool StickyAdvertOff { get; private set; }
         public static bool AdvertAvailable { get; private set; } = true;
 
+        private static readonly bool DebugEnabled = KimicuYandexSettings.Instance.AdvertDebugEnabled;
+
         public static void AdvertInitialize()
         {
+            if (DebugEnabled) Debug.Log($"Advert Initialize Starts");
             _delayAd = KimicuYandexSettings.Instance.DelayAdvert;
             _interAdvertOffKey = KimicuYandexSettings.Instance.InterAdvertOffKey;
             _rewardAdvertOffKey = KimicuYandexSettings.Instance.RewardAdvertOffKey;
@@ -34,12 +39,19 @@ namespace Kimicu.YandexGames
             RewardAdvertOff = (bool)YandexData.Load(_rewardAdvertOffKey, false);
             StickyAdvertOff = (bool)YandexData.Load(_stickyAdvertOffKey, false);
 
+            if (DebugEnabled)
+                Debug.Log($"Advert Initialized:\n" +
+                          $"   Inter Advert Off: {InterAdvertOff}" +
+                          $"   Reward Advert Off: {RewardAdvertOff}" +
+                          $"   Sticky Advert Off: {StickyAdvertOff}");
+
             if (StickyAdvertOff) StickyAdActive(false);
         }
 
         /// <summary> Remove advert in game. </summary>
         public static void AdvertOff(AdvertType advertType = AdvertType.InterstitialAd)
         {
+            if (DebugEnabled) Debug.Log($"Advert Off: {advertType}");
             switch (advertType)
             {
                 case AdvertType.InterstitialAd:
@@ -57,6 +69,8 @@ namespace Kimicu.YandexGames
                 default:
                     throw new ArgumentOutOfRangeException(nameof(advertType), advertType, null);
             }
+
+            if (DebugEnabled) Debug.Log($"Advert Off success");
         }
 
         /// <summary> Show reward ad. </summary>
@@ -67,51 +81,63 @@ namespace Kimicu.YandexGames
         public static void RewardAd(Action onOpen = null, Action onRewarded = null, Action onClose = null,
             Action<string> onError = null)
         {
+            if (DebugEnabled) Debug.Log($"RewardAd Show");
             if (RewardAdvertOff)
             {
+                if (DebugEnabled) Debug.Log($"Reward Advert off. Call: [onOpen, onRewarded, onClose]");
                 onOpen?.Invoke();
                 onRewarded?.Invoke();
                 onClose?.Invoke();
             }
-#if UNITY_WEBGL && !UNITY_EDITOR
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            if (DebugEnabled) Debug.Log($"Reward Advert in Yandex Games.");
             VideoAd.Show(()=>
             {
+                if (DebugEnabled) Debug.Log($"[Reward Advert]. Call: [onOpen]");
                 onOpen?.Invoke();
                 WebProperty.AdvertOpened = true;
             }, ()=>
             {
+                if (DebugEnabled) Debug.Log($"[Reward Advert]. Call: [onRewarded]");
                 onRewarded?.Invoke();
             }, ()=>
             {
+                if (DebugEnabled) Debug.Log($"[Reward Advert]. Call: [onClose]");
                 onClose?.Invoke();
                 WebProperty.AdvertOpened = false;
             },error =>
             {
+                if (DebugEnabled) Debug.Log($"[Reward Advert]. Call: [onError]\nError message: {error}");
                 onError?.Invoke(error);
                 WebProperty.AdvertOpened = false;
             });
-#else
+            #else
+            if (DebugEnabled) Debug.Log($"Reward Advert in Editor. Call: [onOpen, onRewarded, onClose]");
             onOpen?.Invoke();
             onRewarded?.Invoke();
             onClose?.Invoke();
             WebProperty.AdvertOpened = false;
-#endif
+            #endif
         }
 
         /// <summary> Active/Inactive Sticky advert. </summary>
         public static void StickyAdActive(bool value)
         {
-#if UNITY_WEBGL && !UNITY_EDITOR
+            if (DebugEnabled) Debug.Log($"StickyAd Active");
+            #if UNITY_WEBGL && !UNITY_EDITOR
             if (StickyAdvertOff)
             {
+                if (DebugEnabled) Debug.Log($"Sticky Advert off.");
                 StickyAd.Hide();
             }
             else
             {
+                if (DebugEnabled && value) Debug.Log($"Sticky Advert Activate");
+                else if(DebugEnabled && !value) Debug.Log($"Sticky Advert Deactivate");
                 if (value) StickyAd.Show();
                 else StickyAd.Hide();
             }
-#endif
+            #endif
         }
 
         /// <summary> Show Interstitial ad. </summary>
@@ -122,8 +148,10 @@ namespace Kimicu.YandexGames
         public static void InterstitialAd(Action onOpen = null, Action<bool> onClose = null,
             Action<string> onError = null, Action onOffline = null)
         {
+            if (DebugEnabled) Debug.Log($"Inter Show");
             if (InterAdvertOff)
             {
+                if (DebugEnabled) Debug.Log($"Inter Advert off. Call: [onOpen, onClose]");
                 onOpen?.Invoke();
                 onClose?.Invoke(true);
                 return;
@@ -131,33 +159,50 @@ namespace Kimicu.YandexGames
 
             if (AdvertAvailable == false)
             {
+                if (DebugEnabled) Debug.Log($"Inter Advert not available. Call: [onError]");
                 onError?.Invoke("Advert not available!");
                 return;
             }
-#if UNITY_WEBGL && !UNITY_EDITOR
+            #if UNITY_WEBGL && !UNITY_EDITOR
             Agava.YandexGames.InterstitialAd.Show(() =>
             {
+                if (DebugEnabled) Debug.Log($"[Inter Advert]. Call: [onOpen]");
                 onOpen?.Invoke();
                 WebProperty.AdvertOpened = true;
             }, closeCallback =>
             {
+                if (DebugEnabled) Debug.Log($"[Inter Advert]. Call: [onClose]");
                 onClose?.Invoke(closeCallback);
                 WebProperty.AdvertOpened = false;
             }, (error) =>
             {
+                if (DebugEnabled) Debug.Log($"[Inter Advert]. Call: [onError]\nError message: {error}");
                 onError?.Invoke(error);
                 WebProperty.AdvertOpened = false;
             }, () =>
             {
+                if (DebugEnabled) Debug.Log($"[Inter Advert]. Call: [onOffline]");
                 onOffline?.Invoke();
                 WebProperty.AdvertOpened = false;
             });
-#else
+            #else
+            if (DebugEnabled) Debug.Log($"Inter Advert in Editor. Call: [onOpen, onClose]");
+            onOpen?.Invoke();
             onClose?.Invoke(true);
-            Debug.Log($"InterstitialAd Show");
-#endif
+            #endif
             AdvertAvailable = false;
-            Routine.StartRoutine(KiCoroutine.Delay(_delayAd, () => AdvertAvailable = true), true);
+            if (_enumerator != null) return;
+            _enumerator = ReloadInterAdvert();
+            Routine.StartRoutine(_enumerator, true);
+        }
+
+        private static IEnumerator ReloadInterAdvert()
+        {
+            if (DebugEnabled) Debug.Log($"Inter Advert. Start Reload Advert");
+            yield return new WaitForSecondsRealtime(_delayAd);
+            if (DebugEnabled) Debug.Log($"Inter Advert. End Reload Advert");
+            AdvertAvailable = true;
+            _enumerator = null;
         }
     }
 }

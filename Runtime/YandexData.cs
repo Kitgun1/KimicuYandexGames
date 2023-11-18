@@ -16,13 +16,13 @@ namespace Kimicu.YandexGames
 {
     public static class YandexData
     {
-        private static string _json = "{}";
+        public static string Json { get; private set; } = "{}";
         private static bool _initialized = false;
 
         private static string _postfix;
         private static string _separator;
 
-        private static bool _debugEnabled = KimicuYandexSettings.Instance.YandexDataDebugEnabled;
+        private static readonly bool DebugEnabled = KimicuYandexSettings.Instance.YandexDataDebugEnabled;
 
         /// <summary> Initialize Yandex Data </summary>
         public static IEnumerator Initialize()
@@ -44,11 +44,11 @@ namespace Kimicu.YandexGames
                 _initialized = true;
             }, Debug.LogWarning);
             #else
-            if (_debugEnabled) Debug.Log($"Initialize player prefs in Unity Editor.");
+            if (DebugEnabled) Debug.Log($"Initialize player prefs in Unity Editor.");
             InitializePlayerPrefs();
             #endif
             yield return new WaitUntil(() => _initialized);
-            if (_debugEnabled) Debug.Log($"Initialize success.");
+            if (DebugEnabled) Debug.Log($"Initialize success.");
         }
 
         /// <summary> Save data by key and value type </summary>
@@ -67,28 +67,28 @@ namespace Kimicu.YandexGames
             #if UNITY_EDITOR && !UNITY_WEBGL
             if (!_initialized)
             {
-                if (_debugEnabled) Debug.Log($"Yandex Data is not initialized. Initialization player prefs..");
+                if (DebugEnabled) Debug.Log($"Yandex Data is not initialized. Initialization player prefs..");
                 InitializePlayerPrefs();
             }
             #endif
 
-            if (_debugEnabled) Debug.Log($"Json convert to dictionary. Json: {_json}");
-            var dictionary = _json.ToDictionary();
+            if (DebugEnabled) Debug.Log($"Json convert to dictionary. Json: {Json}");
+            var dictionary = Json.ToDictionary();
             string searchKey = $"{key}{_separator}{value.Type.ToString()[..2]}{_separator}{_postfix}";
-            if (_debugEnabled) Debug.Log($"Searching key. Key: {searchKey}");
+            if (DebugEnabled) Debug.Log($"Searching key. Key: {searchKey}");
             if (dictionary.TryGetValue(searchKey, out JToken searchingValue)) dictionary[searchKey] = value;
             else dictionary.Add(searchKey, value);
-            
-            if (_debugEnabled) Debug.Log($"Key found. Value: {searchingValue}");
-            if (_debugEnabled) DebugLogDictionary(dictionary);
-            
-            _json = dictionary.ToJson();
-            if (_debugEnabled) Debug.Log($"Json: {_json}");
+
+            if (DebugEnabled) Debug.Log($"Key found. Value: {searchingValue}");
+            if (DebugEnabled) DebugLogDictionary(dictionary);
+
+            Json = dictionary.ToJson();
+            if (DebugEnabled) Debug.Log($"Json: {Json}");
             #if UNITY_WEBGL && !UNITY_EDITOR
             if(saveInCloud) PlayerAccount.SetCloudSaveData(_json, onSuccess, onError);
             else onSuccess?.Invoke();
             #else
-            if (saveInCloud) PlayerPrefs.SetString("json", _json);
+            if (saveInCloud) PlayerPrefs.SetString("json", Json);
             onSuccess?.Invoke();
             #endif
         }
@@ -101,10 +101,25 @@ namespace Kimicu.YandexGames
         /// </param>
         public static JToken Load(string key, JToken defaultValue)
         {
-            if (_debugEnabled) Debug.Log($"Load Value by key. Key: {key}\n\nJson {_json}");
-            var data = _json.ToDictionary();
+            if (DebugEnabled) Debug.Log($"Load Value by key. Key: {key}\n\nJson {Json}");
+            var data = Json.ToDictionary();
             string searchKey = $"{key}{_separator}{defaultValue.Type.ToString()[..2]}{_separator}{_postfix}";
             return data.TryGetValue(searchKey, out JToken value) ? value : defaultValue;
+        }
+
+        public static void DeleteAllData(Action onSuccessDeleted = null, Action<string> onErrorDeleted = null)
+        {
+            if(DebugEnabled) Debug.Log($"Delete All Data start!");
+            Agava.YandexGames.PlayerAccount.SetCloudSaveData("{}", () =>
+            {
+                if(DebugEnabled) Debug.Log($"Delete All Data success!");
+                Json = "{}";
+                onSuccessDeleted?.Invoke();
+            }, (error) =>
+            {
+                if(DebugEnabled) Debug.Log($"Delete All Data error!\n Message: {error}");
+                onErrorDeleted?.Invoke(error);
+            });
         }
 
         /// <summary> Save current data in cloud. </summary>
@@ -112,18 +127,18 @@ namespace Kimicu.YandexGames
         /// <param name="onError"> After unsuccessful data saving in the cloud. </param>
         public static void SaveToClaud(Action onSuccess = null, Action<string> onError = null)
         {
-            if (_debugEnabled) Debug.Log($"Save to cloud..\n\n Json: {_json}");
+            if (DebugEnabled) Debug.Log($"Save to cloud..\n\n Json: {Json}");
             #if UNITY_WEBGL && !UNITY_EDITOR
             PlayerAccount.SetCloudSaveData(_json, onSuccess, onError);
             #else
-            PlayerPrefs.SetString("json", _json);
+            PlayerPrefs.SetString("json", Json);
             onSuccess?.Invoke();
             #endif
         }
 
         private static void InitializePlayerPrefs()
         {
-            _json = PlayerPrefs.GetString("json", "{}");
+            Json = PlayerPrefs.GetString("json", "{}");
             _initialized = true;
         }
 

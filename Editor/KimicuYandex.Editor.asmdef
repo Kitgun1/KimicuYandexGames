@@ -1,11 +1,15 @@
 {
     "name": "KimicuYandex.Editor",
+    "rootNamespace": "",
     "references": [
         "GUID:b3f991bd2c0c1254b985e7c5e45a81a4",
         "GUID:5c01796d064528144a599661eaab93a6",
-        "netstandard, Version=2.1.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51"
+        "GUID:ef7e0e3eb213f324c87b70a782844fb6",
+        "GUID:56315a2471583a747a49644e8ab43986"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

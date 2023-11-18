@@ -1,4 +1,5 @@
-﻿using Agava.YandexGames;
+﻿using System.Collections.Generic;
+using Agava.YandexGames;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -6,7 +7,7 @@ using UnityEditor;
 
 namespace Kimicu.YandexGames
 {
-    //[CreateAssetMenu(fileName = "KimicuYandexSettings", menuName = "Kimicu/KimicuYandexSettings", order = 0)]
+    [CreateAssetMenu(fileName = "KimicuYandexSettings", menuName = "Kimicu/KimicuYandexSettings", order = 0)]
     public class KimicuYandexSettings : ScriptableObject
     {
         public int Priority = -999;
@@ -26,9 +27,9 @@ namespace Kimicu.YandexGames
 
         #region Purchase
 
-        public CatalogProduct[] CatalogProductInEditor =
+        public List<CatalogProduct> CatalogProductInEditor = new()
         {
-            new()
+            new CatalogProduct
             {
                 id = "test1",
                 description = "test",
@@ -38,7 +39,7 @@ namespace Kimicu.YandexGames
                 priceCurrencyCode = "YAN",
                 imageURI = "https://static.donationalerts.ru/uploads/qr/3414545/qr_bfc32bd513ca60d7023358650860e2d7.png"
             },
-            new()
+            new CatalogProduct
             {
                 id = "test2",
                 description = "test 2",
@@ -48,7 +49,7 @@ namespace Kimicu.YandexGames
                 priceCurrencyCode = "YAN",
                 imageURI = "https://static.donationalerts.ru/uploads/qr/3414545/qr_bfc32bd513ca60d7023358650860e2d7.png"
             },
-            new()
+            new CatalogProduct
             {
                 id = "test3",
                 description = "test 3",
@@ -60,16 +61,16 @@ namespace Kimicu.YandexGames
             }
         };
 
-        public PurchasedProduct[] PurchasedProductInEditor =
+        public List<PurchasedProduct> PurchasedProductInEditor = new()
         {
-            new()
+            new PurchasedProduct
             {
                 productID = "test1",
                 purchaseToken = "d85ae0b1-9166-4fbb-bb38-6d2a4ca4416d",
                 purchaseTime = "13.10.2023",
                 developerPayload = "TEST DEVELOPER PAYLOAD"
             },
-            new()
+            new PurchasedProduct
             {
                 productID = "test3",
                 purchaseToken = "d85ae0b1-9166-4fbb-bb38-6d2a4ca4416d",
@@ -82,7 +83,7 @@ namespace Kimicu.YandexGames
 
         #region Advert
 
-        [Min(5f)] public float DelayAdvert = 30.1f;
+        [Min(5f)] public float DelayAdvert = 60.1f;
         public string InterAdvertOffKey = "INTER_ADVERT_OFF";
         public string RewardAdvertOffKey = "REWARD_ADVERT_OFF";
         public string StickyAdvertOffKey = "STICKY_ADVERT_OFF";
@@ -108,6 +109,7 @@ namespace Kimicu.YandexGames
         #region Debuging
 
         public bool YandexDataDebugEnabled = false;
+        public bool AdvertDebugEnabled = false;
 
         #endregion
 
@@ -117,7 +119,7 @@ namespace Kimicu.YandexGames
         {
             get
             {
-                KimicuYandexSettings[] settings = Resources.LoadAll<KimicuYandexSettings>("KimicuYandexSettings");
+                KimicuYandexSettings[] settings = Resources.LoadAll<KimicuYandexSettings>("");
                 if (settings != null)
                 {
                     int maxPriority = -1;
