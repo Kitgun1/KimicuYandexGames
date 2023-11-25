@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Исправлен баг с ошибкаами при импорте
 
+## [1.2.2] - 18.11.2023
+### Fixed
+- Исправлен баг с настройками 
+
 ## [1.2.0] - 18.11.2023
 ### Added
 - Добавлена возможность включить debug mode для разных компонентов (YandexData, Advert)
