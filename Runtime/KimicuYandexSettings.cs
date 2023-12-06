@@ -120,23 +120,13 @@ namespace Kimicu.YandexGames
             get
             {
                 if (_instance != null) return _instance;
-                KimicuYandexSettings settings = Resources.Load<KimicuYandexSettings>("KimicuYandexSettings");
-                if (settings == null)
+                _instance = Resources.Load<KimicuYandexSettings>("KimicuYandexSettings");
+
+                if (_instance == null)
                 {
-                    KimicuYandexSettings yandexSettings = CreateInstance<KimicuYandexSettings>();
-                    yandexSettings.Priority = 1;
+                    _instance = CreateInstance<KimicuYandexSettings>();
                     #if UNITY_EDITOR
-                    AssetDatabase.CreateAsset(yandexSettings, "Assets/Resources/KimicuYandexSettings.asset");
-                    #endif
-                    _instance = yandexSettings;
-                }
-                else
-                {
-                    #if UNITY_EDITOR
-                    KimicuYandexSettings yandexSettings = CreateInstance<KimicuYandexSettings>();
-                    yandexSettings.Priority = 1;
-                    AssetDatabase.CreateAsset(yandexSettings, "Assets/Resources/KimicuYandexSettings.asset");
-                    _instance = yandexSettings;
+                    AssetDatabase.CreateAsset(_instance, "Assets/Resources/KimicuYandexSettings.asset");
                     #endif
                 }
 
