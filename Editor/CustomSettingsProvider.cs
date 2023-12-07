@@ -8,9 +8,17 @@ using System.IO;
 using Agava.YandexGames;
 using UnityEditor;
 using KimicuUtility;
+using Unity.Plastic.Newtonsoft.Json;
 
 namespace Kimicu.YandexGames.Editor
 {
+    public enum MessageType
+    {
+        Normal,
+        Error,
+        Success
+    }
+
     public class CustomSettingsProvider : SettingsProvider
     {
         private KimicuYandexSettings _settings;
@@ -32,6 +40,12 @@ namespace Kimicu.YandexGames.Editor
 
         private readonly GUIStyle _headerNormalStyle;
         private readonly GUIStyle _headerDebugStyle;
+
+        private bool _isAuthorize = false;
+        private string _loginText = "";
+        private string _passwordText = "";
+        private string _messageText = "";
+        private MessageType _messageType = MessageType.Normal;
 
         public CustomSettingsProvider(string path, SettingsScope scope = SettingsScope.Project) : base(path, scope)
         {
@@ -72,6 +86,12 @@ namespace Kimicu.YandexGames.Editor
         [Obsolete("Obsolete")]
         public override void OnGUI(string searchContext)
         {
+            if (!_isAuthorize)
+            {
+                Authorize();
+                return;
+            }
+
             Rect controlRect = EditorGUILayout.GetControlRect(true, FieldHeight);
             Rect labelRect = new(Indent, 0, LabelWidth - Indent, FieldHeight);
             float valueWidth = controlRect.width - labelRect.width - Spacing - Indent;
@@ -79,6 +99,7 @@ namespace Kimicu.YandexGames.Editor
             valueRect.width -= 150 + Spacing * 2;
             Rect createButtonRect = new(valueRect.xMax + Spacing, 0, 60, FieldHeight);
             Rect maxPriorityButtonRect = new(createButtonRect.xMax + Spacing, 0, 90, FieldHeight);
+
             EditorGUI.LabelField(labelRect, "Yandex Game Settings");
             _settings = (KimicuYandexSettings)EditorGUI.ObjectField(valueRect, _settings,
                 typeof(KimicuYandexSettings), false);
@@ -128,6 +149,65 @@ namespace Kimicu.YandexGames.Editor
             var provider = new CustomSettingsProvider("Project/Kimicu/Yandex Settings");
 
             return provider;
+        }
+
+        private void Authorize()
+        {
+            _loginText = EditorGUILayout.TextField("Login", _loginText);
+            _passwordText = EditorGUILayout.PasswordField("Password", _passwordText);
+            Rect control = EditorGUILayout.GetControlRect(true, FieldHeight);
+            Rect buttonRect = control;
+            buttonRect.width = 125;
+            User user = JsonConvert.DeserializeObject<User>(EditorPrefs.GetString("users", "{}")) ?? new User();
+            if (GUI.Button(buttonRect, "Создать"))
+            {
+                if (_loginText.Length > 3)
+                {
+                    if (user.Users.Count(u => u != null && u.Value.login == _loginText) > 0)
+                    {
+                        _messageText = "Такой логин уже зарегистрирован!";
+                        _messageType = MessageType.Error;
+                    }
+                    else
+                    {
+                        user.Users.Add(new ValueTuple<string, string>(_loginText, _passwordText));
+                        EditorPrefs.SetString("users", JsonConvert.SerializeObject(user));
+                        _messageText = "Успех! Нажмите Войти!";
+                        _messageType = MessageType.Success;
+                    }
+                }
+                else
+                {
+                    _messageText = "Коротки логин!";
+                    _messageType = MessageType.Error;
+                }
+            }
+
+            buttonRect.x = buttonRect.xMax + 10;
+            if (GUI.Button(buttonRect, "Войти"))
+            {
+                var correctUser = user.Users.FirstOrDefault(u =>
+                    u != null && u.Value.login == _loginText && u.Value.password == _passwordText);
+                if (correctUser != null)
+                {
+                    _isAuthorize = true;
+                }
+                else
+                {
+                    _messageText = "Нет доступа!";
+                    _messageType = MessageType.Error;
+                }
+            }
+
+            GUIStyle messageStyle = new(EditorStyles.label);
+            messageStyle.normal.textColor = _messageType switch
+            {
+                MessageType.Error => Color.red,
+                MessageType.Success => Color.green,
+                _ => messageStyle.normal.textColor
+            };
+            control = EditorGUILayout.GetControlRect();
+            EditorGUI.LabelField(control, _messageText, messageStyle);
         }
 
         private void DrawPrioritySettings()
@@ -382,11 +462,16 @@ namespace Kimicu.YandexGames.Editor
 
             controlRect = EditorGUILayout.GetControlRect(true, FieldHeight);
             labelRect = new Rect(Indent * 2, controlRect.y, LabelWidth - Indent * 2, FieldHeight);
-             valueWidth = controlRect.width - labelRect.width - Spacing - Indent * 2;
-             valueRect = new Rect(labelRect.xMax, controlRect.y, valueWidth, FieldHeight);
+            valueWidth = controlRect.width - labelRect.width - Spacing - Indent * 2;
+            valueRect = new Rect(labelRect.xMax, controlRect.y, valueWidth, FieldHeight);
             EditorGUI.LabelField(labelRect, "Advert Debug Enabled");
             _settings.AdvertDebugEnabled = EditorGUI.Toggle(valueRect, _settings.AdvertDebugEnabled);
         }
+    }
+
+    public class User
+    {
+        public List<(string login, string password)?> Users = new();
     }
 }
 #endif
