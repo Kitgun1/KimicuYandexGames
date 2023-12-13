@@ -20,8 +20,7 @@
 
 ## Обратная связь
 
-Вы можете написать в телеграм по нику **@KimicuK** или **[тут](https://github.com/Kitgun1/KimicuYandexGames/discussions)
-**
+Вы можете написать в телеграм по нику **@KimicuK** или **[тут](https://github.com/Kitgun1/KimicuYandexGames/discussions)**
 
 ## Как добавить в проект
 
