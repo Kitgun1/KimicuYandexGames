@@ -27,19 +27,14 @@ namespace Kimicu.YandexGames
         /// <summary> Initialize Yandex Data </summary>
         public static IEnumerator Initialize()
         {
-            if (_initialized)
-            {
-                Debug.LogWarning("YandexData initialization has already been performed.");
-            }
+            if (_initialized) Debug.LogWarning("YandexData initialization has already been performed.");
 
             _postfix = KimicuYandexSettings.Instance.Postfix;
             _separator = KimicuYandexSettings.Instance.Separator;
             #if UNITY_WEBGL && !UNITY_EDITOR
-            if(DebugEnabled) Debug.Log($"Initialize cloud in WebGL.");
-
             PlayerAccount.GetCloudSaveData((data) =>
             {
-                if(DebugEnabled) Debug.Log($"Get cloud save data: {data}");
+                if(DebugEnabled) Debug.Log($"Get cloud save data:\n{data}");
                 Json = data;
                 _initialized = true;
             }, Debug.LogWarning);
@@ -109,15 +104,15 @@ namespace Kimicu.YandexGames
 
         public static void DeleteAllData(Action onSuccessDeleted = null, Action<string> onErrorDeleted = null)
         {
-            if(DebugEnabled) Debug.Log($"Delete All Data start!");
+            if (DebugEnabled) Debug.Log($"Delete All Data start!");
             Agava.YandexGames.PlayerAccount.SetCloudSaveData("{}", () =>
             {
-                if(DebugEnabled) Debug.Log($"Delete All Data success!");
+                if (DebugEnabled) Debug.Log($"Delete All Data success!");
                 Json = "{}";
                 onSuccessDeleted?.Invoke();
             }, (error) =>
             {
-                if(DebugEnabled) Debug.Log($"Delete All Data error!\n Message: {error}");
+                if (DebugEnabled) Debug.Log($"Delete All Data error!\n Message: {error}");
                 onErrorDeleted?.Invoke(error);
             });
         }

@@ -72,42 +72,9 @@ namespace Kimicu.YandexGames.Editor
         [Obsolete("Obsolete")]
         public override void OnGUI(string searchContext)
         {
-            Rect controlRect = EditorGUILayout.GetControlRect(true, FieldHeight);
-            Rect labelRect = new(Indent, 0, LabelWidth - Indent, FieldHeight);
-            float valueWidth = controlRect.width - labelRect.width - Spacing - Indent;
-            Rect valueRect = new(labelRect.xMax, 0, valueWidth, FieldHeight);
-            valueRect.width -= 150 + Spacing * 2;
-            Rect createButtonRect = new(valueRect.xMax + Spacing, 0, 60, FieldHeight);
-            Rect maxPriorityButtonRect = new(createButtonRect.xMax + Spacing, 0, 90, FieldHeight);
-            EditorGUI.LabelField(labelRect, "Yandex Game Settings");
-            _settings = (KimicuYandexSettings)EditorGUI.ObjectField(valueRect, _settings,
-                typeof(KimicuYandexSettings), false);
-
-            if (GUI.Button(createButtonRect, "Create"))
-            {
-                _settings = ScriptableObject.CreateInstance<KimicuYandexSettings>();
-                _settings.Priority = 1;
-
-                string path = "Assets/Resources";
-                if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-                string[] files = Directory.GetFiles(path);
-                int fileCount = files.Length;
-                string pathAsset = fileCount > 0
-                    ? $"Assets/Resources/KimicuYandexSettings {fileCount / 2}.asset"
-                    : $"Assets/Resources/KimicuYandexSettings.asset";
-                AssetDatabase.CreateAsset(_settings, pathAsset);
-                EditorPrefs.SetString("YandexSettingsAssetPath", pathAsset);
-            }
-
-            if (GUI.Button(maxPriorityButtonRect, "Max Priority"))
-            {
-                _settings = KimicuYandexSettings.Instance;
-            }
-
+            _settings = KimicuYandexSettings.Instance;
             if (_settings != null)
             {
-                DrawPrioritySettings();
-                EditorGUILayout.Separator();
                 DrawCloudSaveSettings();
                 EditorGUILayout.Separator();
                 DrawWebGLSettings();
@@ -125,26 +92,15 @@ namespace Kimicu.YandexGames.Editor
         [SettingsProvider]
         public static SettingsProvider CreateCustomSettingsProvider()
         {
-            var provider = new CustomSettingsProvider("Project/Kimicu/Yandex Settings");
-
+            CustomSettingsProvider provider = new("Project/Kimicu/Yandex Settings");
             return provider;
-        }
-
-        private void DrawPrioritySettings()
-        {
-            Rect controlRect = EditorGUILayout.GetControlRect(true, FieldHeight);
-            Rect labelRect = new(Indent, controlRect.y, LabelWidth - Indent, FieldHeight);
-            float valueWidth = controlRect.width - labelRect.width - Indent;
-            Rect valueRect = new Rect(labelRect.xMax, controlRect.y, valueWidth - Spacing, FieldHeight);
-            EditorGUI.LabelField(labelRect, "Priority");
-            _settings.Priority = EditorGUI.IntField(valueRect, _settings.Priority);
         }
 
         private void DrawCloudSaveSettings()
         {
             Rect controlRect = EditorGUILayout.GetControlRect(true, FieldHeight);
             Rect labelRect = new(Indent, controlRect.y, LabelWidth - Indent, FieldHeight);
-            _cloudSaveEnabled = EditorGUI.Foldout(labelRect, _cloudSaveEnabled, "Cloud Save Show", _headerNormalStyle);
+            _cloudSaveEnabled = EditorGUI.Foldout(labelRect, _cloudSaveEnabled, "Cloud Save", _headerNormalStyle);
             EditorPrefs.SetBool(nameof(_cloudSaveEnabled), _cloudSaveEnabled);
             if (!_cloudSaveEnabled) return;
 
@@ -167,7 +123,7 @@ namespace Kimicu.YandexGames.Editor
         {
             Rect controlRect = EditorGUILayout.GetControlRect(true, FieldHeight);
             Rect labelRect = new(Indent, controlRect.y, LabelWidth - Indent, FieldHeight);
-            _webGLEnabled = EditorGUI.Foldout(labelRect, _webGLEnabled, "WebGL Show", _headerNormalStyle);
+            _webGLEnabled = EditorGUI.Foldout(labelRect, _webGLEnabled, "WebGL", _headerNormalStyle);
             EditorPrefs.SetBool(nameof(_webGLEnabled), _webGLEnabled);
             if (!_webGLEnabled) return;
 
@@ -183,7 +139,7 @@ namespace Kimicu.YandexGames.Editor
         {
             Rect controlRect = EditorGUILayout.GetControlRect(true, FieldHeight);
             Rect labelRect = new(Indent, controlRect.y, LabelWidth - Indent, FieldHeight);
-            _purchaseEnabled = EditorGUI.Foldout(labelRect, _purchaseEnabled, "Purchase Show", _headerNormalStyle);
+            _purchaseEnabled = EditorGUI.Foldout(labelRect, _purchaseEnabled, "Purchase", _headerNormalStyle);
             EditorPrefs.SetBool(nameof(_purchaseEnabled), _purchaseEnabled);
             if (!_purchaseEnabled) return;
             controlRect = EditorGUILayout.GetControlRect(true, FieldHeight);
@@ -332,7 +288,7 @@ namespace Kimicu.YandexGames.Editor
         {
             Rect controlRect = EditorGUILayout.GetControlRect(true, FieldHeight);
             Rect labelRect = new(Indent, controlRect.y, LabelWidth - Indent, FieldHeight);
-            _advertEnabled = EditorGUI.Foldout(labelRect, _advertEnabled, "Advert Show", _headerNormalStyle);
+            _advertEnabled = EditorGUI.Foldout(labelRect, _advertEnabled, "Advert", _headerNormalStyle);
             EditorPrefs.SetBool(nameof(_advertEnabled), _advertEnabled);
             if (!_advertEnabled) return;
 
@@ -369,7 +325,7 @@ namespace Kimicu.YandexGames.Editor
         {
             Rect controlRect = EditorGUILayout.GetControlRect(true, FieldHeight);
             Rect labelRect = new(Indent, controlRect.y, LabelWidth - Indent, FieldHeight);
-            _debugEnabled = EditorGUI.Foldout(labelRect, _debugEnabled, "Advert Show", _headerDebugStyle);
+            _debugEnabled = EditorGUI.Foldout(labelRect, _debugEnabled, "Debugging", _headerDebugStyle);
             EditorPrefs.SetBool(nameof(_debugEnabled), _debugEnabled);
             if (!_debugEnabled) return;
 
@@ -377,14 +333,21 @@ namespace Kimicu.YandexGames.Editor
             labelRect = new Rect(Indent * 2, controlRect.y, LabelWidth - Indent * 2, FieldHeight);
             float valueWidth = controlRect.width - labelRect.width - Spacing - Indent * 2;
             Rect valueRect = new Rect(labelRect.xMax, controlRect.y, valueWidth, FieldHeight);
-            EditorGUI.LabelField(labelRect, "YandexData Debug Enabled");
+            EditorGUI.LabelField(labelRect, "Initialize Debug");
+            _settings.InitializeDebugEnabled = EditorGUI.Toggle(valueRect, _settings.InitializeDebugEnabled);
+
+            controlRect = EditorGUILayout.GetControlRect(true, FieldHeight);
+            labelRect = new Rect(Indent * 2, controlRect.y, LabelWidth - Indent * 2, FieldHeight);
+            valueWidth = controlRect.width - labelRect.width - Spacing - Indent * 2;
+            valueRect = new Rect(labelRect.xMax, controlRect.y, valueWidth, FieldHeight);
+            EditorGUI.LabelField(labelRect, "YandexData Debug");
             _settings.YandexDataDebugEnabled = EditorGUI.Toggle(valueRect, _settings.YandexDataDebugEnabled);
 
             controlRect = EditorGUILayout.GetControlRect(true, FieldHeight);
             labelRect = new Rect(Indent * 2, controlRect.y, LabelWidth - Indent * 2, FieldHeight);
-             valueWidth = controlRect.width - labelRect.width - Spacing - Indent * 2;
-             valueRect = new Rect(labelRect.xMax, controlRect.y, valueWidth, FieldHeight);
-            EditorGUI.LabelField(labelRect, "Advert Debug Enabled");
+            valueWidth = controlRect.width - labelRect.width - Spacing - Indent * 2;
+            valueRect = new Rect(labelRect.xMax, controlRect.y, valueWidth, FieldHeight);
+            EditorGUI.LabelField(labelRect, "Advert Debug");
             _settings.AdvertDebugEnabled = EditorGUI.Toggle(valueRect, _settings.AdvertDebugEnabled);
         }
     }

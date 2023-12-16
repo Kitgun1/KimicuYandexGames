@@ -1,17 +1,12 @@
 ﻿using System.Collections.Generic;
 using Agava.YandexGames;
 using UnityEngine;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 namespace Kimicu.YandexGames
 {
     [CreateAssetMenu(fileName = "KimicuYandexSettings", menuName = "Kimicu/KimicuYandexSettings", order = 0)]
     public class KimicuYandexSettings : ScriptableObject
     {
-        public int Priority = -999;
-
         #region YandexCloudSave
 
         public string Postfix = "";
@@ -108,6 +103,7 @@ namespace Kimicu.YandexGames
 
         #region Debuging
 
+        public bool InitializeDebugEnabled = false;
         public bool YandexDataDebugEnabled = false;
         public bool AdvertDebugEnabled = false;
 
@@ -119,17 +115,18 @@ namespace Kimicu.YandexGames
         {
             get
             {
-                if (_instance != null) return _instance;
-                _instance = Resources.Load<KimicuYandexSettings>("KimicuYandexSettings");
-
                 if (_instance == null)
                 {
-                    _instance = CreateInstance<KimicuYandexSettings>();
-                    #if UNITY_EDITOR
-                    AssetDatabase.CreateAsset(_instance, "Assets/Resources/KimicuYandexSettings.asset");
-                    #endif
-                }
+                    _instance = Resources.Load<KimicuYandexSettings>("KimicuYandexSettings");
 
+                    if (_instance == null)
+                    {
+                        _instance = CreateInstance<KimicuYandexSettings>();
+                        #if UNITY_EDITOR
+                        UnityEditor.AssetDatabase.CreateAsset(_instance, "Assets/Resources/Yandex Settings.asset");
+                        #endif
+                    }
+                }
                 return _instance;
             }
         }
