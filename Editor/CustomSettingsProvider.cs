@@ -6,6 +6,7 @@ using UnityEngine;
 #if UNITY_EDITOR
 using System.IO;
 using Agava.YandexGames;
+using Kimicu.YandexGames.Utility;
 using UnityEditor;
 using KimicuUtility;
 using Unity.Plastic.Newtonsoft.Json;
@@ -138,6 +139,10 @@ namespace Kimicu.YandexGames.Editor
                 DrawAdvertSettings();
                 EditorGUILayout.Separator();
                 DrawDebugSettings();
+                EditorGUILayout.Separator();
+                //EditorGUILayout.Separator();
+                //EditorGUILayout.Separator();
+                //DrawDocumentSettings();
             }
 
             Repaint();
@@ -466,6 +471,23 @@ namespace Kimicu.YandexGames.Editor
             valueRect = new Rect(labelRect.xMax, controlRect.y, valueWidth, FieldHeight);
             EditorGUI.LabelField(labelRect, "Advert Debug Enabled");
             _settings.AdvertDebugEnabled = EditorGUI.Toggle(valueRect, _settings.AdvertDebugEnabled);
+        }
+
+        private static string _directoryPath = "Assets/";
+        private static string _selectedFile = "";
+        private void DrawDocumentSettings()
+        {
+            GUILayout.Label("Selected folder path: " + _directoryPath);
+
+            if (GUILayout.Button("Select Folder"))
+            {
+                _directoryPath = EditorUtility.OpenFolderPanel("Select Folder", "", "");
+            }
+            if (GUILayout.Button("Generate Word File"))
+            {
+                Debug.Log($"{Resources.Load("TemplateDocument")}");
+                //WordCreator.CreateWordDocument();
+            }
         }
     }
 
