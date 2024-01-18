@@ -193,7 +193,7 @@ namespace Kimicu.YandexGames
             AdvertAvailable = false;
             if (_enumerator != null) return;
             _enumerator = ReloadInterAdvert();
-            Routine.StartRoutine(_enumerator, true);
+            Routine.StartRoutine(_enumerator);
         }
 
         private static IEnumerator ReloadInterAdvert()
