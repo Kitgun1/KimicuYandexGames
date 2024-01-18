@@ -6,13 +6,20 @@
   "description": "Package for fast develop game in Yandex Games.",
   "unity": "2019.1",
   "changelogUrl": "https://github.com/Kitgun1/KimicuYandexGames/blob/main/CHANGELOG.md",
+    "readme": "https://github.com/Kitgun1/KimicuYandexGames/blob/main/README.md",
+    "license": "https://github.com/Kitgun1/KimicuYandexGames/blob/main/LICENSE",
+    "homepage": "https://github.com/Kitgun1/KimicuYandexGames",
   "dependencies": {
+        "com.agava.webutility": "https://github.com/forcepusher/com.agava.webutility.git",
+        "com.agava.yandexgames": "https://github.com/forcepusher/com.agava.yandexgames.git",
+        "com.agava.yandexmetrica": "https://github.com/forcepusher/com.agava.yandexmetrica.git",
+        "com.unity.nuget.newtonsoft-json": "3.2.1"
   },
   "samples": [
     {
-      "displayName": "Yandex",
-      "description": "Usage examples Yandex Package",
-      "path": "Sample~/Yandex"
+            "displayName": "WebGLTemplates",
+            "description": "WebGLTemplates for webGL in yandex",
+            "path": "Sample~/WebGLTemplates"
     }
   ]
 }
