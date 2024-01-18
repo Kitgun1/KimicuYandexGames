@@ -39,7 +39,7 @@ namespace Kimicu.YandexGames
 
             yield return UpdateLeaderboard();
 
-            UpdateRoutine.StartRoutine(DelayUpdate(settings.DelayUpdateLeaderboardInfo), true);
+            UpdateRoutine.StartRoutine(DelayUpdate(settings.DelayUpdateLeaderboardInfo));
 
             _available = true;
             _initialize = true;
