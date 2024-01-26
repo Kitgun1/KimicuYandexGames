@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace KimicuYandexGames
+namespace Kimicu.YandexGames
 {
-    public static class WebProperties
+    public static class WebApplication
     {
         private static bool _inBackground;
         private static bool _inAdvert;
@@ -22,7 +22,7 @@ namespace KimicuYandexGames
         public static bool InAdvert
         {
             get => _inAdvert;
-            internal set
+            set
             {
                 _inAdvert = value;
                 TryStopGame();
@@ -32,7 +32,7 @@ namespace KimicuYandexGames
         public static bool InPurchaseWindow
         {
             get => _inPurchaseWindow;
-            internal set
+            set
             {
                 _inPurchaseWindow = value;
                 TryStopGame();
@@ -42,7 +42,7 @@ namespace KimicuYandexGames
         public static bool CustomValue
         {
             get => _customValue;
-            internal set
+            set
             {
                 _customValue = value;
                 TryStopGame();
