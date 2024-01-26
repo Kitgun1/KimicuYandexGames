@@ -18,6 +18,8 @@ namespace Kimicu.YandexGames
         private static bool _purchasedProductsSuccesses;
         #endif
 
+        public static bool Initialized { get; private set; } = false;
+        
         public static IEnumerable<CatalogProduct> CatalogProducts => _catalogProducts;
         public static IEnumerable<PurchasedProduct> PurchasedProducts => _getPurchasedProductsResponse.purchasedProducts;
 
@@ -32,8 +34,9 @@ namespace Kimicu.YandexGames
             yield return new WaitUntil(() => _purchasedProductsSuccesses && _productCatalogSuccesses);
             #else
             // TODO: Добавить тестовые покупки для UNITY_EDITOR
-            yield break;
+            yield return null;
             #endif
+            Initialized = true;
         }
 
         #if !UNITY_EDITOR && UNITY_WEBGL
