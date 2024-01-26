@@ -49,9 +49,9 @@ namespace Kimicu.YandexGames
             }
         }
 
-        private static event Action OnStopGame;
+        private static event Action<bool> OnStopGame;
 
-        public static void Initialize(Action onStopGame)
+        public static void Initialize(Action<bool> onStopGame)
         {
             OnStopGame = onStopGame;
             InBackground = Agava.WebUtility.WebApplication.InBackground;
@@ -60,9 +60,6 @@ namespace Kimicu.YandexGames
 
         private static void InBackgroundChange(bool inBackground) => InBackground = inBackground;
 
-        private static void TryStopGame()
-        {
-            if (InBackground || InAdvert || InPurchaseWindow || CustomValue) OnStopGame?.Invoke();
-        }
+        private static void TryStopGame() => OnStopGame?.Invoke(InBackground || InAdvert || InPurchaseWindow || CustomValue);
     }
 }
