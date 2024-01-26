@@ -79,6 +79,7 @@ namespace Kimicu.YandexGames
         /// <summary> Saves all local data to the cloud. </summary>
         public static void SaveInCloud(Action onSuccessCallback = null, Action<string> onErrorCallback = null)
         {
+            if (!Initialized) throw new Exception($"{nameof(Cloud)}. Not Initialized!");
             _json = _jsonDictionary.DictionaryToJson();
             string jsonToYandex = $"{{ \"{SAVE_NAME}\": \"{StringExtension.StringToHex(_json)}\"}}";
 
@@ -98,6 +99,7 @@ namespace Kimicu.YandexGames
         /// <summary> Removes all data from the cloud. </summary>
         public static void ClearCloudData(Action onSuccessCallback = null, Action<string> onErrorCallback = null)
         {
+            if (!Initialized) throw new Exception($"{nameof(Cloud)}. Not Initialized!");
             #if UNITY_WEBGL && !UNITY_EDITOR
             Agava.YandexGames.PlayerAccount.SetCloudSaveData("{}", onSuccessCallback, onErrorCallback);
             #elif UNITY_EDITOR
