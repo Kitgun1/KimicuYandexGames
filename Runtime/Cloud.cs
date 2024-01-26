@@ -33,7 +33,7 @@ namespace Kimicu.YandexGames
             var dictionary = json.JsonToDictionary();
             if (dictionary.TryGetValue(SAVE_NAME, out object hex))
             {
-                _json = ((string)hex).HexToString();
+                _json = StringExtension.HexToString((string)hex);
                 _jsonDictionary = _json.JsonToDictionary();
             }
             else
@@ -80,11 +80,11 @@ namespace Kimicu.YandexGames
         public static void SaveInCloud(Action onSuccessCallback = null, Action<string> onErrorCallback = null)
         {
             _json = _jsonDictionary.DictionaryToJson();
-            string jsonToYandex = $"{{ \"{SAVE_NAME}\": \"{_json.StringToHex()}\"}}";
+            string jsonToYandex = $"{{ \"{SAVE_NAME}\": \"{StringExtension.StringToHex(_json)}\"}}";
 
-            if (!jsonToYandex.IsValidJson())
+            if (!JsonExtension.IsValidJson(jsonToYandex))
             {
-                Debug.LogError($"Json is not valid.\nJson:\n{_json.HexToString()}\n\nJsonHex:\n{jsonToYandex}");
+                Debug.LogError($"Json is not valid.\nJson:\n{StringExtension.HexToString(_json)}\n\nJsonHex:\n{jsonToYandex}");
             }
 
             #if UNITY_WEBGL && !UNITY_EDITOR
