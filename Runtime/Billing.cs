@@ -58,7 +58,17 @@ namespace Kimicu.YandexGames
         public static void PurchaseProduct(string productId, Action<PurchaseProductResponse> onSuccessCallback = null, Action<string> onErrorCallback = null, string developerPayload = "")
         {
             #if !UNITY_EDITOR && UNITY_WEBGL
-            Agava.YandexGames.Billing.PurchaseProduct(productId, onSuccessCallback, onErrorCallback, developerPayload);
+            WebApplication.InPurchaseWindow = true;
+            Agava.YandexGames.Billing.PurchaseProduct(productId,(response) =>
+            {
+                onSuccessCallback?.Invoke(response);
+                WebApplication.InPurchaseWindow = false;
+                Agava.YandexGames.Billing.GetPurchasedProducts(OnGetPurchasedProductsSuccessCallback, OnErrorCallback);
+            }, (error)=>
+            {
+                onErrorCallback?.Invoke(error);
+                WebApplication.InPurchaseWindow = false;
+            }, developerPayload);
             #else
             // TODO: Добавить тестовые подтверждения покупок для UNITY_EDITOR
             #endif
@@ -67,7 +77,15 @@ namespace Kimicu.YandexGames
         public static void ConsumeProduct(string purchasedProductToken, Action onSuccessCallback = null, Action<string> onErrorCallback = null)
         {
             #if !UNITY_EDITOR && UNITY_WEBGL
-            Agava.YandexGames.Billing.ConsumeProduct(purchasedProductToken, onSuccessCallback, onErrorCallback);
+            Agava.YandexGames.Billing.ConsumeProduct(purchasedProductToken, ()=>
+            {
+                onSuccessCallback?.Invoke();
+                Agava.YandexGames.Billing.GetPurchasedProducts(OnGetPurchasedProductsSuccessCallback, OnErrorCallback);
+            }, (error) =>
+            {
+                onErrorCallback?.Invoke(error);
+                Agava.YandexGames.Billing.GetPurchasedProducts(OnGetPurchasedProductsSuccessCallback, OnErrorCallback);
+            });
             #else
             // TODO: Добавить тестовые покупки для UNITY_EDITOR
             #endif
