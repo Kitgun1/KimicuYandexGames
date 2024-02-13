@@ -12,22 +12,22 @@ namespace Kimicu.YandexGames
         public static bool IsInitialized => Agava.YandexGames.YandexGamesSdk.IsInitialized;
         public static YandexGamesEnvironment Environment => Agava.YandexGames.YandexGamesSdk.Environment;
 
+        public static IEnumerator Initialize(Action onSuccessCallback = null)
+        {
+#if !UNITY_EDITOR && UNITY_WEBGL
+            yield return Agava.YandexGames.YandexGamesSdk.Initialize(onSuccessCallback);
+#else
+            onSuccessCallback?.Invoke();
+            yield break;
+#endif
+        }
+
         public static void GameReady()
         {
             #if !UNITY_EDITOR && UNITY_WEBGL
             Agava.YandexGames.YandexGamesSdk.GameReady();
             #else
             Debug.Log($"GameReady invoke!");
-            #endif
-        }
-
-        public static IEnumerator Initialize(Action onSuccessCallback = null)
-        {
-            #if !UNITY_EDITOR && UNITY_WEBGL
-            yield return Agava.YandexGames.YandexGamesSdk.Initialize(onSuccessCallback);
-            #else
-            onSuccessCallback?.Invoke();
-            yield break;
             #endif
         }
     }
