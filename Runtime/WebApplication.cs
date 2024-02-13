@@ -15,6 +15,7 @@ namespace Kimicu.YandexGames
             internal set
             {
                 _inBackground = value;
+                InBackgroundChangeState?.Invoke(value);
                 TryStopGame();
             }
         }
@@ -22,9 +23,10 @@ namespace Kimicu.YandexGames
         public static bool InAdvert
         {
             get => _inAdvert;
-            set
+            internal set
             {
                 _inAdvert = value;
+                InAdvertChangeState?.Invoke(value);
                 TryStopGame();
             }
         }
@@ -32,9 +34,10 @@ namespace Kimicu.YandexGames
         public static bool InPurchaseWindow
         {
             get => _inPurchaseWindow;
-            set
+            internal set
             {
                 _inPurchaseWindow = value;
+                InPurchaseWindowChangeState?.Invoke(value);
                 TryStopGame();
             }
         }
@@ -45,11 +48,16 @@ namespace Kimicu.YandexGames
             set
             {
                 _customValue = value;
+                OnCustomValueChangeState?.Invoke(value);
                 TryStopGame();
             }
         }
 
-        private static event Action<bool> OnStopGame;
+        public static event Action<bool> InBackgroundChangeState;
+        public static event Action<bool> InAdvertChangeState;
+        public static event Action<bool> InPurchaseWindowChangeState;
+        public static event Action<bool> OnCustomValueChangeState;
+        public static event Action<bool> OnStopGame;
 
         public static void Initialize(Action<bool> onStopGame)
         {
