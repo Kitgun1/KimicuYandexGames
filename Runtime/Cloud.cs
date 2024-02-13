@@ -75,6 +75,7 @@ namespace Kimicu.YandexGames
             else _jsonDictionary.Add(key, value);
 
             if (saveToCloud) SaveInCloud(onSuccessCallback, onErrorCallback);
+            else onSuccessCallback?.Invoke();
         }
 
         /// <summary> Saves all local data to the cloud. </summary>
