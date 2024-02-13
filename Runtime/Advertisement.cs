@@ -5,22 +5,20 @@ using Coroutine = Kimicu.YandexGames.Utils.Coroutine;
 
 namespace Kimicu.YandexGames
 {
-    using Coroutine = Utils.Coroutine;
-
     public static partial class Advertisement
     {
         public static bool AdvertisementIsAvailable { get; private set; } = true;
-
         public static bool Initialized { get; private set; } = false;
 
         private static readonly Coroutine ReloadCoroutine = new Coroutine();
 
         private const float INTERSTITIAL_AD_COOLDOWN = 70;
 
-        public static void Initialize()
+        public static void Initialize(Action onSuccessCallback = null)
         {
             ReloadCoroutine.StartRoutine(AdvertisementReloadRoutine());
             Initialized = true;
+            onSuccessCallback?.Invoke();
         }
 
         public static void ShowInterstitialAd(Action onOpenCallback = null, Action onCloseCallback = null, Action<string> onErrorCallback = null, Action onOfflineCallback = null)
@@ -88,7 +86,6 @@ namespace Kimicu.YandexGames
             #if !UNITY_EDITOR && UNITY_WEBGL
             if (value) Agava.YandexGames.StickyAd.Show();
             else Agava.YandexGames.StickyAd.Hide();
-            #elif UNITY_EDITOR
             #endif
         }
 

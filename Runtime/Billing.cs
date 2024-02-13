@@ -25,7 +25,7 @@ namespace Kimicu.YandexGames
 
         public static string PurchasedSignature => _getPurchasedProductsResponse.signature;
 
-        public static IEnumerator Initialize()
+        public static IEnumerator Initialize(Action onSuccessCallback = null)
         {
             #if !UNITY_EDITOR && UNITY_WEBGL
             Agava.YandexGames.Billing.GetProductCatalog(OnGetProductCatalogSuccessCallback, OnErrorCallback);
@@ -37,6 +37,7 @@ namespace Kimicu.YandexGames
             yield return null;
             #endif
             Initialized = true;
+            onSuccessCallback?.Invoke();
         }
 
         #if !UNITY_EDITOR && UNITY_WEBGL

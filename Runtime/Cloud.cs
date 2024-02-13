@@ -18,7 +18,7 @@ namespace Kimicu.YandexGames
         #region Initialization
 
         /// <summary> Initializes the cloud save module. </summary>
-        public static IEnumerator Initialize()
+        public static IEnumerator Initialize(Action onSuccessCallback = null)
         {
             #if UNITY_WEBGL && !UNITY_EDITOR
             Agava.YandexGames.PlayerAccount.GetCloudSaveData(OnGetCloudSuccessCallback, OnGetCloudErrorCallback);
@@ -26,6 +26,7 @@ namespace Kimicu.YandexGames
             OnGetCloudSuccessCallback(PlayerPrefs.GetString(SAVE_NAME, "{}"));
             #endif
             yield return new WaitUntil(() => Initialized);
+            onSuccessCallback?.Invoke();
         }
 
         private static void OnGetCloudSuccessCallback(string json)
