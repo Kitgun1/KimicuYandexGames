@@ -67,7 +67,7 @@ namespace Kimicu.YandexGames
         }
 
         /// <summary> Sets the value to the cloud and local or only local. </summary>
-        public static void SetValue(string key, object value, bool saveToCloud = true, Action onSuccessCallback = null, Action<string> onErrorCallback = null)
+        public static void SetValue(string key, object value, bool saveToCloud = false, Action onSuccessCallback = null, Action<string> onErrorCallback = null)
         {
             if (!Initialized) throw new Exception($"{nameof(Cloud)}. Not Initialized!");
 
@@ -102,14 +102,14 @@ namespace Kimicu.YandexGames
         public static void ClearCloudData(Action onSuccessCallback = null, Action<string> onErrorCallback = null)
         {
             if (!Initialized) throw new Exception($"{nameof(Cloud)}. Not Initialized!");
+            _json = "{}";
+            _jsonDictionary = new Dictionary<string, object>();
             #if UNITY_WEBGL && !UNITY_EDITOR
             Agava.YandexGames.PlayerAccount.SetCloudSaveData("{}", onSuccessCallback, onErrorCallback);
             #elif UNITY_EDITOR
             PlayerPrefs.SetString(SAVE_NAME, "{}");
             onSuccessCallback?.Invoke();
             #endif
-            _json = "{}";
-            _jsonDictionary = new Dictionary<string, object>();
         }
     }
 }
