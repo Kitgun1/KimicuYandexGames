@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Kimicu.YandexGames.Extension;
 using UnityEngine;
+using Object = System.Object;
 
 namespace Kimicu.YandexGames
 {
@@ -58,8 +59,14 @@ namespace Kimicu.YandexGames
             if (!Initialized) throw new Exception($"{nameof(Cloud)}. Not Initialized!");
             if (_jsonDictionary.TryGetValue(key, out object value))
             {
-                if (value.GetType() == typeof(T)) return (T)value;
-                throw new Exception($"Value is not {defaultValue.GetType()}.");
+                try
+                {
+                    return (T)Convert.ChangeType(value, typeof(T));
+                }
+                catch (Exception exception)
+                {
+                    Debug.LogError(exception);
+                }
             }
 
             Debug.Log($"Value not found, return default value.");
