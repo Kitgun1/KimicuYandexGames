@@ -35,16 +35,19 @@ namespace Kimicu.YandexGames
                 {
                     onCloseCallback?.Invoke();
                     WebApplication.InAdvert = false;
+                    AdvertisementIsAvailable = false;
                 },
                 (error) =>
                 {
                     onErrorCallback?.Invoke(error);
                     WebApplication.InAdvert = false;
+                    AdvertisementIsAvailable = false;
                 },
                 () =>
                 {
                     onOfflineCallback?.Invoke();
                     WebApplication.InAdvert = false;
+                    AdvertisementIsAvailable = false;
                 });
             #elif UNITY_EDITOR
             onOpenCallback?.Invoke();
@@ -93,6 +96,11 @@ namespace Kimicu.YandexGames
         {
             while (true)
             {
+                if (AdvertisementIsAvailable)
+                {
+                    yield return null;
+                    continue;
+                }
                 AdvertisementIsAvailable = true;
                 yield return new WaitForSecondsRealtime(INTERSTITIAL_AD_COOLDOWN);
             }
