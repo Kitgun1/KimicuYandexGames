@@ -1,0 +1,19 @@
+{
+    "name": "com.blackbox.kimicuyandexgames",
+    "version": "1.2.4",
+    "author": "Kimicu",
+    "displayName": "Kimicu Yandex",
+    "description": "Package for fast develop game in Yandex Games.",
+    "unity": "2019.1",
+    "changelogUrl": "https://github.com/Kitgun1/KimicuYandexGames/blob/main/CHANGELOG.md",
+    "readme": "https://github.com/Kitgun1/KimicuYandexGames/blob/main/README.md",
+    "license": "https://github.com/Kitgun1/KimicuYandexGames/blob/main/LICENSE",
+    "homepage": "https://github.com/Kitgun1/KimicuYandexGames",
+    "samples": [
+        {
+            "displayName": "WebGLTemplates",
+            "description": "WebGLTemplates for webGL in yandex",
+            "path": "Sample~/WebGLTemplates"
+        }
+    ]
+}

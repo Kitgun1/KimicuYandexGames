@@ -59,7 +59,6 @@ namespace Kimicu.YandexGames
         }
 
         private static void InBackgroundChange(bool inBackground) => InBackground = inBackground;
-
         private static void TryStopGame() => OnStopGame?.Invoke(InBackground || InAdvert || InPurchaseWindow || CustomValue);
     }
 }
