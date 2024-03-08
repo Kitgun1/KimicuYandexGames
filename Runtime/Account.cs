@@ -9,8 +9,7 @@ namespace Kimicu.YandexGames
         private static bool _isAuthorizedInEditor = false;
         private static bool _hasPersonalProfileDataPermissionInEditor = false;
         
-        /// <summary> The AuthorizedInBackground event occurs when authorization occurs in the background. </summary>
-        public static event Action AuthorizedInBackground;
+        private static event Action AuthorizedInBackground;
 #endif
 
         /// <summary> Use this before calling SDK methods that require authorization. </summary>
@@ -32,6 +31,7 @@ namespace Kimicu.YandexGames
 
 #region Authorize Event
 
+        /// <summary> The AuthorizedInBackground event occurs when authorization occurs in the background. </summary>
         public static void OnAuthorizedInBackgroundAdd(Action onAuthorizedInBackground)
 #if !UNITY_EDITOR && UNITY_WEBGL
             => PlayerAccount.AuthorizedInBackground += onAuthorizedInBackground;
@@ -39,6 +39,7 @@ namespace Kimicu.YandexGames
             => AuthorizedInBackground += onAuthorizedInBackground;
 #endif
 
+        /// <summary> The AuthorizedInBackground event occurs when authorization occurs in the background. </summary>
         public static void OnAuthorizedInBackgroundRemove(Action onAuthorizedInBackground)
 #if !UNITY_EDITOR && UNITY_WEBGL
             => PlayerAccount.AuthorizedInBackground -= onAuthorizedInBackground;
