@@ -62,7 +62,11 @@ namespace Kimicu.YandexGames
         public static void Initialize(Action<bool> onStopGame)
         {
             OnStopGame = onStopGame;
+#if !UNITY_EDITOR && UNITY_WEBGL
             InBackground = Agava.WebUtility.WebApplication.InBackground;
+#else
+            InBackground = false;
+#endif
             Agava.WebUtility.WebApplication.InBackgroundChangeEvent += InBackgroundChange;
         }
 
