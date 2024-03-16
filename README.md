@@ -304,20 +304,157 @@ Billing.GetPurchasedProducts(purchaseProducts => {
 
 -----
 # ⛄ Account - Аккаунт игрока на yandex games.
-Скоро напишу
+## Поля
+Используйте это перед вызовом методов SDK, требующих авторизации.
+```cs
+Account.IsAuthorized
+```
+ Разрешение на использование имени и изображения профиля из аккаунта Яндекс.
+```cs
+Account.HasPersonalProfileDataPermission
+```
+## Функции
+### Подписка и отписка на авторизацию вне игры
+Подписаться
+```cs
+Account.OnAuthorizedInBackgroundAdd(Action onAuthorizedInBackground);
+```
+Отписаться
+```cs
+Account.OnAuthorizedInBackgroundRemove(Action onAuthorizedInBackground); 
+```
+### Запросить разрешение на использование данных личного профиля
+```cs
+Account.RequestPersonalProfileDataPermission(Action onSuccessCallback = null, Action<string> onErrorCallback = null);
+```
+> onSuccessCallback - вызывается при успешном подтверждении разрешения на использование данных личного профиля 
 
+> onErrorCallback  - вызывается при отказе разрешения на использование данных личного профиля
+
+## Примечание
+Имейте в виду, что если пользователь отклоняет запрос – это навсегда. Окно запроса больше никогда не откроется.<br>
+Требуется авторизация. Используйте Account.IsAuthorize или Account.Authorize()
+
+## Пример
+```cs
+Account.RequestPersonalProfileDataPermission(ProfileDataPermisionSuccess, ProfileDataPermisionError);
+
+// TODO: что-то делаем с данными игрока
+private void ProfileDataPermisionSuccess(); 
+
+// TODO: не получили доступ к данным игрока
+private void ProfileDataPermisionError(string error); 
+```
+
+### Авторизация:
+```cs
+Account.Authorize(Action onSuccessCallback = null, Action<string> onErrorCallback = null);
+```
+> onSuccessCallback - вызывается при успешной авторизации
+
+> onErrorCallback  - вызывается при ошибке авторизации
+
+## Пример
+```cs
+Account.Authorize(SuccessAuthorize, ErrorAuthorize);
+
+// TODO: после авторизации игрока что-то делаем
+private void SuccessAuthorize(); 
+
+// TODO: Ошибка авторизации:
+private void ErrorAuthorize(string error); 
+```
 -----
 # 🌐 WebApplication - Состояние игры в браузере.
-Скоро напишу
-
+## Инициализация
+```cs
+IEnumerator WebApplication.Initialize(onStopGame);
+```
+```cs
+WebApplication.Initialize((isStopGame) => 
+{
+  AudioListener.pause = isStopGame;
+  AudioListener.volume = isStopGame ? 0 : 1;
+  Time.timeScale = isStopGame ? 0 : 1;
+});
+```
+## Функции, поля и события
+### InBackground
+Находится ли игрок вне вкладки
+```cs
+bool inBackground = WebApplication.InBackground;
+```
+### InAdvert
+Находится ли игрок в рекламе
+```cs
+bool inAdvert = WebApplication.InAdvert;
+```
+### InPurchaseWindow
+Находится ли игрок в меню покупки продукта
+```cs
+bool inPurchaseWindow = WebApplication.InPurchaseWindow;
+```
+### CustomValue
+Ваше кастомное значение, которое вы можете изменять в вашей игре
+```cs
+bool customValue = WebApplication.CustomValue;
+```
+```cs
+WebApplication.CustomValue = true;
+```
+## Примеры
+### InBackgroundChangeState
+Изменено значение InBackground
+```cs
+Action<bool> InBackgroundChangeState;
+InBackgroundChangeState += (inBackground) => Debug.Log($"inBackground: {inBackground}");
+```
+### Action<bool> InAdvertChangeState
+Изменено значение InAdvert
+```cs
+Action<bool> InAdvertChangeState;
+InAdvertChangeState += (inAdvert) => Debug.Log($"inAdvert: {inAdvert}");
+```
+### Action<bool> InPurchaseWindowChangeState
+Изменено значение InPurchaseWindow
+```cs
+Action<bool> InPurchaseWindowChangeState;
+InPurchaseWindowChangeState += (inPurchaseWindow) => Debug.Log($"inPurchaseWindow: {inPurchaseWindow}");
+```
+### Action<bool> OnCustomValueChangeState
+Изменено значение CustomValue
+```cs
+Action<bool> OnCustomValueChangeState;
+OnCustomValueChangeState += (customValue) => Debug.Log($"customValue: {customValue}");
+```
+### Action<bool> OnStopGame
+Изменено значение InBackground, InAdvert, InPurchaseWindow, CustomValue
+```cs
+Action<bool> OnStopGame;
+OnStopGame += (onStopGame) => Debug.Log($"onStopGame: {onStopGame}");
+```
 -----
 # 🫧 Shortcut - Иконки на рабочий стол.
-> Скоро напишу
-
+## Функции
+### Можно ли показать Shortcut:
+```cs
+Shortcut.CanSuggest(Action<bool> onResultCallback);
+```
+### Показать Shortcut:
+```cs
+Shortcut.Suggest(Action<bool> onResultCallback = null);
+```
 -----
 # 📽️ AdBlock - Отслеживание включенного AdBlock.
-> Скоро напишу
-
+## Функции
+### Включен ли AdBlock:
+```cs
+AdBlock.Enabled; // bool
+```
 -----
 # 🖥️ Device - Отслеживание устройства.
-> Скоро напишу
+## Функции
+### Пользователь с телефона:
+```cs
+Device.IsMobile; // bool
+```
