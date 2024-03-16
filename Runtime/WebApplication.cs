@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace Kimicu.YandexGames
 {
@@ -59,7 +60,7 @@ namespace Kimicu.YandexGames
         public static event Action<bool> OnCustomValueChangeState;
         public static event Action<bool> OnStopGame;
 
-        public static void Initialize(Action<bool> onStopGame)
+        public static void Initialize(Action<bool> onStopGame = null)
         {
             OnStopGame = onStopGame;
 #if !UNITY_EDITOR && UNITY_WEBGL
