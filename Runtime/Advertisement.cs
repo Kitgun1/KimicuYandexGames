@@ -101,8 +101,8 @@ namespace Kimicu.YandexGames
                     yield return null;
                     continue;
                 }
-                AdvertisementIsAvailable = true;
                 yield return new WaitForSecondsRealtime(INTERSTITIAL_AD_COOLDOWN);
+                AdvertisementIsAvailable = true;
             }
         }
     }
