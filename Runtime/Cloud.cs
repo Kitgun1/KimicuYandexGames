@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Kimicu.YandexGames.Extension;
+using Newtonsoft.Json;
 using UnityEngine;
 using Object = System.Object;
 
@@ -61,7 +62,9 @@ namespace Kimicu.YandexGames
             {
                 try
                 {
-                    return (T)Convert.ChangeType(value, typeof(T));
+                    if (value is T convertedValue) return convertedValue;
+                    if (value != null && typeof(T).IsAssignableFrom(value.GetType())) return (T)value;
+                    return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(value)); 
                 }
                 catch (Exception exception)
                 {

@@ -9,7 +9,6 @@ namespace Kimicu.YandexGames.Extension
     {
         private static readonly JsonSerializerSettings Settings = new()
         {
-            TypeNameHandling = TypeNameHandling.All
         };
 
         internal static Dictionary<string, object> JsonToDictionary(this string json) => JsonConvert.DeserializeObject<Dictionary<string, object>>(json, Settings);
