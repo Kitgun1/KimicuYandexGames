@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Agava.YandexGames;
+using Newtonsoft.Json;
 using UnityEngine;
 #if !UNITY_EDITOR && UNITY_WEBGL
 using UnityEngine;
@@ -15,13 +16,13 @@ namespace Kimicu.YandexGames
         private static CatalogProduct[] _catalogProducts;
         private static GetPurchasedProductsResponse _getPurchasedProductsResponse;
 
-#if !UNITY_EDITOR && UNITY_WEBGL
         private static bool _productCatalogSuccesses;
         private static bool _purchasedProductsSuccesses;
-#endif
+
         private static bool _relevancePurchaseProductData = false;
-        
-        private static IEnumerable<PurchasedProduct> PurchasedProducts => _getPurchasedProductsResponse.purchasedProducts;
+
+        private static IEnumerable<PurchasedProduct> PurchasedProducts =>
+            _getPurchasedProductsResponse.purchasedProducts;
 
         public static bool Initialized { get; private set; } = false;
 
@@ -30,20 +31,19 @@ namespace Kimicu.YandexGames
 
         public static IEnumerator Initialize(Action onSuccessCallback = null)
         {
-            #if !UNITY_EDITOR && UNITY_WEBGL
+#if !UNITY_EDITOR && UNITY_WEBGL
             Agava.YandexGames.Billing.GetProductCatalog(OnGetProductCatalogSuccessCallback, OnErrorCallback);
             Agava.YandexGames.Billing.GetPurchasedProducts(OnGetPurchasedProductsSuccessCallback, OnErrorCallback);
 
+#else
+            OnGetProductCatalogSuccessCallback(LoadProductCatalog());
+            OnGetPurchasedProductsSuccessCallback(LoadPurchasedProducts());
+#endif
             yield return new WaitUntil(() => _purchasedProductsSuccesses && _productCatalogSuccesses);
-            #else
-            // TODO: Добавить тестовые покупки для UNITY_EDITOR
-            yield return null;
-            #endif
             Initialized = true;
             onSuccessCallback?.Invoke();
         }
 
-#if !UNITY_EDITOR && UNITY_WEBGL
         private static void OnGetProductCatalogSuccessCallback(GetProductCatalogResponse response)
         {
             _catalogProducts = response.products;
@@ -58,7 +58,6 @@ namespace Kimicu.YandexGames
         }
 
         private static void OnErrorCallback(string error) => Debug.LogError($"Billing error: {error}");
-#endif
 
         public static void GetPurchasedProducts(Action<PurchasedProduct[]> onSuccessCallback = null, Action<string> onErrorCallback = null)
         {
@@ -79,6 +78,8 @@ namespace Kimicu.YandexGames
                 onErrorCallback?.Invoke(error);
             });
 #else
+            OnGetPurchasedProductsSuccessCallback(LoadPurchasedProducts());
+            onSuccessCallback?.Invoke(LoadPurchasedProducts().purchasedProducts.ToArray());
 #endif
         }
 
@@ -99,7 +100,23 @@ namespace Kimicu.YandexGames
                 onErrorCallback?.Invoke(error);
             }, developerPayload);
 #else
-            // TODO: Добавить тестовые подтверждения покупок для UNITY_EDITOR
+            _purchasedProductsSuccesses = false;
+            _relevancePurchaseProductData = false;
+            AddPurchasedProduct(productId);
+            OnGetPurchasedProductsSuccessCallback(LoadPurchasedProducts());
+            CatalogProduct catalogProduct = LoadProductCatalog().products.First(i => i.id == productId);
+            PurchaseProductResponse purchaseProductResponse = new()
+            {
+                signature = Guid.NewGuid().ToString(),
+                purchaseData = new PurchasedProduct()
+                {
+                    developerPayload = "",
+                    purchaseTime = DateTime.Now.ToString("g"),
+                    productID = catalogProduct.id,
+                    purchaseToken = Guid.NewGuid().ToString()
+                }
+            };
+            onSuccessCallback?.Invoke(purchaseProductResponse);
 #endif
         }
 
@@ -116,8 +133,58 @@ namespace Kimicu.YandexGames
                 Agava.YandexGames.Billing.GetPurchasedProducts(OnGetPurchasedProductsSuccessCallback, OnErrorCallback);
             });
 #else
-            // TODO: Добавить тестовые покупки для UNITY_EDITOR
+            ConsumePurchasedProduct(purchasedProductToken);
+            onSuccessCallback?.Invoke();
+            OnGetPurchasedProductsSuccessCallback(LoadPurchasedProducts());
 #endif
+        }
+
+        private static GetProductCatalogResponse LoadProductCatalog() =>
+            JsonConvert.DeserializeObject<GetProductCatalogResponse>(PlayerPrefs.GetString("catalog_products",
+                JsonConvert.SerializeObject(new GetProductCatalogResponse { products = new CatalogProduct[] { } })));
+
+        private static GetPurchasedProductsResponse LoadPurchasedProducts() =>
+            JsonConvert.DeserializeObject<GetPurchasedProductsResponse>(PlayerPrefs.GetString("purchased_products",
+                JsonConvert.SerializeObject(new GetPurchasedProductsResponse
+                {
+                    signature = Guid.NewGuid().ToString(), 
+                    purchasedProducts = new PurchasedProduct[] { }
+                })));
+
+        private static void AddPurchasedProduct(string productId)
+        {
+            CatalogProduct catalogProduct = LoadProductCatalog().products.First(i => i.id == productId);
+            var products = LoadPurchasedProducts().purchasedProducts.ToList();
+            var token = Guid.NewGuid().ToString();
+            products.Add(new PurchasedProduct
+            {
+                developerPayload = "",
+                purchaseTime = DateTime.Now.ToString("g"),
+                productID = catalogProduct.id,
+                purchaseToken = token
+            });
+            
+            PlayerPrefs.SetString("purchased_products", JsonConvert.SerializeObject(new GetPurchasedProductsResponse
+            {
+                signature = Guid.NewGuid().ToString(), 
+                purchasedProducts = products.ToArray()
+            }));
+            OnGetPurchasedProductsSuccessCallback(LoadPurchasedProducts());
+        }
+
+        private static void ConsumePurchasedProduct(string purchasedProductToken)
+        {
+            var purchasedProduct = LoadPurchasedProducts().purchasedProducts.First(i => i.purchaseToken == purchasedProductToken);
+            var products = LoadPurchasedProducts().purchasedProducts.ToList();
+            products.RemoveAll(p => p.purchaseToken == purchasedProduct.purchaseToken);
+
+            GetPurchasedProductsResponse saveValue = new()
+            {
+                signature = Guid.NewGuid().ToString(),
+                purchasedProducts = products.ToArray()
+            };
+            PlayerPrefs.SetString("purchased_products", JsonConvert.SerializeObject(saveValue));
+            OnGetPurchasedProductsSuccessCallback(saveValue);
         }
     }
 }

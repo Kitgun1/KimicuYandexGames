@@ -209,7 +209,7 @@ Advertisement.StickySetActive(bool value);
 # 💲 Billing 
 ## Инициализация
 ```cs
-IEnumerator Billing.Initialize(onSuccessCallback);
+IEnumerator Billing.Initialize(onSuccessCallback, catalogInEditor, purchasedProductsInEditor);
 ```
 ## Поля
 

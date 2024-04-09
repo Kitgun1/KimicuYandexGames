@@ -9,14 +9,36 @@ namespace Kimicu.YandexGames
     {
         public static bool IsRunningOnYandex => Agava.YandexGames.YandexGamesSdk.IsRunningOnYandex;
         public static bool CallbackLogging => Agava.YandexGames.YandexGamesSdk.CallbackLogging;
-        public static bool IsInitialized => Agava.YandexGames.YandexGamesSdk.IsInitialized;
-        public static YandexGamesEnvironment Environment => Agava.YandexGames.YandexGamesSdk.Environment;
+        public static bool IsInitialized =>
+#if !UNITY_EDITOR && UNITY_WEBGL
+            Agava.YandexGames.YandexGamesSdk.IsInitialized;
+#else
+            _isInitialized;
+#endif
+
+#if UNITY_EDITOR
+        private static bool _isInitialized;
+#endif
+
+        public static YandexGamesEnvironment Environment =>
+#if !UNITY_EDITOR && UNITY_WEBGL
+            Agava.YandexGames.YandexGamesSdk.Environment;
+#else
+            new()
+            {
+                app = new YandexGamesEnvironment.App { id = "editor" },
+                browser = new YandexGamesEnvironment.Browser { lang = "ru" },
+                payload = "editor",
+                i18n = new YandexGamesEnvironment.Internationalization { lang = "ru", tld = "https://yandex.ru/games" }
+            };
+#endif
 
         public static IEnumerator Initialize(Action onSuccessCallback = null)
         {
 #if !UNITY_EDITOR && UNITY_WEBGL
             yield return Agava.YandexGames.YandexGamesSdk.Initialize(onSuccessCallback);
 #else
+            _isInitialized = true;
             onSuccessCallback?.Invoke();
             yield break;
 #endif
