@@ -16,7 +16,7 @@
 ```
 https://github.com/Kitgun1/KimicuYandexGames.git
 ```
-3) PackageManager > + > Add package by name... <br>
+2) PackageManager > + > Add package by name... <br>
 ```
 com.unity.nuget.newtonsoft-json
 ```
