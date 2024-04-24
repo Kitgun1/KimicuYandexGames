@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Kimicu.YandexGames.Extension;
 using Newtonsoft.Json;
 using UnityEngine;
-using Object = System.Object;
 
 namespace Kimicu.YandexGames
 {
@@ -15,7 +14,7 @@ namespace Kimicu.YandexGames
 
         private const string SAVE_NAME = "Save";
 
-        public static bool Initialized { get; private set; } = false;
+        public static bool Initialized { get; private set; }
 
         #region Initialization
 
@@ -88,6 +87,12 @@ namespace Kimicu.YandexGames
             else onSuccessCallback?.Invoke();
         }
 
+        public static bool HasKey(string key)
+        {
+            if (!Initialized) throw new Exception($"{nameof(Cloud)}. Not Initialized!");
+            return _jsonDictionary.ContainsKey(key);
+        }
+        
         /// <summary> Saves all local data to the cloud. </summary>
         public static void SaveInCloud(Action onSuccessCallback = null, Action<string> onErrorCallback = null)
         {
