@@ -458,3 +458,14 @@ AdBlock.Enabled; // bool
 ```cs
 Device.IsMobile; // bool
 ```
+-----
+# 🖥️ Fags - Удаленные флаги.
+## Функции
+### Все флаги:
+```cs
+Flags.GetFlags(Action<Dictionary<string, string>> onSuccessCallback);
+```
+### Получить флаг по ключу:
+```cs
+Flags.GetFlag(string key, string defaultValue = default, Action<string> onSuccessCallback = null); 
+```

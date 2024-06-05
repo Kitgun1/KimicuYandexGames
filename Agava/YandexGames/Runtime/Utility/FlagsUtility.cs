@@ -23,10 +23,10 @@ namespace Utility
             if (stringPairsToSerialize == null)
                 return "[]";
 
-            var jsonStringBuilder = new StringBuilder();
+            StringBuilder jsonStringBuilder = new StringBuilder();
             jsonStringBuilder.Append('[');
 
-            foreach (KeyValuePair<string, string> pair in stringPairsToSerialize)
+            foreach (var pair in stringPairsToSerialize)
                 jsonStringBuilder.Append($"{{name: \"{pair.Key}\", value: \"{pair.Value}\"}},");
 
             if (stringPairsToSerialize.Count() > 0)
