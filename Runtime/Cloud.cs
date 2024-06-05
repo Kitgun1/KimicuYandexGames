@@ -94,7 +94,11 @@ namespace Kimicu.YandexGames
         }
         
         /// <summary> Saves all local data to the cloud. </summary>
-        public static void SaveInCloud(Action onSuccessCallback = null, Action<string> onErrorCallback = null)
+        /// <param name="flush">
+        /// Determines the order in which data is sent. If set to "true", the data will be sent to the server immediately;
+        /// “false” (default value) - the request to send data will be queued.
+        /// </param>
+        public static void SaveInCloud(Action onSuccessCallback = null, Action<string> onErrorCallback = null, bool flush = false)
         {
             if (!Initialized) throw new Exception($"{nameof(Cloud)}. Not Initialized!");
             _json = _jsonDictionary.DictionaryToJson();
@@ -106,7 +110,7 @@ namespace Kimicu.YandexGames
             }
 
             #if UNITY_WEBGL && !UNITY_EDITOR
-            Agava.YandexGames.PlayerAccount.SetCloudSaveData(jsonToYandex, onSuccessCallback, onErrorCallback);
+            Agava.YandexGames.PlayerAccount.SetCloudSaveData(jsonToYandex, flush, onSuccessCallback, onErrorCallback);
             #elif UNITY_EDITOR
             PlayerPrefs.SetString(SAVE_NAME, jsonToYandex);
             onSuccessCallback?.Invoke();
@@ -120,7 +124,7 @@ namespace Kimicu.YandexGames
             _json = "{}";
             _jsonDictionary = new Dictionary<string, object>();
             #if UNITY_WEBGL && !UNITY_EDITOR
-            Agava.YandexGames.PlayerAccount.SetCloudSaveData("{}", onSuccessCallback, onErrorCallback);
+            Agava.YandexGames.PlayerAccount.SetCloudSaveData("{}", false, onSuccessCallback, onErrorCallback);
             #elif UNITY_EDITOR
             PlayerPrefs.SetString(SAVE_NAME, "{}");
             onSuccessCallback?.Invoke();
