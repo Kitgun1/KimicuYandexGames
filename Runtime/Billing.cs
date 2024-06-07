@@ -108,7 +108,7 @@ namespace Kimicu.YandexGames
             PurchaseProductResponse purchaseProductResponse = new()
             {
                 signature = Guid.NewGuid().ToString(),
-                purchaseData = new PurchasedProduct()
+                purchaseData = new PurchasedProduct
                 {
                     developerPayload = "",
                     purchaseTime = DateTime.Now.ToString("g"),

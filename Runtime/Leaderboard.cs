@@ -26,7 +26,7 @@ public static class Leaderboard
     private const int CompetingEntriesAmount = 10;
     private const int TopEntriesAmount = 20;
 
-    public static IEnumerator Initialize()
+    public static IEnumerator Initialize(int delayUpdate = 100)
     {
         if (_initialize)
         {
@@ -44,7 +44,7 @@ public static class Leaderboard
 
         yield return UpdateLeaderboard();
 
-        UpdateRoutine.StartRoutine(DelayUpdate(300));
+        UpdateRoutine.StartRoutine(DelayUpdate(delayUpdate));
 
         _initialize = true;
     }
@@ -121,10 +121,7 @@ public static class Leaderboard
         }, OnError);
     }
 
-    public static void SetScore(
-        int score, Action onSuccessCallback = null, Action<string> onErrorCallback = null,
-        string extraData = ""
-    )
+    public static void SetScore(int score, Action onSuccessCallback = null, Action<string> onErrorCallback = null, string extraData = "")
     {
 #if UNITY_EDITOR
         onSuccessCallback?.Invoke();
