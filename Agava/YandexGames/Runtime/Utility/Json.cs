@@ -16,12 +16,8 @@ namespace Agava.YandexGames.Utility
             var jsonStringBuilder = new StringBuilder();
             jsonStringBuilder.Append('{');
 
-            Debug.Log("Pairs: " + stringPairsToSerialize);
-
             foreach (KeyValuePair<string, string> pair in stringPairsToSerialize)
             {
-                Debug.Log("Key: " + pair.Key);
-                Debug.Log("Value: " + pair.Value);
                 jsonStringBuilder.Append($"\"{pair.Key}\":\"{pair.Value}\",");
             }
 
@@ -29,8 +25,6 @@ namespace Agava.YandexGames.Utility
                 jsonStringBuilder.Length -= 1;
 
             jsonStringBuilder.Append('}');
-
-            Debug.Log("Builder: " + jsonStringBuilder);
 
             return jsonStringBuilder.ToString();
         }
