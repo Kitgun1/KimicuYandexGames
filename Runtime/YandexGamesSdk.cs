@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using Agava.YandexGames;
 using UnityEngine;
 
@@ -33,11 +34,12 @@ namespace Kimicu.YandexGames
             };
 #endif
 
-        public static IEnumerator Initialize(Action onSuccessCallback = null)
+        public static IEnumerator Initialize(Action onSuccessCallback = null, Dictionary<string, string> defaultFlags = null)
         {
 #if !UNITY_EDITOR && UNITY_WEBGL
             yield return Agava.YandexGames.YandexGamesSdk.Initialize(onSuccessCallback);
 #else
+            Flags.InitializeInEditor(defaultFlags);
             _isInitialized = true;
             onSuccessCallback?.Invoke();
             yield break;

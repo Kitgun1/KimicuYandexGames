@@ -469,3 +469,13 @@ Flags.GetFlags(Action<Dictionary<string, string>> onSuccessCallback);
 ```cs
 Flags.GetFlag(string key, string defaultValue = default, Action<string> onSuccessCallback = null); 
 ```
+### Как проверять в Editor:
+1) Файл с флагами лежит в папке:
+```jsonpath
+"Название проекта"/EditorCloud/flags.txt
+```
+2) Если файла или папки нет, то нужно запустить игру и вызвать метод и проверьте наличие файла еще раз 
+```csharp
+YandexGamesSdk.Initialize();
+```
+3) Далее вы можете просто менять значение в файле во время игры и это будет подгружаться в проект
