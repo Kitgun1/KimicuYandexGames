@@ -1,0 +1,16 @@
+{
+    "name": "KimicuYandexGames.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:b3f991bd2c0c1254b985e7c5e45a81a4"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
