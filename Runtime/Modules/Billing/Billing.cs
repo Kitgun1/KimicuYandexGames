@@ -31,10 +31,10 @@ namespace Kimicu.YandexGames
 
         public static IEnumerator Initialize(Action onSuccessCallback = null)
         {
+            if (!YandexGamesSdk.IsInitialized) throw new Exception("YandexGamesSdk not initialized!");
 #if !UNITY_EDITOR && UNITY_WEBGL
             Agava.YandexGames.Billing.GetProductCatalog(OnGetProductCatalogSuccessCallback, OnErrorCallback);
             Agava.YandexGames.Billing.GetPurchasedProducts(OnGetPurchasedProductsSuccessCallback, OnErrorCallback);
-
 #else
             OnGetProductCatalogSuccessCallback(LoadProductCatalog());
             OnGetPurchasedProductsSuccessCallback(LoadPurchasedProducts());
@@ -61,6 +61,7 @@ namespace Kimicu.YandexGames
 
         public static void GetPurchasedProducts(Action<PurchasedProduct[]> onSuccessCallback = null, Action<string> onErrorCallback = null)
         {
+            if (!Initialized) throw new Exception("Billing not initialized!");
             if (_relevancePurchaseProductData)
             {
                 onSuccessCallback?.Invoke(PurchasedProducts.ToArray());
@@ -85,6 +86,7 @@ namespace Kimicu.YandexGames
 
         public static void PurchaseProduct(string productId, Action<PurchaseProductResponse> onSuccessCallback = null, Action<string> onErrorCallback = null, string developerPayload = "")
         {
+            if (!Initialized) throw new Exception("Billing not initialized!");
 #if !UNITY_EDITOR && UNITY_WEBGL
             _purchasedProductsSuccesses = false;
             _relevancePurchaseProductData = false;
@@ -122,6 +124,7 @@ namespace Kimicu.YandexGames
 
         public static void ConsumeProduct(string purchasedProductToken, Action onSuccessCallback = null, Action<string> onErrorCallback = null)
         {
+            if (!Initialized) throw new Exception("Billing not initialized!");
 #if !UNITY_EDITOR && UNITY_WEBGL
             Agava.YandexGames.Billing.ConsumeProduct(purchasedProductToken, () =>
             {

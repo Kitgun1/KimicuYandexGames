@@ -11,21 +11,24 @@ namespace Kimicu.YandexGames
     public static class Flags
     {
         public static Dictionary<string, string> DefaultFlagsInEditor = new Dictionary<string, string>();
-        
+
+#if UNITY_EDITOR
         private const string FILE_NAME = "flags";
+#endif
 
         internal static void InitializeInEditor(Dictionary<string, string> defaultFlags = null)
         {
             DefaultFlagsInEditor = defaultFlags ?? new Dictionary<string, string>()
             {
-                {"example_key", "example_value" },
-                {"example_key2", "example_value2" },
+                { "example_key", "example_value" },
+                { "example_key2", "example_value2" },
             };
             GetFlags(response => Debug.Log($"flags: {Json.Serialize(response)}"));
         }
-        
+
         public static void GetFlags(Action<Dictionary<string, string>> onSuccessCallback)
         {
+            if (!YandexGamesSdk.IsInitialized) throw new Exception("YandexGamesSdk not initialized!");
 #if !UNITY_EDITOR && UNITY_WEBGL
             FlagsUtility.GetFlagsCollection(s => onSuccessCallback?.Invoke((Dictionary<string, string>)s));
 #else
@@ -38,6 +41,7 @@ namespace Kimicu.YandexGames
 
         public static void GetFlag(string key, string defaultValue = default, Action<string> onSuccessCallback = null)
         {
+            if (!YandexGamesSdk.IsInitialized) throw new Exception("YandexGamesSdk not initialized!");
 #if !UNITY_EDITOR && UNITY_WEBGL
             FlagsUtility.GetFlagsCollection(s =>
             {
