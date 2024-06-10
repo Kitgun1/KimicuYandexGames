@@ -39,8 +39,8 @@ namespace Kimicu.YandexGames
 #if !UNITY_EDITOR && UNITY_WEBGL
             yield return Agava.YandexGames.YandexGamesSdk.Initialize(onSuccessCallback);
 #else
-            Flags.InitializeInEditor(defaultFlags);
             _isInitialized = true;
+            Flags.InitializeInEditor(defaultFlags);
             onSuccessCallback?.Invoke();
             yield break;
 #endif
