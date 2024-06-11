@@ -409,7 +409,7 @@ const library = {
                     var price = product.price;
                     var priceCurrencyCode = product.priceCurrencyCode;
                     var priceValue = product.priceValue;
-                    var priceCurrencyPicture = product.getPriceCurrencyImage();
+                    var priceCurrencyPicture = product.getPriceCurrencyImage('medium');
                     var title = product.title;
 
                     productList.push({
