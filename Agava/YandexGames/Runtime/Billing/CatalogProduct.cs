@@ -19,6 +19,8 @@ namespace Agava.YandexGames
         [field: Preserve]
         public string priceValue;
         [field: Preserve]
+        public string priceCurrencyPicture;
+        [field: Preserve]
         public string title;
     }
 }

@@ -18,6 +18,8 @@ namespace Kimicu.YandexGames
         
         private static PurchasedProduct[] _purchasedProducts;
         private static bool _purchasedProductsIsActual = false;
+        private static bool _catalogProductsIsActual = false;
+        private static bool _waitUpdatePurchasedProducts = false;
         
         private static readonly Coroutine PurchasedProductUpdateCoroutine = new Coroutine();
 
@@ -28,15 +30,12 @@ namespace Kimicu.YandexGames
         /// <exception cref="Exception"> If YandexGamesSdk is not initialized. </exception>
         public static IEnumerator Initialize()
         {
-            PurchasedProductUpdateCoroutine.StartRoutine(PurchasedProductActualUpdate());
             if (!YandexGamesSdk.IsInitialized) throw new Exception("YandexGamesSdk not initialized!");
+            if (Initialized) throw new Exception("Billing is initialized!");
 
-            bool catalogActual = false;
-            bool purchasedProductsActual = false;
-            
 #if !UNITY_EDITOR && UNITY_WEBGL // Yandex //
             Agava.YandexGames.Billing.GetProductCatalog(SuccessCatalogCallback, OnGetProductCatalogError);
-            Agava.YandexGames.Billing.GetPurchasedProducts(SuccessPurchasedProductCallback, OnGetPurchasedProductsError);
+            Agava.YandexGames.Billing.GetPurchasedProducts(OnGetPurchasedProductsSuccess, OnGetPurchasedProductsError);
 #endif
 #if UNITY_EDITOR && UNITY_WEBGL // Editor //
             // Catalog Load
@@ -70,21 +69,17 @@ namespace Kimicu.YandexGames
                 purchasedProducts = purchasedProducts,
                 signature = Guid.NewGuid().ToString()
             };
-            SuccessPurchasedProductCallback(purchasedProductsResponse);
+            OnGetPurchasedProductsSuccess(purchasedProductsResponse);
 #endif
-            yield return new WaitUntil(() => catalogActual && purchasedProductsActual);
+            yield return new WaitUntil(() => _catalogProductsIsActual && _purchasedProductsIsActual);
             Initialized = true;
+            PurchasedProductUpdateCoroutine.StartRoutine(PurchasedProductActualUpdate());
             yield break;
 
             void SuccessCatalogCallback(GetProductCatalogResponse response)
             {
                 OnGetProductCatalogSuccess(response);
-                catalogActual = true;
-            }
-            void SuccessPurchasedProductCallback(GetPurchasedProductsResponse response)
-            {
-                OnGetPurchasedProductsSuccess(response);
-                purchasedProductsActual = true;
+                _catalogProductsIsActual = true;
             }
         }
 
@@ -210,9 +205,10 @@ namespace Kimicu.YandexGames
         {
             while (true)
             {
-                yield return new WaitUntil(() => !_purchasedProductsIsActual);
-#if !UNITY_EDITOR && UNITY_WEBGL // Yandex //
-                Agava.YandexGames.Billing.GetPurchasedProducts(OnGetPurchasedProductsSuccess, OnGetPurchasedProductsError);
+                yield return new WaitUntil(() => !_purchasedProductsIsActual && _waitUpdatePurchasedProducts);
+                _waitUpdatePurchasedProducts = true;
+#if UNITY_EDITOR && UNITY_WEBGL // Yandex //
+                Agava.YandexGames.Billing.GetPurchasedProducts(SuccessCallback, ErrorCallback);
 #endif
 #if UNITY_EDITOR && UNITY_WEBGL // Editor //
                 var purchasedProducts = new PurchasedProduct[] { };
@@ -224,8 +220,20 @@ namespace Kimicu.YandexGames
                     purchasedProducts = purchasedProducts,
                     signature = Guid.NewGuid().ToString()
                 };
-                OnGetPurchasedProductsSuccess(purchasedProductsResponse);
+                SuccessCallback(purchasedProductsResponse);
 #endif
+            }
+
+            void SuccessCallback(GetPurchasedProductsResponse response)
+            {
+                OnGetPurchasedProductsSuccess(response);
+                _waitUpdatePurchasedProducts = false;
+            }
+
+            void ErrorCallback(string error)
+            {
+                OnGetPurchasedProductsError(error);
+                _waitUpdatePurchasedProducts = false;
             }
         }
 
