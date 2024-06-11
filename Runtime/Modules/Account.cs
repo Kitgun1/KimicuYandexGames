@@ -5,12 +5,10 @@ namespace Kimicu.YandexGames
 {
     public static partial class Account
     {
-#if UNITY_EDITOR
         private static bool _isAuthorizedInEditor = false;
         private static bool _hasPersonalProfileDataPermissionInEditor = false;
         
         private static event Action AuthorizedInBackground;
-#endif
 
         /// <summary> Use this before calling SDK methods that require authorization. </summary>
         public static bool IsAuthorized =>

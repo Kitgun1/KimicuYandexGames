@@ -12,9 +12,7 @@ namespace Kimicu.YandexGames
     {
         public static Dictionary<string, string> DefaultFlagsInEditor = new Dictionary<string, string>();
 
-#if UNITY_EDITOR
         private const string FILE_NAME = "flags";
-#endif
 
         internal static void InitializeInEditor(Dictionary<string, string> defaultFlags = null)
         {

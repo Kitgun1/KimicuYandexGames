@@ -14,11 +14,10 @@ namespace Kimicu.YandexGames
 
         private const float INTERSTITIAL_AD_COOLDOWN = 70;
 
-        public static void Initialize(Action onSuccessCallback = null)
+        public static void Initialize()
         {
             ReloadCoroutine.StartRoutine(AdvertisementReloadRoutine());
             Initialized = true;
-            onSuccessCallback?.Invoke();
         }
 
         public static void ShowInterstitialAd(Action onOpenCallback = null, Action onCloseCallback = null, Action<string> onErrorCallback = null, Action onOfflineCallback = null)

@@ -17,9 +17,7 @@ namespace Kimicu.YandexGames
             _isInitialized;
 #endif
 
-#if UNITY_EDITOR
         private static bool _isInitialized;
-#endif
 
         public static YandexGamesEnvironment Environment =>
 #if !UNITY_EDITOR && UNITY_WEBGL
