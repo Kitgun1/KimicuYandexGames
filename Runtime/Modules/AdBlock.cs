@@ -1,4 +1,7 @@
-﻿namespace Kimicu.YandexGames
+﻿using Agava.YandexGames;
+using Kimicu.YandexGames.Extension;
+
+namespace Kimicu.YandexGames
 {
     public static class AdBlock
     {
@@ -7,7 +10,7 @@
 #if !UNITY_EDITOR && UNITY_WEBGL
             Agava.WebUtility.AdBlock.Enabled;
 #else
-            false;
+            FileExtensions.LoadObject("adblock", false);
 #endif
     }
 }

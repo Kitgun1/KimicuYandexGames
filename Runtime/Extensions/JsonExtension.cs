@@ -7,12 +7,8 @@ namespace Kimicu.YandexGames.Extension
 {
     public static class JsonExtension
     {
-        private static readonly JsonSerializerSettings Settings = new()
-        {
-        };
-
-        internal static Dictionary<string, object> JsonToDictionary(this string json) => JsonConvert.DeserializeObject<Dictionary<string, object>>(json, Settings);
-        internal static string DictionaryToJson(this Dictionary<string, object> dictionary) => JsonConvert.SerializeObject(dictionary, Settings);
+        public static Dictionary<string, object> JsonToDictionary(this string json) => JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+        public static string DictionaryToJson(this Dictionary<string, object> dictionary) => JsonConvert.SerializeObject(dictionary);
         
         public static bool IsValidJson(this string jsonString)
         {

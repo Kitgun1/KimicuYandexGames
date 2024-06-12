@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using Agava.YandexGames;
+using Kimicu.YandexGames.Extension;
+using Kimicu.YandexGames.Utils;
 using UnityEngine;
 
 namespace Kimicu.YandexGames
@@ -23,13 +25,7 @@ namespace Kimicu.YandexGames
 #if !UNITY_EDITOR && UNITY_WEBGL
             Agava.YandexGames.YandexGamesSdk.Environment;
 #else
-            new()
-            {
-                app = new YandexGamesEnvironment.App { id = "editor" },
-                browser = new YandexGamesEnvironment.Browser { lang = "ru" },
-                payload = "editor",
-                i18n = new YandexGamesEnvironment.Internationalization { lang = "ru", tld = "https://yandex.ru/games" }
-            };
+            FileExtensions.LoadObject("environment", new YandexGamesEnvironment());
 #endif
 
         public static IEnumerator Initialize(Action onSuccessCallback = null, Dictionary<string, string> defaultFlags = null)
@@ -38,7 +34,6 @@ namespace Kimicu.YandexGames
             yield return Agava.YandexGames.YandexGamesSdk.Initialize(onSuccessCallback);
 #else
             _isInitialized = true;
-            Flags.InitializeInEditor(defaultFlags);
             onSuccessCallback?.Invoke();
             yield break;
 #endif

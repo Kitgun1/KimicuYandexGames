@@ -24,7 +24,7 @@ namespace Kimicu.YandexGames
             #if UNITY_WEBGL && !UNITY_EDITOR
             Agava.YandexGames.PlayerAccount.GetCloudSaveData(OnGetCloudSuccessCallback, OnGetCloudErrorCallback);
             #elif UNITY_EDITOR
-            OnGetCloudSuccessCallback(PlayerPrefs.GetString(SAVE_NAME, "{}"));
+            OnGetCloudSuccessCallback(FileExtensions.LoadObject(SAVE_NAME, "{}"));
             #endif
             yield return new WaitUntil(() => Initialized);
             onSuccessCallback?.Invoke();
@@ -112,7 +112,7 @@ namespace Kimicu.YandexGames
             #if UNITY_WEBGL && !UNITY_EDITOR
             Agava.YandexGames.PlayerAccount.SetCloudSaveData(jsonToYandex, flush, onSuccessCallback, onErrorCallback);
             #elif UNITY_EDITOR
-            PlayerPrefs.SetString(SAVE_NAME, jsonToYandex);
+            FileExtensions.SaveObject(SAVE_NAME, jsonToYandex);
             onSuccessCallback?.Invoke();
             #endif
         }
@@ -126,7 +126,7 @@ namespace Kimicu.YandexGames
             #if UNITY_WEBGL && !UNITY_EDITOR
             Agava.YandexGames.PlayerAccount.SetCloudSaveData("{}", false, onSuccessCallback, onErrorCallback);
             #elif UNITY_EDITOR
-            PlayerPrefs.SetString(SAVE_NAME, "{}");
+            FileExtensions.SaveObject(SAVE_NAME, "{}");
             onSuccessCallback?.Invoke();
             #endif
         }

@@ -1,38 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Agava.YandexGames.Utility;
+using Kimicu.YandexGames.Extension;
 using Kimicu.YandexGames.Utils;
+using Newtonsoft.Json;
 using UnityEngine;
-using Utility;
 
 namespace Kimicu.YandexGames
 {
     public static class Flags
     {
-        public static Dictionary<string, string> DefaultFlagsInEditor = new Dictionary<string, string>();
-
         private const string FILE_NAME = "flags";
-
-        internal static void InitializeInEditor(Dictionary<string, string> defaultFlags = null)
-        {
-            DefaultFlagsInEditor = defaultFlags ?? new Dictionary<string, string>()
-            {
-                { "example_key", "example_value" },
-                { "example_key2", "example_value2" },
-            };
-            GetFlags(response => Debug.Log($"flags: {Json.Serialize(response)}"));
-        }
 
         public static void GetFlags(Action<Dictionary<string, string>> onSuccessCallback)
         {
             if (!YandexGamesSdk.IsInitialized) throw new Exception("YandexGamesSdk not initialized!");
-#if !UNITY_EDITOR && UNITY_WEBGL
-            FlagsUtility.GetFlagsCollection(s => onSuccessCallback?.Invoke((Dictionary<string, string>)s));
-#else
-            Debug.Log(Json.Serialize(DefaultFlagsInEditor));
-            string json = FileUtility.ReadFile(FILE_NAME, Json.Serialize(DefaultFlagsInEditor), true);
-            var flags = (Dictionary<string, string>)Json.Deserialize(json);
+#if !UNITY_EDITOR && UNITY_WEBGL // Yandex //
+            Agava.YandexGames.Flags.Get(flagsJson =>
+            {
+                Debug.Log($"flags - {flagsJson}");
+                onSuccessCallback?.Invoke(JsonConvert.DeserializeObject<Dictionary<string, string>>(flagsJson));
+            });
+#endif
+#if UNITY_EDITOR && UNITY_WEBGL // Editor //
+            var flags = FileExtensions.LoadObject(FILE_NAME, new Dictionary<string, string>()
+            {
+                { "example_key", "example_value" },
+                { "example_key2", "example_value2" },
+            });
             onSuccessCallback?.Invoke(flags);
 #endif
         }
@@ -40,28 +34,15 @@ namespace Kimicu.YandexGames
         public static void GetFlag(string key, string defaultValue = default, Action<string> onSuccessCallback = null)
         {
             if (!YandexGamesSdk.IsInitialized) throw new Exception("YandexGamesSdk not initialized!");
-#if !UNITY_EDITOR && UNITY_WEBGL
-            FlagsUtility.GetFlagsCollection(s =>
+#if !UNITY_EDITOR && UNITY_WEBGL // Yandex //
+            Agava.YandexGames.Flags.Get(response =>
             {
-                var dictionary = (Dictionary<string, string>)s;
+                var dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(response);
                 onSuccessCallback?.Invoke(dictionary.GetValueOrDefault(key, defaultValue));
             });
-#else
-            GetFlags(response =>
-            {
-                if (response.TryGetValue(key, out string value))
-                {
-                    onSuccessCallback?.Invoke(value);
-                }
-                else
-                {
-                    string json = FileUtility.ReadFile(FILE_NAME, Json.Serialize(DefaultFlagsInEditor), true);
-                    var flags = (Dictionary<string, string>)Json.Deserialize(json);
-                    flags.Add(key, defaultValue);
-                    FileUtility.EditOrCreateFile(FILE_NAME, Json.Serialize(flags));
-                    onSuccessCallback?.Invoke(defaultValue);
-                }
-            });
+#endif
+#if UNITY_EDITOR && UNITY_WEBGL // Editor //
+            GetFlags(response => onSuccessCallback?.Invoke(response.GetValueOrDefault(key, defaultValue)));
 #endif
         }
     }

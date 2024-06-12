@@ -1,10 +1,12 @@
 {
-    "name": "KimicuYandexGames",
-    "rootNamespace": "Kimicu.YandexGames",
+    "name": "KimicuYandexGames.Runtime",
+    "rootNamespace": "Kimicu.YandexGames.Runtime",
     "references": [
         "GUID:ef7e0e3eb213f324c87b70a782844fb6",
         "GUID:8f22d867f50f3884892cfde18442bbf9",
-        "GUID:5486940dd4146634f9d474c1c474551e"
+        "GUID:5486940dd4146634f9d474c1c474551e",
+        "GUID:b6eb230989f23034f92263c73c10ad15",
+        "GUID:4ba8408c0a2291742a0827e9780f4308"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
