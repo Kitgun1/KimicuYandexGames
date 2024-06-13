@@ -1,4 +1,5 @@
 ﻿#if UNITY_EDITOR
+using System.Collections.Generic;
 using Agava.YandexGames;
 using Kimicu.YandexGames.Extension;
 using UnityEditor;
@@ -7,6 +8,7 @@ namespace KimicuYandexGames.Editors
 {
     public class EditorCloud : Editor
     {
+        private const string FLAGS_FILE_NAME = "flags";
         private const string ENVIRONMENT_FILE_NAME = "environment";
         private const string CATALOG_FILE_NAME = "catalog";
         private const string PURCHASED_PRODUCTS_FILE_NAME = "purchased-products";
@@ -15,6 +17,12 @@ namespace KimicuYandexGames.Editors
         [MenuItem("Kimicu/Yandex Games/Generate Editor Cloud Files")]
         private static void LoadEditorCloudFiles()
         {
+            FileExtensions.LoadObject(FLAGS_FILE_NAME, new Dictionary<string, string>()
+            {
+                { "example_key", "example_value" },
+                { "example_key2", "example_value2" },
+            });
+            
             FileExtensions.LoadObject(ENVIRONMENT_FILE_NAME, new YandexGamesEnvironment() {
                 app = new YandexGamesEnvironment.App { id = "editor" },
                 browser = new YandexGamesEnvironment.Browser { lang = "ru" },

@@ -79,7 +79,7 @@ namespace Kimicu.YandexGames
 #else
         {
             _isAuthorizedInEditor = true;
-            AuthorizedInBackground?.Invoke();
+            onSuccessCallback?.Invoke();
         }
 #endif
     }

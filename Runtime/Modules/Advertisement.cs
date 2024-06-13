@@ -24,6 +24,11 @@ namespace Kimicu.YandexGames
         {
             if (!Initialized) throw new Exception($"{nameof(Advertisement)} not initialized!");
 
+            if (!AdvertisementIsAvailable)
+            {
+                onErrorCallback?.Invoke("Advertising not available yet!");
+                return;
+            }
             #if !UNITY_EDITOR && UNITY_WEBGL
             Agava.YandexGames.InterstitialAd.Show(() =>
                 {
