@@ -84,16 +84,16 @@ namespace Agava.YandexGames
         #endregion
 
         #region GetProductCatalog
-        public static void GetProductCatalog(Action<GetProductCatalogResponse> onSuccessCallback = null, Action<string> onErrorCallback = null)
+        public static void GetProductCatalog(ProductPictureSize pictureSize, Action<GetProductCatalogResponse> onSuccessCallback = null, Action<string> onErrorCallback = null)
         {
             s_onGetProductCatalogSuccessCallback = onSuccessCallback;
             s_onGetProductCatalogErrorCallback = onErrorCallback;
 
-            BillingGetProductCatalog(OnGetProductCatalogSuccessCallback, OnGetProductCatalogErrorCallback);
+            BillingGetProductCatalog(pictureSize.ToString(), OnGetProductCatalogSuccessCallback, OnGetProductCatalogErrorCallback);
         }
 
         [DllImport("__Internal")]
-        private static extern void BillingGetProductCatalog(Action<string> successCallback, Action<string> errorCallback);
+        private static extern void BillingGetProductCatalog(string pictureSize, Action<string> successCallback, Action<string> errorCallback);
 
         [MonoPInvokeCallback(typeof(Action<string>))]
         private static void OnGetProductCatalogSuccessCallback(string productCatalogResponseJson)

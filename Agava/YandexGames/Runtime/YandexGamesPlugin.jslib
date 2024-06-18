@@ -397,7 +397,7 @@ const library = {
             });
         },
 
-        billingGetProductCatalog: function (successCallbackPtr, errorCallbackPtr) {
+        billingGetProductCatalog: function (pictureSize, successCallbackPtr, errorCallbackPtr) {
             yandexGames.billing.getCatalog().then(function (productCatalogResponse) {
                 var catalogResponse = productCatalogResponse;
                 var productList = [];
@@ -409,7 +409,7 @@ const library = {
                     var price = product.price;
                     var priceCurrencyCode = product.priceCurrencyCode;
                     var priceValue = product.priceValue;
-                    var priceCurrencyPicture = product.getPriceCurrencyImage('medium');
+                    var priceCurrencyPicture = product.getPriceCurrencyImage(pictureSize);
                     var title = product.title;
 
                     productList.push({
@@ -648,10 +648,10 @@ const library = {
         yandexGames.billingConsumeProduct(purchasedProductToken, successCallbackPtr, errorCallbackPtr);
     },
 
-    BillingGetProductCatalog: function (successCallbackPtr, errorCallbackPtr) {
+    BillingGetProductCatalog: function (pictureSize, successCallbackPtr, errorCallbackPtr) {
         yandexGames.throwIfSdkNotInitialized();
 
-        yandexGames.billingGetProductCatalog(successCallbackPtr, errorCallbackPtr);
+        yandexGames.billingGetProductCatalog(pictureSize, successCallbackPtr, errorCallbackPtr);
     },
 
     BillingGetPurchasedProducts: function (successCallbackPtr, errorCallbackPtr) {

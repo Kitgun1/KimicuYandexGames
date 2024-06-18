@@ -35,13 +35,13 @@ namespace KimicuYandexGames.Editors
                     id = "coins_1000_example", title = "1000 монет",
                     description = "Валюта для покупки предметов в магазине.",
                     price = "9 YAN", priceValue = "9", priceCurrencyCode = "YAN",
-                    imageURI = ""
+                    imageURI = "", priceCurrencyPicture = "//yastatic.net/s3/games-static/static-data/images/payments/sdk/currency-icon-s@2x.png"
                 },
                 new CatalogProduct {
                     id = "coins_100_example", title = "100 монет",
                     description = "Валюта для покупки предметов в магазине.",
                     price = "1 YAN", priceValue = "1", priceCurrencyCode = "YAN",
-                    imageURI = ""
+                    imageURI = "", priceCurrencyPicture = "https://svgsilh.com/svg_v2/146909.svg"
                 },
             };
             FileExtensions.LoadObject(CATALOG_FILE_NAME, catalog);

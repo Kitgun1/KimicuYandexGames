@@ -4,8 +4,6 @@ using System.Globalization;
 using System.Linq;
 using Agava.YandexGames;
 using Kimicu.YandexGames.Extension;
-using Kimicu.YandexGames.Utils;
-using Newtonsoft.Json;
 using UnityEngine;
 using Coroutine = Kimicu.YandexGames.Utils.Coroutine;
 using GetProductCatalogResponse = Agava.YandexGames.GetProductCatalogResponse;
@@ -26,13 +24,13 @@ namespace Kimicu.YandexGames
 
         /// <summary> Initializing billing. </summary>
         /// <exception cref="Exception"> If YandexGamesSdk is not initialized. </exception>
-        public static IEnumerator Initialize()
+        public static IEnumerator Initialize(ProductPictureSize pictureSize = ProductPictureSize.medium)
         {
             if (!YandexGamesSdk.IsInitialized) throw new Exception("YandexGamesSdk not initialized!");
             if (Initialized) throw new Exception("Billing is initialized!");
 
 #if !UNITY_EDITOR && UNITY_WEBGL // Yandex //
-            Agava.YandexGames.Billing.GetProductCatalog(SuccessCatalogCallback, OnGetProductCatalogError);
+            Agava.YandexGames.Billing.GetProductCatalog(pictureSize, SuccessCatalogCallback, OnGetProductCatalogError);
 #endif
 #if UNITY_EDITOR && UNITY_WEBGL // Editor //
             var catalog = new[] {
@@ -40,13 +38,15 @@ namespace Kimicu.YandexGames
                     id = "coins_1000_example", title = "1000 монет",
                     description = "Валюта для покупки предметов в магазине.",
                     price = "9 YAN", priceValue = "9", priceCurrencyCode = "YAN",
-                    imageURI = ""
+                    imageURI = "//yastatic.net/s3/games-static/static-data/images/payments/sdk/currency-icon-s@2x.png", 
+                    priceCurrencyPicture = "//yastatic.net/s3/games-static/static-data/images/payments/sdk/currency-icon-s@2x.png"
                 },
                 new CatalogProduct {
                     id = "coins_100_example", title = "100 монет",
                     description = "Валюта для покупки предметов в магазине.",
                     price = "1 YAN", priceValue = "1", priceCurrencyCode = "YAN",
-                    imageURI = ""
+                    imageURI = "//yastatic.net/s3/games-static/static-data/images/payments/sdk/currency-icon-s@2x.png", 
+                    priceCurrencyPicture = "//yastatic.net/s3/games-static/static-data/images/payments/sdk/currency-icon-s@2x.png"
                 },
             };
             SuccessCatalogCallback(new GetProductCatalogResponse { products = FileExtensions.LoadObject(CATALOG_FILE_NAME, catalog) });

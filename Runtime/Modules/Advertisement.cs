@@ -54,6 +54,7 @@ namespace Kimicu.YandexGames
                     AdvertisementIsAvailable = false;
                 });
             #elif UNITY_EDITOR
+            AdvertisementIsAvailable = false;
             onOpenCallback?.Invoke();
             onCloseCallback?.Invoke();
             #endif
