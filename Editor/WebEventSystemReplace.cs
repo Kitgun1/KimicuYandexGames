@@ -16,10 +16,8 @@ namespace KimicuYandexGames.Editors
         {
             var scenes = EditorBuildSettings.scenes.Select(scene => scene.path).ToList();
 
-            Debug.Log($"scenes: {scenes.Count}");
             foreach (var scene in scenes)
             {
-                Debug.Log($"scene: {scene}");
                 EditorSceneManager.OpenScene(scene);
 
                 var allGameObjects = Resources.FindObjectsOfTypeAll<EventSystem>();
@@ -28,7 +26,8 @@ namespace KimicuYandexGames.Editors
                     var obj = eventSystem.gameObject;
                     if (eventSystem != null)
                     {
-                        DestroyImmediate(obj.GetComponent<StandaloneInputModule>());
+                        if (obj.TryGetComponent(out WebEventSystem webEventSystem)) DestroyImmediate(webEventSystem);
+                        if (obj.TryGetComponent(out StandaloneInputModule inputModule)) DestroyImmediate(inputModule);
                         DestroyImmediate(eventSystem);
                         
                         obj.AddComponent<WebEventSystem>();
