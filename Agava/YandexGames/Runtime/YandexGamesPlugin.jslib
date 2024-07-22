@@ -25,52 +25,71 @@ const library = {
             }
             yandexGames.isInitializeCalled = true;
 
-            const sdkScript = document.createElement('script');
-            sdkScript.src = 'https://yandex.ru/games/sdk/v2';
-            document.head.appendChild(sdkScript);
-
-            sdkScript.onload = function () {
-                window['YaGames'].init().then(function (sdk) {
-                    yandexGames.sdk = sdk;
-
-                    // The { scopes: false } ensures personal data permission request window won't pop up,
-                    const playerAccountInitializationPromise = sdk.getPlayer({scopes: false}).then(function (playerAccount) {
-                        if (playerAccount.getMode() !== 'lite') {
-                            yandexGames.isAuthorized = true;
-                        }
-
-                        // Always contains permission info. Contains personal data as well if permissions were granted before.
-                        yandexGames.playerAccount = playerAccount;
-                    }).catch(function () {
-                        throw new Error('PlayerAccount failed to initialize.');
-                    });
-
-                    const leaderboardInitializationPromise = sdk.getLeaderboards().then(function (leaderboard) {
-                        yandexGames.leaderboard = leaderboard;
-                    }).catch(function () {
-                        throw new Error('Leaderboard failed to initialize.');
-                    });
-
-                    const billingInitializationPromise = sdk.getPayments({signed: true}).then(function (billing) {
-                        yandexGames.billing = billing;
-                    }).catch(function () {
-                        throw new Error('Billing failed to initialize.');
-                    });
-
-                    const getFlagsInitializationPromise = sdk.getFlags().then(flags => {
-                        yandexGames.flags = flags;
-                    }).catch(function () {
-                        throw new Error('Flags failed to initialize.');
-                    });
-
-                    Promise.allSettled([leaderboardInitializationPromise, playerAccountInitializationPromise, billingInitializationPromise,
-                        getFlagsInitializationPromise]).then(function () {
-                        yandexGames.isInitialized = true;
-                        dynCall('v', successCallbackPtr, []);
-                    });
-                });
+            const scriptSrc = 'https://yandex.ru/games/sdk/v2';
+            
+            if (window['YaGames']) {
+                console.log('YaGames already exists. Initializing SDK...');
+                this.initializeSdk(successCallbackPtr);
+            } else {
+                console.log('Adding SDK script...');
+                const sdkScript = document.createElement('script');
+                sdkScript.src = scriptSrc;
+                sdkScript.onload = () => {
+                    console.log('SDK script loaded.');
+                    this.initializeSdk(successCallbackPtr);
+                };
+                sdkScript.onerror = () => {
+                    console.error('Failed to load SDK script.');
+                };
+                document.head.appendChild(sdkScript);
             }
         },
+		
+		initializeSdk: function (successCallbackPtr) {
+			window['YaGames'].init().then((sdk) => {
+				this.sdk = sdk;
+				console.log('SDK initialized.');
+
+				// The { scopes: false } ensures personal data permission request window won't pop up,
+				const playerAccountInitializationPromise = sdk.getPlayer({scopes: false}).then(function (playerAccount) {
+					if (playerAccount.getMode() !== 'lite') {
+						yandexGames.isAuthorized = true;
+					}
+
+					// Always contains permission info. Contains personal data as well if permissions were granted before.
+					yandexGames.playerAccount = playerAccount;
+				}).catch(function () {
+					throw new Error('PlayerAccount failed to initialize.');
+				});
+
+				const leaderboardInitializationPromise = sdk.getLeaderboards().then(function (leaderboard) {
+					yandexGames.leaderboard = leaderboard;
+				}).catch(function () {
+					throw new Error('Leaderboard failed to initialize.');
+				});
+
+				const billingInitializationPromise = sdk.getPayments({signed: true}).then(function (billing) {
+					yandexGames.billing = billing;
+				}).catch(function () {
+					throw new Error('Billing failed to initialize.');
+				});
+
+				const getFlagsInitializationPromise = sdk.getFlags().then(flags => {
+					yandexGames.flags = flags;
+				}).catch(function () {
+					throw new Error('Flags failed to initialize.');
+				});
+
+				Promise.allSettled([leaderboardInitializationPromise, playerAccountInitializationPromise, billingInitializationPromise,
+					getFlagsInitializationPromise]).then(function () {
+					yandexGames.isInitialized = true;
+					dynCall('v', successCallbackPtr, []);
+				});
+			}).catch(() => {
+				console.error('Failed to initialize SDK.');
+		});
+	},
+
 
         throwIfSdkNotInitialized: function () {
             if (!yandexGames.isInitialized) {
