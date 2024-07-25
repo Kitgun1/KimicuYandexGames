@@ -87,8 +87,30 @@ namespace Agava.YandexGames
             YandexGamesSdkGameReady();
         }
 
+        public static void GameStart()
+        {
+            if (CallbackLogging)
+                Debug.Log($"{nameof(YandexGamesSdk)}.{nameof(GameStart)} invoked");
+
+            YandexGamesSdkGameStart();
+        }
+
+        public static void GameStop()
+        {
+            if (CallbackLogging)
+                Debug.Log($"{nameof(YandexGamesSdk)}.{nameof(GameStop)} invoked");
+
+            YandexGamesSdkGameStop();
+        }
+
         [DllImport("__Internal")]
         private static extern void YandexGamesSdkGameReady();
+        
+        [DllImport("__Internal")]
+        private static extern void YandexGamesSdkGameStart();
+        
+        [DllImport("__Internal")]
+        private static extern void YandexGamesSdkGameStop();
 
         [DllImport("__Internal")]
         private static extern bool YandexGamesSdkIsRunningOnYandex();

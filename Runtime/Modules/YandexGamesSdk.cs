@@ -48,7 +48,25 @@ namespace Kimicu.YandexGames
             #if !UNITY_EDITOR && UNITY_WEBGL
             Agava.YandexGames.YandexGamesSdk.GameReady();
             #else
-            Debug.Log($"GameReady invoke!");
+            Debug.Log($"{nameof(GameReady)} invoke!");
+            #endif
+        }
+
+        public static void GameStart()
+        {
+            #if !UNITY_EDITOR && UNITY_WEBGL
+            Agava.YandexGames.YandexGamesSdk.GameStart();
+            #else
+            Debug.Log($"{nameof(GameStart)} invoke!");
+            #endif
+        }
+
+        public static void GameStop()
+        {
+            #if !UNITY_EDITOR && UNITY_WEBGL
+            Agava.YandexGames.YandexGamesSdk.GameStop();
+            #else
+            Debug.Log($"{nameof(GameStop)} invoke!");
             #endif
         }
     }

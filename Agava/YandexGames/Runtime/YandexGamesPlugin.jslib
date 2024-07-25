@@ -25,7 +25,7 @@ const library = {
             }
             yandexGames.isInitializeCalled = true;
 
-            const scriptSrc = 'https://yandex.ru/games/sdk/v2';
+            const scriptSrc = '/sdk.js';
             
             if (window['YaGames']) {
                 console.log('YaGames already exists. Initializing SDK...');
@@ -99,6 +99,14 @@ const library = {
 
         gameReady: function () {
             yandexGames.sdk.features.LoadingAPI.ready();
+        },
+
+        gameStart: function () {
+            yandexGames.sdk.features.GameplayAPI.start();
+        },
+
+        gameStop: function () {
+            yandexGames.sdk.features.GameplayAPI.stop();
         },
 
         invokeErrorCallback: function (error, errorCallbackPtr) {
@@ -707,6 +715,18 @@ const library = {
         yandexGames.throwIfSdkNotInitialized();
 
         yandexGames.gameReady();
+    },
+
+    YandexGamesSdkGameStart: function () {
+        yandexGames.throwIfSdkNotInitialized();
+
+        yandexGames.gameStart();
+    },
+
+    YandexGamesSdkGameStop: function () {
+        yandexGames.throwIfSdkNotInitialized();
+
+        yandexGames.gameStop();
     },
 
     YandexGamesSdkIsRunningOnYandex: function () {
