@@ -14,7 +14,7 @@
 ## Установка
 1) PackageManager > + > Add package from git URL.. <br>
    ```http request
-   https://github.com/Kitgun1/KimicuYandexGames.git
+   https://github.com/TheErikSar/KimicuYandexGames.git
    ```
 2) PackageManager > + > Add package by name... <br>
    ```http request
