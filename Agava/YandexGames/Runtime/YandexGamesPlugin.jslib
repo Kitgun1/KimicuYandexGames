@@ -43,6 +43,13 @@ const library = {
                 };
                 document.head.appendChild(sdkScript);
             }
+            
+            // new yandex moderation requirement
+
+            console.log("context menu hidden");
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+            });
         },
 		
 		initializeSdk: function (successCallbackPtr) {
