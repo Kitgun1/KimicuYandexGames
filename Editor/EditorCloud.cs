@@ -54,6 +54,12 @@ namespace KimicuYandexGames.Editors
             
             FileExtensions.LoadObject("device", true);
         }
+        
+        [MenuItem("Kimicu/Yandex Games/Clear Editor Cloud Saves")]
+        private static void ClearEditorCloudSaves()
+        {
+            FileExtensions.SaveObject("Save", "{}");
+        }
     }
 }
 #endif
