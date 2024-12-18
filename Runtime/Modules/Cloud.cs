@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Kimicu.YandexGames.Extension;
+using Kimicu.YandexGames.Utils;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -9,6 +10,8 @@ namespace Kimicu.YandexGames
 {
     public static partial class Cloud
     {
+        public static bool CompressionEnabled = true;
+        
         private static string _json = "{}";
         private static Dictionary<string, object> _jsonDictionary = new Dictionary<string, object>();
 
@@ -33,9 +36,15 @@ namespace Kimicu.YandexGames
         private static void OnGetCloudSuccessCallback(string json)
         {
             var dictionary = json.JsonToDictionary();
-            if (dictionary.TryGetValue(SAVE_NAME, out object hex))
+            if (dictionary.TryGetValue(SAVE_NAME, out object save))
             {
-                _json = ((string)hex).HexToString();
+                _json = ((string)save).HexToString();
+
+                if (dictionary.TryGetValue(nameof(CompressionEnabled), out var isCompressed) && isCompressed.Equals("True"))
+                {
+                    _json = CompressionUtility.LoadFromBase64(_json);
+                }
+
                 _jsonDictionary = _json.JsonToDictionary();
             }
             else
@@ -101,8 +110,17 @@ namespace Kimicu.YandexGames
         public static void SaveInCloud(Action onSuccessCallback = null, Action<string> onErrorCallback = null, bool flush = false)
         {
             if (!Initialized) throw new Exception($"{nameof(Cloud)}. Not Initialized!");
+            
             _json = _jsonDictionary.DictionaryToJson();
-            string jsonToYandex = $"{{ \"{SAVE_NAME}\": \"{_json.StringToHex()}\"}}";
+
+            if (CompressionEnabled)
+            {
+                _json = CompressionUtility.SaveToBase64(_json);
+            }
+            
+            var resultJson = _json.StringToHex();
+            
+            string jsonToYandex = $"{{ \"{SAVE_NAME}\": \"{resultJson}\", \"{nameof(CompressionEnabled)}\" : \"{CompressionEnabled}\" }}";
 
             if (!jsonToYandex.IsValidJson())
             {

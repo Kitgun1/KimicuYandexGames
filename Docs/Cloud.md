@@ -12,6 +12,9 @@ yield return Initialize(onSuccessCallback = null);
 ```csharp
 /// Используйте его, чтобы проверить, инициализирован ли Cloud в SDK.
 Cloud.Initialized; // bool
+
+/// Используйте его, чтобы включить или выключить сжатие сохраниений. По умолчанию включен.
+Cloud.CompressionEnabled; // bool
 ```
 
 ## Methods
