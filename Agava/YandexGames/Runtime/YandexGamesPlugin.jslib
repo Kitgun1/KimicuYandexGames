@@ -397,7 +397,8 @@ const library = {
                 dynCall('vi', successCallbackPtr, [entryJsonUnmanagedStringPtr]);
                 _free(entryJsonUnmanagedStringPtr);
             }).catch(function (error) {
-                if (error.code === 'LEADERBOARD_PLAYER_NOT_PRESENT') {
+                console.error('leaderboardGetPlayerEntry error message:', error.message);
+                if (error.message === 'Player is not present in leaderboard') {
                     const nullUnmanagedStringPtr = yandexGames.allocateUnmanagedString('null');
                     dynCall('vi', successCallbackPtr, [nullUnmanagedStringPtr]);
                     _free(nullUnmanagedStringPtr);
