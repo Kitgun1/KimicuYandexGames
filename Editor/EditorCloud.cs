@@ -1,13 +1,16 @@
 ﻿#if UNITY_EDITOR
+using System.IO;
 using System.Collections.Generic;
 using Agava.YandexGames;
 using Kimicu.YandexGames.Extension;
 using UnityEditor;
+using UnityEngine;
 
 namespace KimicuYandexGames.Editors
 {
     public class EditorCloud : Editor
     {
+        private const string FOLDER_NAME = "EditorCloud";
         private const string FLAGS_FILE_NAME = "flags";
         private const string ENVIRONMENT_FILE_NAME = "environment";
         private const string CATALOG_FILE_NAME = "catalog";
@@ -53,6 +56,12 @@ namespace KimicuYandexGames.Editors
             FileExtensions.LoadObject("Save", "{}");
             
             FileExtensions.LoadObject("device", true);
+        }
+        
+        [MenuItem("Kimicu/Yandex Games/Open Editor Cloud Saves Folder")]
+        private static void OpenEditorFilesFolder()
+        {
+            EditorUtility.RevealInFinder(Path.Combine(Application.dataPath, "..", FOLDER_NAME, "Save"));
         }
         
         [MenuItem("Kimicu/Yandex Games/Clear Editor Cloud Saves")]
