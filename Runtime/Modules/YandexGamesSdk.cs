@@ -31,6 +31,13 @@ namespace Kimicu.YandexGames
 #else
             FileExtensions.LoadObject("environment", new YandexGamesEnvironment());
 #endif
+        
+        public static string Language =>
+#if !UNITY_EDITOR && UNITY_WEBGL
+            Agava.YandexGames.YandexGamesSdk.Language;
+#else
+            Environment.i18n.lang;
+#endif
 
         public static IEnumerator Initialize(Action onSuccessCallback = null)
         {

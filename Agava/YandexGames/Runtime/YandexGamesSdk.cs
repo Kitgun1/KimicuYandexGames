@@ -52,6 +52,18 @@ namespace Agava.YandexGames
         [DllImport("__Internal")]
         private static extern string GetYandexGamesSdkEnvironment();
 
+        public static string Language
+        {
+            get
+            {
+                var yandexGamesSdki18NLang = GetYandexGamesSdki18nLang();
+                return yandexGamesSdki18NLang;
+            }
+        }
+
+        [DllImport("__Internal")]
+        private static extern string GetYandexGamesSdki18nLang();
+
         /// <summary>
         /// Invoke this and wait for coroutine to finish before using any SDK methods.<br/>
         /// Downloads Yandex SDK script and inserts it into the HTML page.
