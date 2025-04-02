@@ -1,4 +1,4 @@
-const library = {
+const webApplicationLibrary = {
 
     $webApplication: {
         initialize: function (onInBackgroundChangeCallbackPtr) {
@@ -42,5 +42,5 @@ const library = {
     },
 }
 
-autoAddDeps(library, '$webApplication');
-mergeInto(LibraryManager.library, library);
+autoAddDeps(webApplicationLibrary, '$webApplication');
+mergeInto(LibraryManager.library, webApplicationLibrary);
