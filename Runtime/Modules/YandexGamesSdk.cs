@@ -32,6 +32,14 @@ namespace Kimicu.YandexGames
             FileExtensions.LoadObject("environment", new YandexGamesEnvironment());
 #endif
         
+        public static string ServerTime =>
+#if !UNITY_EDITOR && UNITY_WEBGL
+            Agava.YandexGames.YandexGamesSdk.ServerTime;
+#else
+            DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
+#endif
+        
+        
         public static string Language =>
 #if !UNITY_EDITOR && UNITY_WEBGL
             Agava.YandexGames.YandexGamesSdk.Language;

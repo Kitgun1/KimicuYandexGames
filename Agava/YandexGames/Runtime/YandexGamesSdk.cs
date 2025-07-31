@@ -48,9 +48,22 @@ namespace Agava.YandexGames
                 return JsonUtility.FromJson<YandexGamesEnvironment>(environmentJson);
             }
         }
-
+        
         [DllImport("__Internal")]
         private static extern string GetYandexGamesSdkEnvironment();
+        
+        public static string ServerTime
+        {
+            get
+            {
+                string serverTime = GetYandexGamesSdkServerTime();
+                Debug.Log($"Серверное время получено: {serverTime}");
+                return serverTime;
+            }
+        }
+
+        [DllImport("__Internal")]
+        private static extern string GetYandexGamesSdkServerTime();
 
         public static string Language
         {

@@ -155,6 +155,12 @@ const yandexGamesLibrary = {
             return environmentJsonUnmanagedStringPtr;
         },
 
+        getYandexGamesSdkServerTime: function () {
+            const environmentJson = JSON.stringify(yandexGames.sdk.serverTime());
+            const environmentJsonUnmanagedStringPtr = yandexGames.allocateUnmanagedString(environmentJson);
+            return environmentJsonUnmanagedStringPtr;
+        },
+
         getYandexGamesSdki18nLang: function ()
         {
             var lang = yandexGames.sdk.environment.i18n.lang;
@@ -546,6 +552,12 @@ const yandexGamesLibrary = {
         yandexGames.throwIfSdkNotInitialized();
 
         return yandexGames.getYandexGamesSdkEnvironment();
+    },
+
+    GetYandexGamesSdkServerTime: function () {
+        yandexGames.throwIfSdkNotInitialized();
+
+        return yandexGames.getYandexGamesSdkServerTime();
     },
 
     GetYandexGamesSdki18nLang: function () {
