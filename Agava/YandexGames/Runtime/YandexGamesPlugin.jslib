@@ -19,6 +19,9 @@ const yandexGamesLibrary = {
 
         flags: undefined,
 
+        fullscreenStatus: undefined,
+        fullscreenCheckInterval: undefined,
+
         yandexGamesSdkInitialize: function (successCallbackPtr) {
             if (yandexGames.isInitializeCalled) {
                 return;
@@ -87,8 +90,10 @@ const yandexGamesLibrary = {
 					throw new Error('Flags failed to initialize.');
 				});
 
-				Promise.allSettled([leaderboardInitializationPromise, playerAccountInitializationPromise, billingInitializationPromise,
-					getFlagsInitializationPromise]).then(function () {
+                fullscreenStatus = sdk.screen.fullscreen.status;
+
+                Promise.allSettled([leaderboardInitializationPromise, playerAccountInitializationPromise, 
+                    billingInitializationPromise,getFlagsInitializationPromise, fullscreenStatus]).then(function () {
 					yandexGames.isInitialized = true;
 					dynCall('v', successCallbackPtr, []);
 				});
@@ -529,6 +534,62 @@ const yandexGamesLibrary = {
             });
         },
 
+        requestFullscreen: function (successCallbackPtr, errorCallbackPtr) {
+            yandexGames.sdk.screen.fullscreen.request()
+                .then(() => {
+                    dynCall('v', successCallbackPtr, []);
+                })
+                .catch(error => {
+                    yandexGames.invokeErrorCallback(error, errorCallbackPtr);
+                });
+        },
+
+        exitFullscreen: function (successCallbackPtr, errorCallbackPtr) {
+            yandexGames.sdk.screen.fullscreen.exit()
+                .then(() => {
+                    dynCall('v', successCallbackPtr, []);
+                })
+                .catch(error => {
+                    yandexGames.invokeErrorCallback(error, errorCallbackPtr);
+                });
+        },
+
+        getFullscreenStatus: function (successCallbackPtr, errorCallbackPtr) {
+            try {
+                const status = yandexGames.sdk.screen.fullscreen.status;
+                const statusStringPtr = yandexGames.allocateUnmanagedString(status);
+                dynCall('vi', successCallbackPtr, [statusStringPtr]);
+                _free(statusStringPtr);
+            } catch (error) {
+                yandexGames.invokeErrorCallback(error, errorCallbackPtr);
+            }
+        },
+
+        subscribeFullscreenStatusChange: function (onChangeCallback, onErrorCallback) {
+            try {
+                if (yandexGames.fullscreenCheckInterval) {
+                    clearInterval(yandexGames.fullscreenCheckInterval);
+                }
+
+                yandexGames.fullscreenCheckInterval = setInterval(() => {
+                    try {
+                        const currentStatus = yandexGames.sdk.screen.fullscreen.status;
+                        if (currentStatus !== yandexGames.fullscreenStatus) {
+                            yandexGames.fullscreenStatus = currentStatus;
+                            const statusPtr = yandexGames.allocateUnmanagedString(currentStatus);
+                            dynCall('vi', onChangeCallback, [statusPtr]);
+                            _free(statusPtr);
+                        }
+                    } catch (error) {
+                        clearInterval(fullscreenCheckInterval);
+                        yandexGames.invokeErrorCallback(error, onErrorCallback);
+                    }
+                }, 300);
+            } catch (error) {
+                yandexGames.invokeErrorCallback(error, onErrorCallback);
+            }
+        },
+
         allocateUnmanagedString: function (string) {
             const stringBufferSize = lengthBytesUTF8(string) + 1;
             const stringBufferPtr = _malloc(stringBufferSize);
@@ -761,6 +822,32 @@ const yandexGamesLibrary = {
         yandexGames.throwIfSdkNotInitialized();
 
         yandexGames.gameStop();
+    },
+
+    RequestFullscreen: function (successCallbackPtr, errorCallbackPtr) {
+        yandexGames.throwIfSdkNotInitialized();
+
+        yandexGames.requestFullscreen(successCallbackPtr, errorCallbackPtr);
+    },
+
+    ExitFullscreen: function (successCallbackPtr, errorCallbackPtr) {
+        yandexGames.throwIfSdkNotInitialized();
+
+        yandexGames.exitFullscreen(successCallbackPtr, errorCallbackPtr);
+    },
+
+    GetFullscreenStatus: function (successCallbackPtr, errorCallbackPtr) {
+        yandexGames.throwIfSdkNotInitialized();
+
+        yandexGames.getFullscreenStatus(successCallbackPtr, errorCallbackPtr);
+    },
+
+    SubscribeFullscreenStatusChange: function (successCallbackPtr, errorCallbackPtr) {
+        yandexGames.throwIfSdkNotInitialized();
+
+        console.log("Subscribing to fullscreen status change from c#");
+        
+        yandexGames.subscribeFullscreenStatusChange(successCallbackPtr, errorCallbackPtr);
     },
 
     YandexGamesSdkIsRunningOnYandex: function () {
