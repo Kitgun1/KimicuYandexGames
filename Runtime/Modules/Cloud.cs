@@ -80,7 +80,7 @@ namespace Kimicu.YandexGames
                 }
             }
 
-            Debug.Log($"Value not found, return default value.");
+            if(YandexGamesSdk.IsDebugging) Debug.LogWarning($"Value not found, return default value.");
             return defaultValue;
         }
 

@@ -23,6 +23,9 @@ namespace Kimicu.YandexGames
             _isInitialized;
 #endif
 
+	    /// <summary> Enebled debug mode. </summary>
+	    public static bool IsDebugging;
+
         private static bool _isInitialized;
 
         public static YandexGamesEnvironment Environment =>
