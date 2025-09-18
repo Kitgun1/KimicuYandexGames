@@ -770,9 +770,10 @@ const yandexGamesLibrary = {
         yandexGames.billingConsumeProduct(purchasedProductToken, successCallbackPtr, errorCallbackPtr);
     },
 
-    BillingGetProductCatalog: function (pictureSize, successCallbackPtr, errorCallbackPtr) {
+    BillingGetProductCatalog: function (pictureSizePtr, successCallbackPtr, errorCallbackPtr) {
         yandexGames.throwIfSdkNotInitialized();
-
+        
+        const pictureSize = UTF8ToString(pictureSizePtr);
         yandexGames.billingGetProductCatalog(pictureSize, successCallbackPtr, errorCallbackPtr);
     },
 
