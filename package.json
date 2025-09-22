@@ -1,11 +1,14 @@
 {
     "name": "com.blackbox.kimicuyandexgames",
-    "version": "2.0.24",
+    "version": "2.0.25",
     "author": "Kimicu",
     "displayName": "Kimicu Yandex",
     "description": "Package for fast develop game in Yandex Games.",
     "unity": "2019.1",
     "readme": "https://github.com/Kitgun1/KimicuYandexGames/blob/main/README.md",
     "license": "https://github.com/Kitgun1/KimicuYandexGames/blob/main/LICENSE",
-    "homepage": "https://github.com/Kitgun1/KimicuYandexGames"
+    "homepage": "https://github.com/Kitgun1/KimicuYandexGames",
+    "dependencies": {
+        "com.unity.vectorgraphics": "2.0.0-preview.25"
+    }
 }

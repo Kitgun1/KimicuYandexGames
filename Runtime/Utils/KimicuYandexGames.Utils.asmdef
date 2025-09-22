@@ -1,7 +1,9 @@
 {
     "name": "KimicuYandexGames.Utils",
     "rootNamespace": "KimicuYandexGames.Utils",
-    "references": [],
+    "references": [
+        "Unity.VectorGraphics"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
