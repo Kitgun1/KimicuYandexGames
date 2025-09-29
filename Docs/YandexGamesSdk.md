@@ -34,6 +34,9 @@ YandexGamesSdk.Environment; // YandexGamesEnvironment
 /// Он похож на Date.now() форматом результата, однако последний возвращает время устройства пользователя, 
 /// которое может отличаться от серверного и не защищено от накруток со стороны игроков
 YandexGamesSdk.ServerTime; // string. Например, 1720613073778.
+
+/// Серверное время в формате DateTime, не отличается от ServerTime, просто преобразуется в DateTime для упрощения работы.
+YandexGamesSdk.ServerDateTime; // DateTime. Например, Wed 10 July 2024 17:04:33.
 ```
 
 ## Methods

@@ -41,7 +41,19 @@ namespace Kimicu.YandexGames
 #else
             DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
 #endif
-        
+
+        public static DateTime ServerDateTime
+        {
+            get
+            {
+                var serverTime = ServerTime;
+                
+                var unixTimeMillis = long.Parse(serverTime);
+                var serverDateTime = DateTimeOffset.FromUnixTimeMilliseconds(unixTimeMillis).UtcDateTime;
+                
+                return serverDateTime;
+            }
+        }
         
         public static string Language =>
 #if !UNITY_EDITOR && UNITY_WEBGL
