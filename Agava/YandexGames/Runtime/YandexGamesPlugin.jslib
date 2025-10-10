@@ -4,23 +4,16 @@ const yandexGamesLibrary = {
 
     $yandexGames: {
         isInitialized: false,
-
         isAuthorized: false,
-
         sdk: undefined,
-
         leaderboard: undefined,
-
         playerAccount: undefined,
-
         billing: undefined,
-
         isInitializeCalled: false,
-
         flags: undefined,
-
         fullscreenStatus: undefined,
         fullscreenCheckInterval: undefined,
+
 
         yandexGamesSdkInitialize: function (successCallbackPtr) {
             if (yandexGames.isInitializeCalled) {
@@ -99,9 +92,8 @@ const yandexGamesLibrary = {
 				});
 			}).catch(() => {
 				console.error('Failed to initialize SDK.');
-		});
-	},
-
+		    });
+	    },
 
         throwIfSdkNotInitialized: function () {
             if (!yandexGames.isInitialized) {
@@ -426,6 +418,32 @@ const yandexGamesLibrary = {
                 }
             });
         },
+        
+        yandexGameGetAllGames: function (successCallbackPtr, errorCallbackPtr) {
+             yandexGames.sdk.features.GamesAPI.getAllGames().then(({games, developerURL}) => {
+                  getAllGamesResponse = {games: games, developerURL: developerURL};
+                  
+                  const allGamesJson = JSON.stringify(getAllGamesResponse);
+                  const allGamesJsonUnmanagedStringPtr = yandexGames.allocateUnmanagedString(allGamesJson);
+                  dynCall('vi', successCallbackPtr, [allGamesJsonUnmanagedStringPtr]);
+                  _free(allGamesJsonUnmanagedStringPtr);
+             }).catch(function (error) {
+                 yandexGames.invokeErrorCallback(error, errorCallbackPtr);
+             });
+        },
+        
+        yandexGameGetGameById: function (appId, successCallbackPtr, errorCallbackPtr) {
+             yandexGames.sdk.features.GamesAPI.getGameByID(Number(appId)).then(({isAvailable, game}) => {
+                  getGameByIdResponse = {game: game, isAvailable: isAvailable};
+                  
+                  const gameByIdJson = JSON.stringify(getGameByIdResponse);
+                  const gameByIdJsonUnmanagedStringPtr = yandexGames.allocateUnmanagedString(gameByIdJson);
+                  dynCall('vi', successCallbackPtr, [gameByIdJsonUnmanagedStringPtr]);
+                  _free(gameByIdJsonUnmanagedStringPtr);
+             }).catch(function (error) {
+                 yandexGames.invokeErrorCallback(error, errorCallbackPtr);
+             });
+        },
 
         billingPurchaseProduct: function (productId, successCallbackPtr, errorCallbackPtr, developerPayload) {
             yandexGames.billing.purchase({
@@ -627,6 +645,12 @@ const yandexGamesLibrary = {
         return yandexGames.getYandexGamesSdki18nLang();
     },
 
+    YandexGamesSdkGetAllGames: function () {
+        yandexGames.throwIfSdkNotInitialized();
+
+        return yandexGames.yandexGamesSdkGetAllGames();
+    },
+
     GetDeviceType: function () {
         yandexGames.throwIfSdkNotInitialized();
 
@@ -748,6 +772,20 @@ const yandexGamesLibrary = {
         const pictureSize = UTF8ToString(pictureSizePtr);
 
         yandexGames.leaderboardGetPlayerEntry(leaderboardName, successCallbackPtr, errorCallbackPtr, pictureSize);
+    },
+
+    YandexGameGetAllGames: function (successCallbackPtr, errorCallbackPtr) {
+         yandexGames.throwIfSdkNotInitialized();
+         
+         yandexGames.yandexGameGetAllGames(successCallbackPtr, errorCallbackPtr);
+    },
+    
+    YandexGameGetGameById: function (appIdPtr, successCallbackPtr, errorCallbackPtr) {
+         yandexGames.throwIfSdkNotInitialized();
+         
+         const appID = UTF8ToString(appIdPtr);
+         
+         yandexGames.yandexGameGetGameById(appID, successCallbackPtr, errorCallbackPtr);
     },
 
     BillingPurchaseProduct: function (productIdPtr, successCallbackPtr, errorCallbackPtr, developerPayloadPtr) {
